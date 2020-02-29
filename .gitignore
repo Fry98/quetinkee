@@ -1,0 +1,10 @@
+.vscode
+.classpath
+.settings
+.project
+/target
+.idea
+.sts4-cache
+**/node_modules
+**/dist
+**/static
