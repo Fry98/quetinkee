@@ -2,7 +2,7 @@
   "name": "quetinkee",
   "version": "1.0.0",
   "description": "E-Shop for selling flowers",
-  "main": "app.ts",
+  "main": "App.java",
   "scripts": {
     "build": "vue-cli-service build && mvn clean package",
     "server": "mvn spring-boot:run",
@@ -11,7 +11,8 @@
   },
   "keywords": [],
   "author": "quetnikee",
-  "license": "MIT",
+  "license": "Proprietary",
+  "private": true,
   "dependencies": {
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
