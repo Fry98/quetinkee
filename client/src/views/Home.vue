@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    QUETINKEE
+    Homepage
   </div>
 </template>
 
