@@ -16,10 +16,12 @@
           <general-input title='Město' v-model='city'></general-input>
           <general-input title='Ulice, č.p.' v-model='street'></general-input>
           <general-input title='PSČ' v-model='zip'></general-input>
-          <label>
-            <input type='checkbox' v-model='billingIsSame'>
-            Doručovací adresa je shodná s fakturační adresou
-          </label>
+          <div>
+            <label>
+              <input type='checkbox' v-model='billingIsSame'>
+              Doručovací adresa je shodná s fakturační adresou
+            </label>
+          </div>
           <div v-if='!billingIsSame'>
             <h2>Fakturační adresa</h2>
             <general-input title='Město' v-model='billingCity'></general-input>
