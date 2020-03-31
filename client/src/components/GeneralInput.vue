@@ -25,10 +25,13 @@ export default {
   @import '../scss/_vars.scss';
 
   .inp-wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
     margin-bottom: 15px;
     font-size: 1.1em;
+    justify-content: space-between;
     & > input {
-      width: 80%;
       font-size: .9em;
       border: 1px solid white;
       margin-top: 3px;
@@ -37,6 +40,7 @@ export default {
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
       box-sizing: border-box;
       outline: none;
+      width: 20em;
       &:focus {
         border-color: $mainOrange;
       }
@@ -44,6 +48,9 @@ export default {
   }
 
   .inp-title {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 1em;
     padding-left: 2px;
   }
 </style>
