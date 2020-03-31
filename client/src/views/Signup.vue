@@ -16,9 +16,11 @@
           <general-input title='Město' v-model='city'></general-input>
           <general-input title='Ulice, č.p.' v-model='street'></general-input>
           <general-input title='PSČ' v-model='zip'></general-input>
-          <input type='checkbox' v-model='billingIsSame'>
-          <span>Doručovací adresa je shodná s fakturační adresou</span>
-          <div id='billingAddressWrap' v-if='!billingIsSame'>
+          <label>
+            <input type='checkbox' v-model='billingIsSame'>
+            Doručovací adresa je shodná s fakturační adresou
+          </label>
+          <div v-if='!billingIsSame'>
             <h2>Fakturační adresa</h2>
             <general-input title='Město' v-model='billingCity'></general-input>
             <general-input title='Ulice, č.p.' v-model='billingStreet'></general-input>
@@ -60,10 +62,6 @@ export default {
 
 <style lang="scss" scoped>
   @import '../scss/_vars.scss';
-
-  #billingAddressWrap {
-    width: 100%;
-  }
 
   #signup {
     flex: 1;
