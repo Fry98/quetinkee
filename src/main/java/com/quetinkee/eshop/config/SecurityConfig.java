@@ -2,18 +2,8 @@ package com.quetinkee.eshop.config;
 
 /**
 * Just testing for login - will be removed / edited later 
-*  TO pom.xml
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-config</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-web</artifactId>
-    </dependency>
 */
-/*
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -61,4 +51,3 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 }
-*/
