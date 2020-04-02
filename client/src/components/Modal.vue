@@ -14,6 +14,13 @@ export default {
       oldMsg: ''
     };
   },
+  created() {
+    document.addEventListener('keydown', e => {
+      if (this.$store.getters.error === null || e.keyCode !== 13) return;
+      e.cancel = true;
+      this.close();
+    });
+  },
   methods: {
     close() {
       this.oldMsg = this.$store.getters.error;

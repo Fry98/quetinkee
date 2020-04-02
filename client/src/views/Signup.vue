@@ -3,8 +3,8 @@
     <div id='signup-center'>
       <div id='signup-box'>
         <h1>Registrace</h1>
-        <form @submit.prevent>
-          <div v-if='!step2'>
+        <div class='form'>
+          <div v-show='!step2'>
             <h2>Osobní informace</h2>
             <general-input title='Jméno' v-model='name'></general-input>
             <general-input title='Příjmení' v-model='surname'></general-input>
@@ -25,7 +25,7 @@
               </button>
             </div>
           </div>
-          <div v-else>
+          <div v-show='step2'>
             <h2>Doručovací adresa</h2>
             <general-input title='Město' v-model='city'></general-input>
             <general-input title='Ulice, č.p.' v-model='street'></general-input>
@@ -47,10 +47,10 @@
                 <font-awesome-icon icon='chevron-left'></font-awesome-icon>
                 <span>Zpět</span>
               </button>
-              <input type="submit" class='button sub-btn' value="Registrovat se">
+              <button class='button sub-btn' @click="submitForm">Registrovat se</button>
             </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
@@ -81,56 +81,56 @@
     components: {
       GeneralInput
     },
+    created() {
+      document.addEventListener('keydown', this.enterHandler);
+    },
+    destroyed() {
+      document.removeEventListener('keydown', this.enterHandler);
+    },
     methods: {
+      enterHandler(e) {
+        if (e.keyCode !== 13 || e.cancel) return;
+        if (!this.step2) {
+          this.nextStep();
+        } else {
+          this.submitForm();
+        }
+      },
       nextStep() {
-        let payload = '';
-        if (this.name == '') {
+        if (this.name.trim().length === 0) {
           this.$store.dispatch('openModal', 'Jméno je povinná položka');
           return;
         }
 
-        if (this.surname == '') {
+        if (this.surname.trim().length === 0) {
           this.$store.dispatch('openModal', 'Příjmení je povinná položka');
           return;
         }
 
-        if (!this.mail.match(/^(.+)@(.+).(.+)$/)) {
+        if (!this.mail.match(/^(.+)@(.+).(.){2,6}$/)) {
           this.$store.dispatch('openModal', 'Nesprávně zadaný email');
           return;
         }
 
-        if (!this.phone.match(/^[0-9]{9}$/)) {
+        if (!this.phone.replace(/ /g, '').match(/^[0-9]{9}$/)) {
           this.$store.dispatch('openModal', 'Zadané telefonní číslo není platné');
           return;
         }
 
-        if (this.pwd == '') {
+        if (this.pwd.length < 6) {
           this.$store.dispatch('openModal', 'Nezadané heslo');
           return;
         }
 
-        if (this.pwd != '' && this.rePwd != this.pwd) {
+        if (this.rePwd !== this.pwd) {
           this.$store.dispatch('openModal', 'Hesla se neshodují');
           return;
         }
 
-        if(this.city == ''){
-          this.$store.dispatch('openModal', 'Město je povinná položka');
-          return;
-        }
-
-        if(this.street == ''){
-          this.$store.dispatch('openModal', 'Ulice a č.p. je povinná položka');
-          return;
-        }
-
-        if(this.zip == ''){
-          this.$store.dispatch('openModal', 'PSČ je povinná položka');
-          return;
-        }
-
-
         this.step2 = true;
+      },
+      submitForm() {
+        alert('submit');
       }
     }
   }
