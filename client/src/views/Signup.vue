@@ -14,6 +14,11 @@
             <general-input title='Heslo' type='password' v-model='pwd'></general-input>
             <general-input title='Heslo znovu' type='password' v-model='rePwd'></general-input>
             <div id='button-wrap'>
+              <button class='button step back-btn' @click="$router.push('/login')">
+                <font-awesome-icon icon='chevron-left'></font-awesome-icon>
+                <span>Zpět</span>
+              </button>
+              <div id='filler'></div>
               <button class='button step' @click="nextStep">
                 <font-awesome-icon icon='chevron-right'></font-awesome-icon>
                 <span>Pokračovat</span>
@@ -25,7 +30,7 @@
             <general-input title='Město' v-model='city'></general-input>
             <general-input title='Ulice, č.p.' v-model='street'></general-input>
             <general-input title='PSČ' v-model='zip'></general-input>
-            <div>
+            <div id='adr-check'>
               <label>
                 <input type='checkbox' v-model='billingIsSame'>
                 Doručovací adresa je shodná s fakturační adresou
@@ -66,7 +71,7 @@ export default {
       city: '',
       street: '',
       zip: '',
-      billingIsSame: 'true',
+      billingIsSame: true,
       billingCity: '',
       billingStreet: '',
       billingZip: '',
@@ -78,6 +83,10 @@ export default {
   },
   methods: {
     nextStep() {
+      if (!this.phone.match(/^[0-9]{9}$/)) {
+        this.$store.dispatch('openModal', 'Zadané telefonní číslo není platné');
+        return;
+      }
       this.step2 = true;
     }
   }
@@ -158,11 +167,20 @@ export default {
   }
 
   #button-wrap {
-    text-align: right;
+    justify-content: flex-end;
+    display: flex;
   }
 
   #end-buttons {
     display: flex;
     margin-top: 15px;
+  }
+
+  #filler {
+    flex: 1;
+  }
+
+  #adr-check {
+    margin-bottom: 10px;
   }
 </style>

@@ -1,15 +1,30 @@
 <template>
-  <div id='modal-wrap' class='close'>
+  <div id='modal-wrap' :class='{ close: $store.getters.error === null }'>
     <div id='modal'>
-      <div id='modal-msg'>Něco se masivně dojebalo a v3ichniui aegfhu ayeufgh yauhdfg uadhfgs</div>
-      <button class='button'>Zavřít</button>
+      <div id='modal-msg'>{{ visibleMessage }}</div>
+      <button class='button' @click='close'>Zavřít</button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-
+  data() {
+    return {
+      oldMsg: ''
+    };
+  },
+  methods: {
+    close() {
+      this.oldMsg = this.$store.getters.error;
+      this.$store.dispatch('closeModal');
+    }
+  },
+  computed: {
+    visibleMessage() {
+      return this.$store.getters.error === null ? this.oldMsg : this.$store.getters.error;
+    }
+  }
 }
 </script>
 
@@ -27,19 +42,20 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition-duration: .3s;
   }
 
   #modal {
-    width: 330px;
+    max-width: 300px;
     background: white;
     border-radius: 12px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.281);
     text-align: center;
     padding: 10px;
+    transition-duration: .3s;
   }
 
   #modal-msg {
-    // font-weight: 600;
     font-size: 1.3em;
   }
 
@@ -62,5 +78,8 @@ export default {
   .close {
     pointer-events: none;
     opacity: 0;
+    #modal {
+      transform: translateY(25px);
+    }
   }
 </style>
