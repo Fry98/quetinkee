@@ -1,6 +1,6 @@
 <template>
   <div class='inp-wrap'>
-    <span class='inp-title'>{{ title }}</span>
+    <div class='inp-title'>{{ title }}</div>
     <input :value='value' :type='type' @input='$emit("input", $event.target.value)'>
   </div>
 </template>
@@ -25,10 +25,11 @@ export default {
   @import '../scss/_vars.scss';
 
   .inp-wrap {
+    width: 100%;
     margin-bottom: 15px;
     font-size: 1.1em;
     & > input {
-      width: 80%;
+      width: 100%;
       font-size: .9em;
       border: 1px solid white;
       margin-top: 3px;
