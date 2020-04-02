@@ -20,12 +20,16 @@ public class User extends AbstractEntity {
 
     @Basic(optional = false)
     @Column(nullable = false, unique = true)
-    private String username;
+    private String mail;
 
     @Basic(optional = false)
     @Column(nullable = false)
     private String password;
 
+    @Basic(optional = false)
+    @Column(nullable = false)
+    private String phone;
+    
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -50,12 +54,12 @@ public class User extends AbstractEntity {
         this.lastName = lastName;
     }
 
-    public String getUsername() {
-        return username;
+    public String getMail() {
+        return this.mail;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public String getPassword() {
@@ -69,9 +73,13 @@ public class User extends AbstractEntity {
     public void encodePassword(PasswordEncoder encoder) {
         this.password = encoder.encode(password);
     }
+    
+    public String getPhone() {
+        return this.phone;
+    }
 
-    public void erasePassword() {
-        this.password = null;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Role getRole() {
@@ -86,6 +94,6 @@ public class User extends AbstractEntity {
     public String toString() {
         return "User{" +
                 firstName + " " + lastName +
-                "(" + username + ")}";
+                "(" + mail + ")}";
     }
 }
