@@ -32,6 +32,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Configuration
 @EnableWebSecurity
@@ -87,7 +88,12 @@ class AuthentificationHandler implements LogoutSuccessHandler, AuthenticationFai
 
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication a) throws IOException, ServletException {
-    this.setResponse(response, HttpStatus.OK.value(), "Login success");
+//    this.setResponse(response, HttpStatus.OK.value(), "Login success");
+    String userName = ((UserDetails)a.getPrincipal()).getUsername();
+    response.setContentType("application/json;charset=UTF-8");
+    response.setStatus(HttpStatus.OK.value());
+    response.getWriter().write("{\"message\": \"" + "Login success" + "\", \"username\": \"" + userName + "\"}");
+    response.getWriter().flush();
   }
 
   private void setResponse (HttpServletResponse response, int code, String message) throws IOException {
