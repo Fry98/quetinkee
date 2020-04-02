@@ -14,8 +14,10 @@
 </template>
 
 <script>
+    import Sidebar from "./Sidebar";
     export default {
         name: "ProductTile",
+        components: {Sidebar},
         props: {
             name: String,
             price: String
