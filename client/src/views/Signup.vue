@@ -6,8 +6,8 @@
         <form @submit.prevent>
           <div v-if='!step2'>
             <h2>Osobní informace</h2>
-            <general-input title='Jméno' v-model='surname'></general-input>
-            <general-input title='Příjmení' v-model='lastName'></general-input>
+            <general-input title='Jméno' v-model='name'></general-input>
+            <general-input title='Příjmení' v-model='surname'></general-input>
             <general-input title='E-mail' v-model='mail'></general-input>
             <general-input title='Telefon' v-model='phone'></general-input>
             <h2>Nastavení účtu</h2>
@@ -52,40 +52,83 @@
 </template>
 
 <script>
-import GeneralInput from '../components/GeneralInput';
+  import GeneralInput from '../components/GeneralInput';
 
-export default {
-  data() {
-    return {
-      surname: '',
-      lastName: '',
-      mail: '',
-      phone: '',
-      pwd: '',
-      rePwd: '',
-      city: '',
-      street: '',
-      zip: '',
-      billingIsSame: true,
-      billingCity: '',
-      billingStreet: '',
-      billingZip: '',
-      step2: false
-    };
-  },
-  components: {
-    GeneralInput
-  },
-  methods: {
-    nextStep() {
-      if (!this.phone.match(/^[0-9]{9}$/)) {
-        this.$store.dispatch('openModal', 'Zadané telefonní číslo není platné');
-        return;
+  export default {
+    data() {
+      return {
+        name: '',
+        surname: '',
+        mail: '',
+        phone: '',
+        pwd: '',
+        rePwd: '',
+        city: '',
+        street: '',
+        zip: '',
+        billingIsSame: true,
+        billingCity: '',
+        billingStreet: '',
+        billingZip: '',
+        step2: false
+      };
+    },
+    components: {
+      GeneralInput
+    },
+    methods: {
+      nextStep() {
+        let payload = '';
+        if (this.name == '') {
+          this.$store.dispatch('openModal', 'Jméno je povinná položka');
+          return;
+        }
+
+        if (this.surname == '') {
+          this.$store.dispatch('openModal', 'Příjmení je povinná položka');
+          return;
+        }
+
+        if (!this.mail.match(/^(.+)@(.+).(.+)$/)) {
+          this.$store.dispatch('openModal', 'Nesprávně zadaný email');
+          return;
+        }
+
+        if (!this.phone.match(/^[0-9]{9}$/)) {
+          this.$store.dispatch('openModal', 'Zadané telefonní číslo není platné');
+          return;
+        }
+
+        if (this.pwd == '') {
+          this.$store.dispatch('openModal', 'Nezadané heslo');
+          return;
+        }
+
+        if (this.pwd != '' && this.rePwd != this.pwd) {
+          this.$store.dispatch('openModal', 'Hesla se neshodují');
+          return;
+        }
+
+        if(this.city == ''){
+          this.$store.dispatch('openModal', 'Město je povinná položka');
+          return;
+        }
+
+        if(this.street == ''){
+          this.$store.dispatch('openModal', 'Ulice a č.p. je povinná položka');
+          return;
+        }
+
+        if(this.zip == ''){
+          this.$store.dispatch('openModal', 'PSČ je povinná položka');
+          return;
+        }
+
+
+        this.step2 = true;
       }
-      this.step2 = true;
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
@@ -134,6 +177,7 @@ export default {
     font-size: 1.1em;
     cursor: pointer;
     transition-duration: .2s;
+
     &:hover {
       background: $darkBlue;
     }
@@ -146,6 +190,7 @@ export default {
 
   .back-btn {
     background: $midGrey;
+
     &:hover {
       background: $darkGrey;
     }
@@ -156,6 +201,7 @@ export default {
     width: auto;
     padding-left: var(--padding-horizontal);
     padding-right: var(--padding-horizontal);
+
     & > span {
       margin-left: 7px;
     }
