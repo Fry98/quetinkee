@@ -4,10 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {} from '@fortawesome/free-regular-svg-icons';
 import {
   faUser,
-  faShoppingCart
+  faShoppingCart,
+  faChevronRight,
+  faChevronLeft
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faUser);
 library.add(faShoppingCart);
+library.add(faChevronRight);
+library.add(faChevronLeft);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);

@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <modal></modal>
     <navbar></navbar>
     <router-view></router-view>
   </div>
@@ -7,10 +8,12 @@
 
 <script>
 import Navbar from './components/Navbar';
+import Modal from './components/Modal';
 
 export default {
   components: {
-    Navbar
+    Navbar,
+    Modal
   }
 }
 </script>
