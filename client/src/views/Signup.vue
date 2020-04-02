@@ -66,7 +66,7 @@ export default {
       city: '',
       street: '',
       zip: '',
-      billingIsSame: 'true',
+      billingIsSame: true,
       billingCity: '',
       billingStreet: '',
       billingZip: '',
@@ -78,6 +78,10 @@ export default {
   },
   methods: {
     nextStep() {
+      if (!this.phone.match(/^[0-9]{9}$/)) {
+        this.$store.dispatch('openModal', 'Zadané telefonní číslo není platné');
+        return;
+      }
       this.step2 = true;
     }
   }
