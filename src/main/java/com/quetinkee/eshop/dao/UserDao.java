@@ -12,9 +12,9 @@ public class UserDao extends AbstractDao<User> {
         super(User.class);
     }
 
-    public User findByUsername(String username) {
+    public User findByMail(String mail) {
         try {
-            return em.createNamedQuery("User.findByUsername", User.class).setParameter("username", username)
+            return em.createNamedQuery("User.findByMail", User.class).setParameter("username", mail)
                      .getSingleResult();
         }
         catch (NoResultException e) {

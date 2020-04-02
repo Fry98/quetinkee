@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "USER")
 @NamedQueries({
-        @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username")
+        @NamedQuery(name = "User.findByMail", query = "SELECT u FROM User u WHERE u.mail = :mail")
 })
 public class User extends AbstractEntity {
 
