@@ -3,7 +3,7 @@
     <div id='login-center'>
       <div id='login-box'>
         <h1>Přihlášení</h1>
-        <form @submit.prevent>
+        <form @submit.prevent='login'>
           <login-input title='E-mail' v-model='mail'></login-input>
           <login-input title='Heslo' type='password' v-model='pwd'></login-input>
           <input type="submit" class='button' value="Přihlásit se">
@@ -22,6 +22,7 @@
 
 <script>
 import LoginInput from '../components/LoginInput';
+import axios from 'axios';
 
 export default {
   data() {
@@ -32,6 +33,23 @@ export default {
   },
   components: {
     LoginInput
+  },
+  methods: {
+    async login() {
+      try {
+        await axios({
+          method: 'post',
+          url: '/api/login',
+          data: {
+            mail: this.mail,
+            pwd: this.pwd
+          }
+        });
+        this.$store.dispatch('openModal', 'Login Success');
+      } catch(e) {
+        this.$store.dispatch('openModal', 'Login Rejected');
+      }
+    }
   }
 }
 </script>

@@ -5,6 +5,7 @@
 /target
 .idea
 .sts4-cache
+eshop.iml
 **/node_modules
 **/dist
 **/static

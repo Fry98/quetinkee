@@ -30,7 +30,9 @@ export default {
     flex-direction: row;
     margin-bottom: 15px;
     font-size: 1.1em;
-    justify-content: space-between;
+    &:last-child {
+      margin: 0;
+    }
     & > input {
       font-size: .9em;
       border: 1px solid white;
@@ -41,6 +43,7 @@ export default {
       box-sizing: border-box;
       outline: none;
       width: 20em;
+      flex: 1;
       &:focus {
         border-color: $mainOrange;
       }
@@ -50,7 +53,7 @@ export default {
   .inp-title {
     display: inline-flex;
     align-items: center;
-    margin-right: 1em;
     padding-left: 2px;
+    width: 130px;
   }
 </style>
