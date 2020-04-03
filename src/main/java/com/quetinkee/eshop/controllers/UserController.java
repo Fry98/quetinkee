@@ -2,6 +2,7 @@ package com.quetinkee.eshop.controllers;
 
 import com.quetinkee.eshop.model.User;
 import com.quetinkee.eshop.service.UserService;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class UserController {
   UserService service;
   
   @PostMapping("/")
-  public String createUser(@RequestBody User user) {
+  public String createUser(@Valid @RequestBody User user) {
     return "THIS IS THE API";
   }
 
@@ -28,9 +29,11 @@ public class UserController {
     test.setFirstName("First");
     test.setLastName("Last");
     test.setPassword("password");
-    test.setMail("login");
+    test.setMail("test@test.cz");
+    test.setPhone("123");
 
     service.persist(test);
+    
     return test;    
   }
   
