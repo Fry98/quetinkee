@@ -17,9 +17,9 @@
 </template>
 
 <script>
-    export default {
-        name: 'Sidebar'
-    }
+  export default {
+    name: 'Sidebar'
+  }
 </script>
 
 <style lang='scss' scoped>
@@ -27,14 +27,19 @@
 
   #sidebar {
     padding: 10px;
-    background-color: $lightGrey;
-    min-height: 100%;
+    background-color: $almostWhite;
+    width: 250px;
+    box-shadow: inset -3px 0px 5px rgba(0, 0, 0, 0.158);
   }
+
   h1 {
     margin: 5px 0;
     border-left: #006BA6 5px;
+    font-size: 1.5em;
   }
+
   h2 {
+    font-size: 1.2em;
     margin: 5px 0 0;
     &:first-child {
       margin: 0;

@@ -2,7 +2,7 @@
   <div class="product-tile">
     <div class='image'></div>
     <div class="info-wrap">
-      <div>
+      <div class='left-flex'>
         <div class="bouquet-name">{{name}}</div>
         <div class="bouquet-price">{{price}}</div>
       </div>
@@ -14,15 +14,15 @@
 </template>
 
 <script>
-    import Sidebar from "./Sidebar";
-    export default {
-        name: "ProductTile",
-        components: {Sidebar},
-        props: {
-            name: String,
-            price: String
-        }
+  import Sidebar from "./Sidebar";
+  export default {
+    name: "ProductTile",
+    components: { Sidebar },
+    props: {
+      name: String,
+      price: String
     }
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -32,14 +32,14 @@
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.40);
     padding: 4px;
     border-radius: 7px;
-    width: 15em;
+    width: 200px;
     display: flex;
     flex-direction: column;
 
     .image {
       border-radius: 7px;
       width: 100%;
-      height: 15em;
+      height: 200px;
       background-size: cover;
       background-image: url('../assets/bouquet.jpg');
       background-position: center center;
@@ -48,11 +48,15 @@
 
   .bouquet-name {
     font-weight: bold;
-    font-size: 1.5em;
+    font-size: 1.1em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-grow: 0;
+    overflow: hidden;
   }
 
   .bouquet-price {
-    font-size: 1em;
+    font-size: .9em;
     &::after{
       content: ' Kč';
     }
@@ -62,6 +66,8 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
   }
 
   .cart-add {
@@ -72,7 +78,6 @@
     color: white;
     padding: .5em;
     font-size: 1.1em;
-    margin: .25em 0;
     cursor: pointer;
     transition-duration: .2s;
     &:hover {
@@ -80,4 +85,9 @@
     }
   }
 
+  .left-flex {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
 </style>
