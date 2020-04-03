@@ -15,13 +15,15 @@ export default {
     };
   },
   created() {
-    document.addEventListener('keydown', e => {
-      if (this.$store.getters.error === null || e.keyCode !== 13) return;
-      e.cancel = true;
-      this.close();
-    });
+    document.addEventListener('keydown', this.keydownHandler);
   },
   methods: {
+    keydownHandler(e) {
+      if (this.$store.getters.error === null || e.keyCode !== 13) return;
+      e.preventDefault();
+      e.cancel = true;
+      this.close();
+    },
     close() {
       this.oldMsg = this.$store.getters.error;
       this.$store.dispatch('closeModal');

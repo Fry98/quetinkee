@@ -5,14 +5,19 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    error: null
+    error: null,
+    user: null
   },
   getters: {
-    error: state => state.error
+    error: state => state.error,
+    user: state => state.user
   },
   mutations: {
     setError(state, payload) {
       state.error = payload;
+    },
+    setUser(state, payload) {
+      state.user = payload;
     }
   },
   actions: {
@@ -21,6 +26,20 @@ export default new Vuex.Store({
     },
     closeModal(context) {
       context.commit('setError', null);
+    },
+    setUser(context, payload) {
+      context.commit('setUser', payload);
+      localStorage.setItem('user', JSON.stringify(payload));
+    },
+    loadUser(context) {
+      const user = localStorage.getItem('user');
+      if (user !== null) {
+        context.commit('setUser', JSON.parse(user));
+      }
+    },
+    logout(context) {
+      context.commit('setUser', null);
+      localStorage.removeItem('user');
     }
   }
 });
