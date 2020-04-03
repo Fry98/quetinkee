@@ -2,23 +2,10 @@ package com.quetinkee.eshop.dao;
 
 import com.quetinkee.eshop.model.User;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.NoResultException;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
-public class UserDao extends AbstractDao<User> {
+public interface UserDao extends JpaRepository<User, Integer> {
 
-    public UserDao() {
-        super(User.class);
-    }
-
-    public User findByMail(String mail) {
-        try {
-            return em.createNamedQuery("User.findByMail", User.class).setParameter("username", mail)
-                     .getSingleResult();
-        }
-        catch (NoResultException e) {
-            return null;
-        }
-    }
+  User findByMail(String mail);
 }
