@@ -1,6 +1,6 @@
 <template>
   <div class="product-tile">
-    <div class='image'></div>
+    <div class='image' :style='style'></div>
     <div class="info-wrap">
       <div class='left-flex'>
         <div class="bouquet-name">{{name}}</div>
@@ -19,8 +19,23 @@
     name: "ProductTile",
     components: { Sidebar },
     props: {
-      name: String,
-      price: String
+      name: {
+        type: String,
+        required: true
+      },
+      price: {
+        type: String,
+        required: true
+      },
+      img: {
+        type: String,
+        required: true
+      }
+    },
+    computed: {
+      style() {
+        return `background-image: url(${this.img});`;
+      }
     }
   }
 </script>
@@ -41,7 +56,7 @@
       width: 100%;
       height: 200px;
       background-size: cover;
-      background-image: url('../assets/bouquet.jpg');
+      background-color: $darkOrange;
       background-position: center center;
     }
   }

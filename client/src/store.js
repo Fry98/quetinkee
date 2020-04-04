@@ -10,7 +10,8 @@ export default new Vuex.Store({
   },
   getters: {
     error: state => state.error,
-    user: state => state.user
+    user: state => state.user,
+    isLogged: state => state.user !== null
   },
   mutations: {
     setError(state, payload) {

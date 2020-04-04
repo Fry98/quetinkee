@@ -1,15 +1,31 @@
 <template>
   <header>
     <main>
-      <div id='logo' @click='$router.push("/")'>
+      <div id='logo' @click='navigate("/")'>
         <img src="../assets/logotype.png" alt="Logo">
       </div>
       <div id='filler'></div>
-      <div id='cart-wrap'>
+      <div class='nav-button'>
         <div id='cart-amount'>0</div>
-        <font-awesome-icon id='cart' icon='shopping-cart'></font-awesome-icon>
+        <font-awesome-icon class='nav-icon' icon='shopping-cart'></font-awesome-icon>
       </div>
-      <div id='login' @click="$router.push('/login')">
+      <div id='nav-profile' class='nav-button' v-if='$store.getters.isLogged'>
+        <font-awesome-icon id='nav-profile-icon' class='nav-icon' icon='user'></font-awesome-icon>
+        <div class='profile-opts'>
+          <div class='opt-box'>
+            <div class='opt-item'>
+              <font-awesome-icon icon='address-card'></font-awesome-icon>
+              <span>Profil</span>
+            </div>
+            <div class='opt-spacer'></div>
+            <div class='opt-item'>
+              <font-awesome-icon icon='sign-out-alt'></font-awesome-icon>
+              <span>Odhlásit se</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='login' @click="navigate('/login')" v-if='!$store.getters.isLogged'>
         <font-awesome-icon icon='user'></font-awesome-icon>
         <div>Přihlášení</div>
       </div>
@@ -20,6 +36,11 @@
 
 <script>
   export default {
+    methods: {
+      navigate(path) {
+        if (this.$route.path !== path) this.$router.push(path);
+      }
+    }
   };
 </script>
 
@@ -52,11 +73,11 @@
     flex: 1;
   }
 
-  #cart {
+  .nav-icon {
     font-size: 2.2em;
     cursor: pointer;
     transition-duration: .2s;
-    padding: 4px;
+    padding: 4px 6px;
     border-radius: 7px;
     &:hover {
       background: $darkOrange;
@@ -81,7 +102,7 @@
     }
   }
 
-  #cart-wrap {
+  .nav-button {
     position: relative;
   }
 
@@ -95,5 +116,66 @@
     font-weight: 600;
     text-align: center;
     width: 30px;
+  }
+
+  #nav-profile-icon {
+    width: 45px;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  #nav-profile {
+    margin-left: 3px;
+    position: relative;
+    &:hover .profile-opts {
+      // display: block;
+      opacity: 1;
+      pointer-events: all;
+      transform: none;
+    }
+  }
+
+  .profile-opts {
+    // display: none;
+    width: 150px;
+    position: absolute;
+    right: 0px;
+    padding-top: 3px;
+    z-index: 1;
+    box-sizing: border-box;
+    opacity: 0;
+    pointer-events: none;
+    transition-duration: .2s;
+    transform: translateY(-10px);
+  }
+
+  .opt-box {
+    background: $almostWhite;
+    border-radius: 12px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.281);
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  .opt-item {
+    color: black;
+    font-size: 1.15em;
+    padding: 4px 6px;
+    border-radius: 7px;
+    transition-duration: .2s;
+    span {
+      margin-left: 5px;
+    }
+    &:hover {
+      background: $darkBlue;
+      color: white;
+    }
+  }
+
+  .opt-spacer {
+    height: 5px;
   }
 </style>

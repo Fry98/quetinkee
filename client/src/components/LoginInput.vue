@@ -1,7 +1,7 @@
 <template>
   <div class='inp-wrap'>
     <div class='inp-title'>{{ title }}</div>
-    <input :value='value' :type='type' @input='$emit("input", $event.target.value)'>
+    <input :value='value' :type='type' @input='$emit("input", $event.target.value)' :required='required'>
   </div>
 </template>
 
@@ -9,6 +9,7 @@
 export default {
   props: {
     value: String,
+    required: Boolean,
     type: {
       type: String,
       default: 'text'

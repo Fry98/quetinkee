@@ -14,6 +14,9 @@ export default {
   components: {
     Navbar,
     Modal
+  },
+  created() {
+    this.$store.dispatch('loadUser');
   }
 }
 </script>

@@ -113,24 +113,62 @@
         }
 
         if (!this.phone.replace(/ /g, '').match(/^[0-9]{9}$/)) {
-          this.$store.dispatch('openModal', 'Zadané telefonní číslo není platné');
+          this.$store.dispatch('openModal', 'Neplatné telefonní číslo');
           return;
         }
 
         if (this.pwd.length < 6) {
-          this.$store.dispatch('openModal', 'Nezadané heslo');
+          this.$store.dispatch('openModal', 'Heslo musí mít aspoň 6 znaků');
           return;
         }
 
         if (this.rePwd !== this.pwd) {
-          this.$store.dispatch('openModal', 'Hesla se neshodují');
+          this.$store.dispatch('openModal', 'Zadaná hesla se neshodují');
           return;
         }
 
         this.step2 = true;
       },
+      addressError(err) {
+        this.$store.dispatch(
+          'openModal',
+          `${this.billingIsSame ? '' : '[Doručovací adresa] '}${err}`
+        );
+      },
       submitForm() {
-        alert('submit');
+        if (this.city.trim().length === 0) {
+          this.addressError('Město je povinná položka');
+          return;
+        }
+
+        if (this.street.trim().length === 0) {
+          this.addressError('Ulice je povinná položka');
+          return;
+        }
+
+        if (!this.zip.replace(/ /g, '').match(/^[0-9]{5}$/)) {
+          this.addressError('Neplatné směrovací číslo');
+          return;
+        }
+
+        if (!this.billingIsSame) {
+          if (this.billingCity.trim().length === 0) {
+            this.$store.dispatch('openModal', '[Fakturační adresa] Město je povinná položka');
+            return;
+          }
+
+          if (this.billingStreet.trim().length === 0) {
+            this.$store.dispatch('openModal', '[Fakturační adresa] Ulice je povinná položka');
+            return;
+          }
+
+          if (!this.billingZip.replace(/ /g, '').match(/^[0-9]{5}$/)) {
+            this.$store.dispatch('openModal', '[Fakturační adresa] Neplatné směrovací číslo');
+            return;
+          }
+        }
+
+        alert('submitted');
       }
     }
   }

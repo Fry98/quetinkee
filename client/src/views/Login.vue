@@ -4,8 +4,8 @@
       <div id='login-box'>
         <h1>Přihlášení</h1>
         <form @submit.prevent='login'>
-          <login-input title='E-mail' v-model='mail'></login-input>
-          <login-input title='Heslo' type='password' v-model='pwd'></login-input>
+          <login-input title='E-mail' v-model='mail' required></login-input>
+          <login-input title='Heslo' type='password' v-model='pwd' required></login-input>
           <input type="submit" class='button' value="Přihlásit se">
         </form>
         <div id='pwd-reset'>

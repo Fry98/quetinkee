@@ -4,10 +4,17 @@ import Home from './views/Home';
 import Login from './views/Login';
 import Signup from './views/Signup';
 import Profile from './views/Profile';
+import store from './store';
 
 Vue.use(Router);
 
-export default new Router({
+const AuthLevel = {
+  REGULAR: 1,
+  ADMIN: 2,
+  DELIVERY: 3
+};
+
+const router = new Router({
   mode: 'history',
   routes: [
     {
@@ -28,6 +35,9 @@ export default new Router({
     {
       path: '/profile',
       name: 'profile',
+      meta: {
+        auth: AuthLevel.REGULAR
+      },
       component: Profile
     },
     {
@@ -36,3 +46,18 @@ export default new Router({
     }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  if (!to.meta.auth) return next();
+  switch (to.meta.auth) {
+    case AuthLevel.REGULAR:
+      if (store.getters.isLogged) return next();
+      return next('/');
+    case AuthLevel.ADMIN:
+      break;
+    case AuthLevel.DELIVERY:
+      break;
+  }
+});
+
+export default router;
