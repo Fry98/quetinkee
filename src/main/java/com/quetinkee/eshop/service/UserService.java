@@ -12,23 +12,37 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
 
-    private final UserDao dao;
+  private final UserDao dao;
+  private final PasswordEncoder passwordEncoder;
 
-    private final PasswordEncoder passwordEncoder;
+  @Autowired
+  public UserService(UserDao dao, PasswordEncoder passwordEncoder) {
+    this.dao = dao;
+    this.passwordEncoder = passwordEncoder;
+  }
 
-    @Autowired
-    public UserService(UserDao dao, PasswordEncoder passwordEncoder) {
-        this.dao = dao;
-        this.passwordEncoder = passwordEncoder;
+  public boolean checkPassword(String password) {
+    return !password.isEmpty() && password.length() > 3;
+  }
+
+  @Transactional(readOnly = true)
+  public boolean isRegistred(String mail) {
+    User user = this.dao.findByMail(mail);
+    return user != null;
+  }
+
+ // @Transactional(readOnly = true)
+  public User find(Integer id) {
+    return this.dao.findById(id).get();
+  }
+
+  @Transactional
+  public void persist(User user) {
+    Objects.requireNonNull(user);
+    user.encodePassword(this.passwordEncoder);
+    if (user.getRole() == null) {
+      user.setRole(Role.USER);
     }
-
-    @Transactional
-    public void persist(User user) {
-        Objects.requireNonNull(user);
-        user.encodePassword(passwordEncoder);
-        if (user.getRole() == null) {
-            user.setRole(Role.USER);
-        }
-        this.dao.save(user);
-    }
+    this.dao.save(user);
+  }
 }

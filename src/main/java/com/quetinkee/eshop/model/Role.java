@@ -1,16 +1,16 @@
 package com.quetinkee.eshop.model;
 
 public enum Role {
-    ADMIN("ROLE_ADMIN"), USER("ROLE_USER"), GUEST("ROLE_GUEST");
+  ADMIN("ROLE_ADMIN"), USER("ROLE_USER"), GUEST("ROLE_GUEST");
 
-    private final String name;
+  private final String name;
 
-    Role(String name) {
-        this.name = name;
-    }
+  Role(String name) {
+    this.name = name;
+  }
 
-    @Override
-    public String toString() {
-        return name;
-    }
+  @Override
+  public String toString() {
+    return name;
+  }
 }

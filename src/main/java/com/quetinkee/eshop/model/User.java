@@ -21,26 +21,43 @@ public class User extends AbstractEntity {
 
   @NotBlank(message = "Zadejte Vas e-mail")
   @Email(message = "Zadany e-mail je neplatny")
+  @Basic(optional = false)
   @Column(nullable = false, unique = true)
   private String mail;
 
-  @NotBlank(message = "Zvolte heslo")
+  @Basic(optional = false)
   @Column(nullable = false)
   private String password;
 
   @NotBlank(message = "Zadejte Vas telefon")
+  @Basic(optional = false)
   @Column(nullable = false)
   private String phone;
 
   @Enumerated(EnumType.STRING)
+  @Basic(optional = false)
+  @Column(nullable = false)
   private Role role;
 
+  @OneToOne
+  private Address addressBilling;
+
+  @OneToOne
+  private Address addressDelivery;
+
   public User() {
-    this.role = Role.GUEST;
+  }
+
+  public User(String firstName, String lastName, String mail, String password, String phone) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.mail = mail;
+    this.password = password;
+    this.phone = phone;
   }
 
   public String getFirstName() {
-    return firstName;
+    return this.firstName;
   }
 
   public void setFirstName(String firstName) {
@@ -48,7 +65,7 @@ public class User extends AbstractEntity {
   }
 
   public String getLastName() {
-    return lastName;
+    return this.lastName;
   }
 
   public void setLastName(String lastName) {
@@ -64,7 +81,7 @@ public class User extends AbstractEntity {
   }
 
   public String getPassword() {
-    return password;
+    return this.password;
   }
 
   public void setPassword(String password) {
@@ -96,8 +113,24 @@ public class User extends AbstractEntity {
     this.role = role;
   }
 
+  public Address getAddressBilling() {
+    return this.addressBilling;
+  }
+
+  public void setAddressBilling(Address addressBilling) {
+    this.addressBilling = addressBilling;
+  }
+
+  public Address getAddressDelivery() {
+    return this.addressDelivery;
+  }
+
+  public void setAddressDelivery(Address addressDelivery) {
+    this.addressDelivery = addressDelivery;
+  }
+
   @Override
   public String toString() {
-    return "User{" + firstName + " " + lastName + "(" + mail + ")}";
+    return "User{" + this.firstName + " " + this.lastName + "(" + this.mail + ")}";
   }
 }

@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
@@ -58,13 +60,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .antMatchers("/admin/**").hasRole("ADMIN")
       .anyRequest().permitAll()
       .and()
-      .addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-      .formLogin()
-      .loginPage("/login")
+        .addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+        .formLogin()
+        .loginPage("/login")
       .and()
-      .logout()
-      .logoutUrl("/api/logout")
-      .logoutSuccessHandler(authentificationHandler);
+        .logout()
+        .invalidateHttpSession(true)
+        .clearAuthentication(true)
+        .deleteCookies("JSESSIONID")
+        .logoutUrl("/api/logout")
+        .logoutSuccessHandler(authentificationHandler);
   }
 
   @Bean
