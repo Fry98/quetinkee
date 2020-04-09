@@ -9,7 +9,8 @@ import {
   faChevronLeft,
   faCartPlus,
   faSignOutAlt,
-  faAddressCard
+  faAddressCard,
+  faSearch
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faUser);
@@ -19,5 +20,6 @@ library.add(faChevronLeft);
 library.add(faCartPlus);
 library.add(faSignOutAlt);
 library.add(faAddressCard);
+library.add(faSearch);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
