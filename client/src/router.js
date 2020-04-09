@@ -4,6 +4,7 @@ import Home from './views/Home';
 import Login from './views/Login';
 import Signup from './views/Signup';
 import Profile from './views/Profile';
+import MainLayout from './views/MainLayout';
 import store from './store';
 
 Vue.use(Router);
@@ -20,7 +21,13 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: MainLayout,
+      children: [
+        {
+          path: '',
+          component: Home
+        }
+      ]
     },
     {
       path: '/login',

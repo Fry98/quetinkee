@@ -1,39 +1,28 @@
 <template>
-  <div id='home'>
-    <sidebar></sidebar>
-    <div id="content">
-      <h1>Nové</h1>
-      <ProductTile name='Nazev kytice tohle je dlouhej text' price='899'></ProductTile>
-      <h1>V Akci</h1>
-      <ProductTile name='Nazev kytice' price='899'></ProductTile>
-      <h1>Doporučené</h1>
-      <ProductTile name='Nazev kytice' price='899'></ProductTile>
-    </div>
+  <div id="content">
+    <h1>Nové</h1>
+    <ProductTile name='Nazev kytice tohle je dlouhej text' price='899'></ProductTile>
+    <h1>V Akci</h1>
+    <ProductTile name='Nazev kytice' price='899'></ProductTile>
+    <h1>Doporučené</h1>
+    <ProductTile name='Nazev kytice' price='899'></ProductTile>
   </div>
 </template>
 
 <script>
-    import ProductTile from '../components/ProductTile';
-    import Sidebar from "../components/Sidebar";
+  import ProductTile from '../components/ProductTile';
 
-    export default {
-        name: 'home',
-        components: {
-            Sidebar,
-            ProductTile
-        }
-    };
+  export default {
+    name: 'home',
+    components: {
+      ProductTile
+    }
+  };
 </script>
 
 <style lang='scss' scoped>
-  #home {
-    display: flex;
-    flex-direction: row;
-    flex: 1;
-
-    #content {
-      padding: 1em 2em;
-    }
+  #content {
+    padding: 1em 2em;
   }
 
   h1 {
