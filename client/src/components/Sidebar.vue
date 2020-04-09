@@ -1,5 +1,11 @@
 <template>
   <div id="sidebar">
+    <div id='fulltext-search'>
+      <input type='text' placeholder='Podle názvu...'>
+      <div class="search-button">
+        <font-awesome-icon id='search-icon' icon='search'></font-awesome-icon>
+      </div>
+    </div>
     <h1>Kategorie</h1>
     <ul>
       <li>Nové</li>
@@ -22,7 +28,6 @@
         Velké
       </span>
     </div>
-    {{selectedSizes}}
     <h2>Barva</h2>
     <h2>Květiny</h2>
   </div>
@@ -33,8 +38,7 @@
     name: 'Sidebar',
     data() {
       return {
-        selectedSizes: [false, false, false],
-        lol: false
+        selectedSizes: [false, false, false]
       };
     },
     methods: {
@@ -50,16 +54,53 @@
   @import "../scss/_vars.scss";
 
   #sidebar {
+    display: flex;
+    flex-direction: column;
     padding: 10px 10px 10px 0;
     background-color: $almostWhite;
     width: 250px;
     box-shadow: inset -3px 0px 5px rgba(0, 0, 0, 0.158);
   }
 
+  #fulltext-search {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    input[type='text'] {
+      width: 60%;
+      padding: 5px 7px;
+      font-size: 1.1em;
+      border-radius: 50px;
+      border: 0;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+      margin-right: 8px;
+    }
+    .search-button {
+      user-select: none;
+      align-self: center;
+      height: 15px;
+      width: 15px;
+      border: none;
+      border-radius: 100%;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+      background: $mainBlue;
+      color: white;
+      padding: .5em .6em .6em .6em;
+      font-size: .9em;
+      cursor: pointer;
+      transition-duration: .2s;
+      &:hover {
+        background: $darkBlue;
+      }
+    }
+  }
+
   #sizes {
+    user-select: none;
     display: flex;
     justify-content: center;
     .checkbox-input {
+      transition: .15s;
       cursor: pointer;
       padding: 6px;
       margin: 5px 0 5px 0;
@@ -85,7 +126,7 @@
     margin: 5px 0;
     padding-left: 7px;
     border-left: solid $mainOrange 3px;
-    font-size: 1.5em;
+    font-size: 1.5m;
   }
 
   h2 {
