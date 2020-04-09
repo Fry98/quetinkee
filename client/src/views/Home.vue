@@ -13,16 +13,16 @@
 </template>
 
 <script>
-    import ProductTile from '../components/ProductTile';
-    import Sidebar from "../components/Sidebar";
+  import ProductTile from '../components/ProductTile';
+  import Sidebar from "../components/Sidebar";
 
-    export default {
-        name: 'home',
-        components: {
-            Sidebar,
-            ProductTile
-        }
-    };
+  export default {
+    name: 'home',
+    components: {
+      Sidebar,
+      ProductTile
+    }
+  };
 </script>
 
 <style lang='scss' scoped>
