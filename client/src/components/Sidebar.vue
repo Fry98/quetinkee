@@ -12,7 +12,7 @@
     <h2>Cena</h2>
     <h2>Velikost</h2>
     <div id='sizes'>
-      <span :class='{"checkbox-input": true, selected: small}' @click="handleSizeClick(0)">
+      <span :class='{"checkbox-input": true, selected: selectedSizes[0]}' @click="handleSizeClick(0)">
         Malé
       </span>
       <span :class='{"checkbox-input": true, selected: selectedSizes[1]}' @click="handleSizeClick(1)">
@@ -33,21 +33,14 @@
     name: 'Sidebar',
     data() {
       return {
-        selectedSizes: [false, false, false]
-      }
-    },
-    computed: {
-        small() {
-            return this.selectedSizes[0];
-        }
+        selectedSizes: [false, false, false],
+        lol: false
+      };
     },
     methods: {
       handleSizeClick(size) {
         this.selectedSizes[size] = !this.selectedSizes[size];
-        console.log(this.selectedSizes);
-      },
-      getSize(i) {
-          return this.selectedSizes[i];
+        this.selectedSizes = [...this.selectedSizes];
       }
     }
   }
