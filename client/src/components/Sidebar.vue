@@ -1,7 +1,7 @@
 <template>
   <div id="sidebar">
     <div id='fulltext-search'>
-      <input type='text' placeholder='Podle názvu...'>
+      <input type='text' placeholder='Hledat podle názvu...'>
       <div class="search-button">
         <font-awesome-icon id='search-icon' icon='search'></font-awesome-icon>
       </div>
@@ -56,9 +56,10 @@
   #sidebar {
     display: flex;
     flex-direction: column;
-    padding: 10px 10px 10px 0;
+    padding-top: 10px;
+    padding-right: 5px;
     background-color: $almostWhite;
-    width: 250px;
+    width: 290px;
     box-shadow: inset -3px 0px 5px rgba(0, 0, 0, 0.158);
   }
 
@@ -66,26 +67,34 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+    margin-bottom: 5px;
     input[type='text'] {
-      width: 60%;
-      padding: 5px 7px;
+      width: 75%;
+      padding: 7px 10px;
       font-size: 1.1em;
       border-radius: 50px;
       border: 0;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
       margin-right: 8px;
+      outline: none;
+      border: 1px solid white;
+      &:focus {
+        border-color: $mainOrange;
+      }
     }
     .search-button {
       user-select: none;
       align-self: center;
-      height: 15px;
-      width: 15px;
+      height: 37px;
+      width: 37px;
       border: none;
       border-radius: 100%;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
       background: $mainBlue;
       color: white;
-      padding: .5em .6em .6em .6em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       font-size: .9em;
       cursor: pointer;
       transition-duration: .2s;
@@ -140,6 +149,7 @@
   }
 
   ul {
+    margin-top: 3px;
     list-style: none;
     li {
       position: relative;

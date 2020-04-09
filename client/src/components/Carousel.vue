@@ -41,7 +41,11 @@ export default {
     goFwd() {
       this.transition = true;
       if (this.$refs.crsl.scrollWidth - this.$refs.crsl.clientWidth + this.offset - 218 > 0) {
-        this.offset -= 218;
+        if (this.offset % 218 !== 0) {
+          this.offset -= 218 + (this.offset % 218);
+        } else {
+          this.offset -= 218;
+        }
       } else {
         this.offset = -(this.$refs.crsl.scrollWidth - this.$refs.crsl.clientWidth);
         this.fwd = false;
@@ -49,7 +53,7 @@ export default {
     },
     goBack() {
       this.transition = true;
-      if (!this.fwd) {
+      if (this.offset % 218 !== 0) {
         this.offset -= this.offset % 218;
         this.fwd = true;
         return;
