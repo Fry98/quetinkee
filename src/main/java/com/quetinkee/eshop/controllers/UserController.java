@@ -66,7 +66,7 @@ public class UserController {
       throw new VerifyError("Zadejte heslo");
     }
     if (user.getId() != null || user.getRole() != null) {
-      throw new VerifyError("Not allowed!");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Not allowed!");
     }
 
     service.persist(user);
@@ -75,9 +75,9 @@ public class UserController {
 
   @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public User get(@PathVariable("id") Integer id, Authentication authentication) {
+  public User get(@PathVariable("id") Integer id, Authentication authentication) throws VerifyError {
     if (!this.checkCurrentOrAdmin(id, authentication)) {
-      throw new VerifyError("Access denied");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
     }
 
     User user = this.service.find(id);
@@ -91,7 +91,7 @@ public class UserController {
   @PutMapping(value = "/{id}")
   public String update(@PathVariable("id") Integer id, @RequestBody User user, Authentication authentication) {
     if (!this.checkCurrentOrAdmin(id, authentication)) {
-      throw new VerifyError("Access denied");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
     }
     if (!this.service.checkPassword(user.getPassword())) {
       throw new VerifyError("Zadejte heslo");

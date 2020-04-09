@@ -4,6 +4,7 @@ import com.quetinkee.eshop.dao.UserDao;
 import com.quetinkee.eshop.model.User;
 import java.util.Objects;
 import com.quetinkee.eshop.model.Role;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,9 +32,10 @@ public class UserService {
     return user != null;
   }
 
- // @Transactional(readOnly = true)
+  @Transactional(readOnly = true)
   public User find(Integer id) {
-    return this.dao.findById(id).get();
+    Optional<User> user = this.dao.findById(id);
+    return user.isPresent() ? user.get() : null;
   }
 
   @Transactional
