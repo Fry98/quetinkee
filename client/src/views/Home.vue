@@ -13,19 +13,24 @@
 </template>
 
 <script>
-import ProductTile from '../components/ProductTile';
-import Sidebar from "../components/Sidebar";
-export default {
-  name: 'home',
-  components: {Sidebar, ProductTile}
-};
+    import ProductTile from '../components/ProductTile';
+    import Sidebar from "../components/Sidebar";
+
+    export default {
+        name: 'home',
+        components: {
+            Sidebar,
+            ProductTile
+        }
+    };
 </script>
 
 <style lang='scss' scoped>
   #home {
-    min-height: 100%;
     display: flex;
     flex-direction: row;
+    flex: 1;
+
     #content {
       padding: 1em 2em;
     }
