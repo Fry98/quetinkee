@@ -50,6 +50,8 @@
     width: 200px;
     display: flex;
     flex-direction: column;
+    background: white;
+    margin-right: 10px;
 
     .image {
       border-radius: 7px;
