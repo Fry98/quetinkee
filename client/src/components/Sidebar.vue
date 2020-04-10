@@ -43,8 +43,7 @@
     },
     methods: {
       handleSizeClick(size) {
-        this.selectedSizes[size] = !this.selectedSizes[size];
-        this.selectedSizes = [...this.selectedSizes];
+        this.$set(this.selectedSizes, size, !this.selectedSizes[size]);
       }
     }
   }
