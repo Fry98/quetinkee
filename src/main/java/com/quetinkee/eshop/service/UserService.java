@@ -64,10 +64,10 @@ public class UserService {
     Objects.requireNonNull(user);
     this.encodePassword(user);
 
-    if (user.getAddressBilling() != null) {
+    if (user.getAddressBilling() != null && user.getAddressBilling().getId() == null) {
       this.addressDao.save(user.getAddressBilling());
     }
-    if (user.getAddressDelivery() != null) {
+    if (user.getAddressDelivery() != null && user.getAddressBilling().getId() == null) {
       this.addressDao.save(user.getAddressDelivery());
     }
 
