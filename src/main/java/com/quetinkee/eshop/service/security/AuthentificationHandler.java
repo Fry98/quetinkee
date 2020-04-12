@@ -1,5 +1,7 @@
 package com.quetinkee.eshop.service.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.quetinkee.eshop.model.User;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,16 +25,17 @@ public class AuthentificationHandler implements LogoutSuccessHandler, Authentica
 
   @Override
   public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException ae) throws IOException, ServletException {
-    this.setResponse(response, HttpStatus.FORBIDDEN.value(), "Login failed");
+    this.setResponse(response, HttpStatus.FORBIDDEN.value(), ae.getMessage());
   }
 
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication a) throws IOException, ServletException {
 //    this.setResponse(response, HttpStatus.OK.value(), "Login success");
-    String userName = ((UserDetails) a.getPrincipal()).getUsername();
+    User user = ((UserDetail) a.getPrincipal()).getUser();
+    ObjectMapper objectMapper = new ObjectMapper();
     response.setContentType("application/json;charset=UTF-8");
     response.setStatus(HttpStatus.OK.value());
-    response.getWriter().write("{\"message\": \"" + "Login success" + "\", \"username\": \"" + userName + "\"}");
+    response.getWriter().write(objectMapper.writeValueAsString(user));
     response.getWriter().flush();
   }
 
