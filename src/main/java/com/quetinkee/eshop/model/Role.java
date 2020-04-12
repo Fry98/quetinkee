@@ -1,7 +1,7 @@
 package com.quetinkee.eshop.model;
 
 public enum Role {
-  ADMIN("ROLE_ADMIN"), USER("ROLE_USER"), GUEST("ROLE_GUEST");
+  ADMIN("ROLE_ADMIN"), USER("ROLE_USER"), GUEST("ROLE_COURIER");
 
   private final String name;
 
