@@ -25,7 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
 
   @Autowired
-  UserService service;
+  private UserService service;
 
   // TODO: remove it
   @GetMapping("/brokeit")
@@ -60,6 +60,9 @@ public class UserController {
     }
     if (user.getId() != null || user.getRole() != null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Not allowed!");
+    }
+    if (user.getAddressDelivery() == null) {
+      throw new VerifyError("Zadejte dorucovaci adresu");
     }
 
     service.persist(user);

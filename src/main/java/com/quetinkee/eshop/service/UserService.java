@@ -67,9 +67,12 @@ public class UserService {
     if (user.getAddressBilling() != null && user.getAddressBilling().getId() == null) {
       this.addressDao.save(user.getAddressBilling());
     }
-    if (user.getAddressDelivery() != null && user.getAddressBilling().getId() == null) {
+    else user.setAddressBilling(null);
+
+    if (user.getAddressDelivery() != null && user.getAddressDelivery().getId() == null) {
       this.addressDao.save(user.getAddressDelivery());
     }
+    else user.setAddressDelivery(null);
 
     if (user.getRole() == null) {
       user.setRole(Role.USER);

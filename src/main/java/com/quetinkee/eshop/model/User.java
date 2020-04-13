@@ -2,6 +2,7 @@ package com.quetinkee.eshop.model;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
@@ -39,11 +40,15 @@ public class User extends AbstractEntity {
   @Column(nullable = false)
   private Role role;
 
+  @Valid
   @OneToOne
-  private Address addressBilling;
+  @JoinColumn(nullable = true)
+  private Address addressDelivery = null;
 
+  @Valid
   @OneToOne
-  private Address addressDelivery;
+  @JoinColumn(nullable = true)
+  private Address addressBilling = null;
 
   public User() {
   }
@@ -92,7 +97,6 @@ public class User extends AbstractEntity {
     this.password = encoder.encode(password);
   }
 
-  
   public void erasePassword() {
     this.password = null;
   }
