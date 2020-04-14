@@ -192,7 +192,7 @@
 
         try {
           await axios({
-            url: '/api/user',
+            url: '/api/profile',
             method: 'post',
             data
           });
