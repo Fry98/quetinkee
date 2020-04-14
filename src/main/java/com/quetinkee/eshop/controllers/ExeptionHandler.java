@@ -1,8 +1,8 @@
 package com.quetinkee.eshop.controllers;
 
-import javax.servlet.ServletException;
+import com.quetinkee.eshop.utils.ErrorMessage;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,31 +15,25 @@ import org.springframework.web.server.ResponseStatusException;
 public class ExeptionHandler {
 
   @ExceptionHandler(ResponseStatusException.class)
-  public ResponseEntity handleResponseException(ResponseStatusException ex) {
-    return new ResponseEntity(ex.getReason(), ex.getStatus());
-  }
-
-  @ExceptionHandler(AccessDeniedException.class)
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  public String handleAllException(AccessDeniedException ce) {
-    if (ce.getCause() != null) return ce.getCause().getMessage();
-    return ce.getMessage();
+  public ErrorMessage handleResponseException(ResponseStatusException ex, HttpServletResponse resp) {
+    resp.setStatus(ex.getStatus().value());
+    return new ErrorMessage(ex.getReason());
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public String handleAllException(MethodArgumentNotValidException ce) {
-    String msg = "";
+  public ErrorMessage handleValidException(MethodArgumentNotValidException ce) {
+    String message = "";
     for (ObjectError e : ce.getBindingResult().getAllErrors()) {
-      msg = msg.concat(e.getDefaultMessage() + "\n");
+      message = message.concat(e.getDefaultMessage() + "\n");
     }
-    return msg;
+    return new ErrorMessage(message);
   }
 
-  @ExceptionHandler(ServletException.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public String handleAllException(ServletException ce) {
-    if (ce.getCause() != null) return ce.getCause().getMessage();
-    return ce.getMessage();
+  @ExceptionHandler(AccessDeniedException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public ErrorMessage handleAccessException(AccessDeniedException ce) {
+    if (ce.getCause() != null) return new ErrorMessage(ce.getCause().getMessage());
+    return new ErrorMessage(ce.getMessage());
   }
 }

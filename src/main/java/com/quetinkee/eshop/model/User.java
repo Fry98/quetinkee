@@ -1,5 +1,6 @@
 package com.quetinkee.eshop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "USER")
+@JsonIgnoreProperties(value = "password", allowGetters = false, allowSetters = true)
 public class User extends AbstractEntity {
 
   @NotBlank(message = "Zadejte Vase jmeno")

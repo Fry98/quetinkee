@@ -25,8 +25,11 @@ public class ShopAuthenticationProvider implements AuthenticationProvider {
   @Override
   public Authentication authenticate(Authentication a) throws AuthenticationException {
     User current = this.dao.findByMail(a.getPrincipal().toString());
-    if (current == null || !this.encoder.matches(a.getCredentials().toString(), current.getPassword())) {
-      throw new BadCredentialsException("Zadaný e-mail nebo heslo není správné");
+    if (current == null) {
+      throw new UsernameNotFoundException("Zadaný účet neexistuje");
+    }
+    if (!this.encoder.matches(a.getCredentials().toString(), current.getPassword())) {
+      throw new BadCredentialsException("Špatné heslo");
     }
     System.out.println("Auth OK: " + a.getPrincipal().toString() + a.getCredentials().toString());
     UserDetail detail = new UserDetail(current);
