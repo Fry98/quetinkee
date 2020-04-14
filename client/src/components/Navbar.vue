@@ -18,7 +18,7 @@
               <span>Profil</span>
             </div>
             <div class='opt-spacer'></div>
-            <div class='opt-item'>
+            <div class='opt-item' @click='logout'>
               <font-awesome-icon icon='sign-out-alt'></font-awesome-icon>
               <span>Odhlásit se</span>
             </div>
@@ -35,10 +35,22 @@
 </template>
 
 <script>
+  import axios from 'axios';
+
   export default {
     methods: {
       navigate(path) {
         if (this.$route.path !== path) this.$router.push(path);
+      },
+      logout() {
+        axios({
+          url: '/api/logout',
+          method: 'get'
+        }).then(() => {
+          this.$store.dispatch('logout');
+        }).catch(() => {
+          this.$store.dispatch('openModal', "Chyba při odhlášení");
+        });
       }
     }
   };

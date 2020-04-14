@@ -191,13 +191,14 @@
         }
 
         try {
-          const res = await axios({
+          await axios({
             url: '/api/user',
             method: 'post',
             data
           });
+          this.$router.push('/');
         } catch (err) {
-          console.log(err);
+          this.$store.dispatch('openModal', err.response.data);
         }
       }
     }

@@ -37,7 +37,7 @@ export default {
   methods: {
     async login() {
       try {
-        await axios({
+        const res = await axios({
           method: 'post',
           url: '/api/login',
           data: {
@@ -45,9 +45,10 @@ export default {
             pwd: this.pwd
           }
         });
-        this.$store.dispatch('openModal', 'Login Success');
-      } catch(e) {
-        this.$store.dispatch('openModal', 'Login Rejected');
+        this.$store.dispatch('setUser', res.data);
+        this.$router.push('/');
+      } catch(err) {
+        this.$store.dispatch('openModal', err.response.data.message);
       }
     }
   }

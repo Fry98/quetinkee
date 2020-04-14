@@ -16,20 +16,17 @@ public class ShopAuthenticationProvider implements AuthenticationProvider {
 
   private final UserDao dao;
   private final PasswordEncoder encoder;
-  
+
   public ShopAuthenticationProvider(UserDao dao, PasswordEncoder encoder) {
     this.dao = dao;
     this.encoder = encoder;
   }
-  
+
   @Override
   public Authentication authenticate(Authentication a) throws AuthenticationException {
     User current = this.dao.findByMail(a.getPrincipal().toString());
-    if (current == null) {
-      throw new UsernameNotFoundException("Zadany ucet neexistuje");
-    }
-    if (!this.encoder.matches(a.getCredentials().toString(), current.getPassword())) {
-      throw new BadCredentialsException("Spatne heslo");
+    if (current == null || !this.encoder.matches(a.getCredentials().toString(), current.getPassword())) {
+      throw new BadCredentialsException("Zadaný e-mail nebo heslo není správné");
     }
     System.out.println("Auth OK: " + a.getPrincipal().toString() + a.getCredentials().toString());
     UserDetail detail = new UserDetail(current);
@@ -42,7 +39,7 @@ public class ShopAuthenticationProvider implements AuthenticationProvider {
 
   @Override
   public boolean supports(Class<?> type) {
-    return UsernamePasswordAuthenticationToken.class.isAssignableFrom(type) 
+    return UsernamePasswordAuthenticationToken.class.isAssignableFrom(type)
             || ShopAuthenticationToken.class.isAssignableFrom(type);
   }
 }

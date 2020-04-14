@@ -91,7 +91,7 @@ public class UserController {
   public User getId(@PathVariable("id") Integer id) throws ResponseStatusException {
     User user = this.service.find(id);
     if (user == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist");
     }
     user.erasePassword();
     return user;
@@ -120,7 +120,7 @@ public class UserController {
   public ResponseEntity updateId(@PathVariable("id") Integer id, @RequestBody User user) throws ResponseStatusException {
     User original = this.service.find(id);
     if (original == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist");
     }
 
     if (user.getFirstName() != null) {
@@ -162,7 +162,7 @@ public class UserController {
   public Address getAddressBillingId(@PathVariable("id") Integer id) {
     User user = this.service.find(id);
     if (user == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist");
     }
     return user.getAddressBilling();
   }
@@ -178,7 +178,7 @@ public class UserController {
   public Address getAddressDeliveryId(@PathVariable("id") Integer id) {
     User user = this.service.find(id);
     if (user == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User doesn't exist");
     }
     return user.getAddressDelivery();
   }
@@ -200,7 +200,7 @@ public class UserController {
   public ResponseEntity updateAddressBillingId(@PathVariable("id") Integer id, @RequestBody Address address) throws ResponseStatusException {
     User original = this.service.find(id);
     if (original == null || original.getAddressBilling() == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address doesn't exist");
     }
     this.updateAddress(original.getAddressBilling(), address);
     return new ResponseEntity(HttpStatus.OK);
@@ -217,7 +217,7 @@ public class UserController {
   public ResponseEntity updateAddressDeliveryId(@PathVariable("id") Integer id, @RequestBody Address address) throws ResponseStatusException {
     User original = this.service.find(id);
     if (original == null || original.getAddressDelivery() == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address doesn't exist");
     }
     this.updateAddress(original.getAddressDelivery(), address);
     return new ResponseEntity(HttpStatus.OK);
