@@ -1,5 +1,8 @@
 package com.quetinkee.eshop.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -7,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Category extends AbstractEntity {
 
   @NotBlank(message = "Zadejte nazev kategorie")
@@ -16,8 +20,17 @@ public class Category extends AbstractEntity {
 
   private boolean active;
 
-  @ManyToMany(mappedBy = "categories")
+  @JsonIgnore
+  @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
   public Set<Boquet> boquets;
+
+  public Category() {
+  }
+
+  public Category(String name, boolean active) {
+    this.name = name;
+    this.active = active;
+  }
 
   public String getName() {
     return this.name;
