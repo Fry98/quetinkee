@@ -10,7 +10,8 @@ import {
   faCartPlus,
   faSignOutAlt,
   faAddressCard,
-  faSearch
+  faSearch,
+  faCheck
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faUser);
@@ -21,5 +22,6 @@ library.add(faCartPlus);
 library.add(faSignOutAlt);
 library.add(faAddressCard);
 library.add(faSearch);
+library.add(faCheck);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
