@@ -2,7 +2,7 @@
   <div id="sidebar">
     <div id='fulltext-search'>
       <input type='text' placeholder='Hledat podle názvu...'>
-      <div class='button search-button'>
+      <div class='btn search-button'>
         <font-awesome-icon id='search-icon' icon='search'></font-awesome-icon>
       </div>
     </div>
@@ -78,7 +78,7 @@
         <span slot="noResult">Květina nebyla nalezena...</span>
       </multiselect>
     </div>
-    <div class='button'>Vyhledat</div>
+    <div class='btn'>Vyhledat</div>
   </div>
 </template>
 
@@ -147,6 +147,7 @@
 
 <style lang='scss' scoped>
   @import "../scss/_vars.scss";
+  @import "../scss/_button.scss";
 
   #price {
     padding: 10px 30px;
@@ -245,26 +246,6 @@
       border-radius: 100%;
       padding: 0;
       font-size: .9em;
-    }
-  }
-
-  .button {
-    padding: 6px 10px;
-    user-select: none;
-    align-self: center;
-    border: none;
-    border-radius: 7px;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
-    background: $mainBlue;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1em;
-    cursor: pointer;
-    transition-duration: .2s;
-    &:hover {
-      background: $darkBlue;
     }
   }
 
