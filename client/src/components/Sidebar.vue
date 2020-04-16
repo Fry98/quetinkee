@@ -66,8 +66,8 @@
     </div>
     <h2>Květiny</h2>
     <div id='flowers'>
-      <multiselect select-label=''
-                   deselect-label=''
+      <multiselect select-label='Vybrat'
+                   deselect-label='Odebrat'
                    selected-label='Vybráno'
                    placeholder='Vyberte květiny'
                    v-model='selectedFlowers'
@@ -121,11 +121,21 @@
   }
   .multiselect__option--highlight {
     background-color: $mainBlue;
-    /*color: black;*/
+    &:after {
+      background-color: $mainBlue;
+    }
+    &.multiselect__option--selected {
+      &:after {
+        background-color: $darkOrange;
+      }
+      background-color: $darkOrange;
+      color: #fff;
+    }
   }
   .multiselect__tag {
     background-color: $mainBlue;
-    /*color: black;*/
+    cursor: default;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
   }
   i.multiselect__tag-icon {
     &:after {
@@ -160,11 +170,12 @@
       font-size: 1.2em;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
       border-radius: 7px;
-      border: 0;
     }
   }
 
   .color-checkbox {
+    cursor: pointer;
+    user-select: none;
     margin: 4px;
     display: flex;
     justify-content: center;
@@ -217,14 +228,8 @@
       padding: 7px 10px;
       font-size: 1.1em;
       border-radius: 50px;
-      border: 0;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
       margin-right: 8px;
-      outline: none;
-      border: 1px solid white;
-      &:focus {
-        border-color: $mainOrange;
-      }
     }
     .search-button {
       height: 37px;
@@ -282,6 +287,14 @@
       &:hover:not(.selected) {
         background-color: $almostWhite;
       }
+    }
+  }
+
+  input[type='number'],input[type='text'] {
+    border: 1px solid white;
+    outline: none;
+    &:focus {
+      border-color: $mainOrange;
     }
   }
 
