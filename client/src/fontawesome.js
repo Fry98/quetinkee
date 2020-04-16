@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import {} from '@fortawesome/free-regular-svg-icons';
+import {
+  faStar as faStarRegular
+} from '@fortawesome/free-regular-svg-icons';
 import {
   faUser,
   faShoppingCart,
@@ -11,7 +13,10 @@ import {
   faSignOutAlt,
   faAddressCard,
   faSearch,
-  faCheck
+  faCheck,
+  faStar,
+  faArrowDown,
+  faArrowUp
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faUser);
@@ -23,5 +28,9 @@ library.add(faSignOutAlt);
 library.add(faAddressCard);
 library.add(faSearch);
 library.add(faCheck);
+library.add(faStar);
+library.add(faStarRegular);
+library.add(faArrowDown);
+library.add(faArrowUp);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
