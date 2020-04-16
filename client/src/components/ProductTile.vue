@@ -53,6 +53,7 @@
     background: white;
     margin-right: 10px;
     cursor: pointer;
+    flex-shrink: 0;
 
     .image {
       border-radius: 7px;
