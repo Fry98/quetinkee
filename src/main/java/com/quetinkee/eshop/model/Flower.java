@@ -29,12 +29,12 @@ public class Flower extends AbstractEntity {
   @Digits(integer=11, fraction=2, message = "Cena je ve špatném formátu")
   @Min(value = 1, message = "Zadejte cenu květiny")
   @Basic(optional = false)
-  @Column(nullable = false, precision=9, scale=2)
+  @Column(nullable = false, columnDefinition="DECIMAL(11,2)", precision=11, scale=2)
   private BigDecimal price;
 
   @JsonIgnore
-  @ManyToMany(mappedBy = "flowers", fetch = FetchType.LAZY)
-  public Set<Boquet> boquets;
+  @OneToMany(mappedBy = "flower", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Set<BoquetFlowerCount> flowerCount;
 
   public Flower() {
   }
@@ -73,26 +73,30 @@ public class Flower extends AbstractEntity {
     this.price = (new BigDecimal(price)).setScale(2, BigDecimal.ROUND_CEILING);
   }
 
-  public Set<Boquet> getBoquets() {
-    return this.boquets;
+  public Set<BoquetFlowerCount> getBoquetFlowerCount() {
+    return this.flowerCount;
   }
 
-  public void addBoquet(Boquet boquet) {
-    Objects.requireNonNull(boquet);
-    if (this.boquets == null) {
-      this.boquets = new HashSet<>();
+  public void addBoquetFlowerCount(BoquetFlowerCount count) {
+    Objects.requireNonNull(count);
+    if (this.flowerCount == null) {
+      this.flowerCount = new HashSet<>();
     }
-    this.boquets.add(boquet);
+    count.setFlower(this);
+    this.flowerCount.add(count);
   }
 
-  public void removeBoquet(Boquet boquet) {
-    Objects.requireNonNull(boquet);
-    if (this.boquets != null) {
-      this.boquets.remove(boquet);
+  public void removeBoquetFlowerCount(BoquetFlowerCount count) {
+    Objects.requireNonNull(count);
+    if (this.flowerCount != null) {
+      this.flowerCount.remove(count);
     }
   }
 
-  public void setBoquets(Set<Boquet> boquets) {
-    this.boquets = boquets;
+  public void setBoquetFlowerCount(Set<BoquetFlowerCount> flowerCount) {
+    for (BoquetFlowerCount count : flowerCount) {
+      count.setFlower(this);
+    }
+    this.flowerCount = flowerCount;
   }
 }

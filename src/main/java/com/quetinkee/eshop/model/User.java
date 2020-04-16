@@ -8,7 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "USERS")
 @JsonIgnoreProperties(value = "password", allowGetters = false, allowSetters = true)
 public class User extends AbstractEntity {
 

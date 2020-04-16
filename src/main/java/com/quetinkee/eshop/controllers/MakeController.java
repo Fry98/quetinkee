@@ -3,10 +3,14 @@ package com.quetinkee.eshop.controllers;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.quetinkee.eshop.model.Address;
 import com.quetinkee.eshop.model.Boquet;
+import com.quetinkee.eshop.model.BoquetFlowerCount;
 import com.quetinkee.eshop.model.Category;
+import com.quetinkee.eshop.model.Flower;
+import com.quetinkee.eshop.model.Size;
 import com.quetinkee.eshop.model.User;
 import com.quetinkee.eshop.service.BoquetService;
 import com.quetinkee.eshop.service.CategoryService;
+import com.quetinkee.eshop.service.FlowerService;
 import com.quetinkee.eshop.service.UserService;
 import com.quetinkee.eshop.utils.JSViews;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,28 +31,45 @@ public class MakeController {
   private CategoryService categoryService;
 
   @Autowired
+  private FlowerService flowerService;
+
+  @Autowired
   private UserService userService;
 
   // TODO: remove it
   @GetMapping("/item")
   public Boquet addItems() {
+    Flower flower1 = new Flower("kytka 1", "", "10");
+    flowerService.persist(flower1);
+    Flower flower2 = new Flower("kytka 2", "", "20");
+    flowerService.persist(flower2);
+
     Category catA = new Category("skup A", true);
     categoryService.persist(catA);
 
     Category catB = new Category("skup Be", true);
     categoryService.persist(catB);
 
-    Boquet boqA = new Boquet("Kvetina A", "<p>popis A s <strong>HTML</strong></p>", "100.10", true);
+    Boquet boqA = new Boquet("Kvetina A", "<p>popis A s <strong>HTML</strong></p>", "100.10", Size.SMALL, true);
     boqA.addCategory(catA);
+    BoquetFlowerCount bqfc1 = new BoquetFlowerCount(flower1, 1);
+    System.out.println("AAAAAA" + bqfc1);
+    boqA.addBoquetFlowerCount(bqfc1);
     boquetService.persist(boqA);
 
-    Boquet boqB = new Boquet("Kvetina B", "<p>popis B s <strong>HTML</strong></p>", "200", true);
+    Boquet boqB = new Boquet("Kvetina B", "<p>popis B s <strong>HTML</strong></p>", "200", Size.MEDIUM, true);
+    BoquetFlowerCount bqfc2 = new BoquetFlowerCount(flower2, 2);
+    //boqA.addBoquetFlowerCount(bqfc2);
     boqB.addCategory(catB);
     boquetService.persist(boqB);
 
-    Boquet boqC = new Boquet("Kvetina C", "<p>popis C s <strong>HTML</strong></p>", "9999999.9999", true);
+    Boquet boqC = new Boquet("Kvetina C", "<p>popis C s <strong>HTML</strong></p>", "9999999.9999", Size.LARGE, true);
     boqC.addCategory(catA);
     boqC.addCategory(catB);
+    BoquetFlowerCount bqfc3 = new BoquetFlowerCount(flower1, 3);
+    BoquetFlowerCount bqfc4 = new BoquetFlowerCount(flower1, 4);
+    //boqA.addBoquetFlowerCount(bqfc3);
+    //boqA.addBoquetFlowerCount(bqfc4);
     boquetService.persist(boqC);
 
     return boqA;

@@ -30,8 +30,13 @@ public class Boquet extends AbstractEntity {
   @Digits(integer=11, fraction=2, message = "Cena je ve špatném formátu")
   @Min(value = 1, message = "Zadejte cenu kytice")
   @Basic(optional = false)
-  @Column(nullable = false, precision=9, scale=2)
+  @Column(nullable = false, columnDefinition="DECIMAL(11,2)", precision=11, scale=2)
   private BigDecimal price;
+
+  @Enumerated(EnumType.STRING)
+  @Basic(optional = false)
+  @Column(nullable = false)
+  private Size size;
 
   private boolean active;
 
@@ -40,17 +45,17 @@ public class Boquet extends AbstractEntity {
   @OrderBy("name")
   private Set<Category> categories;
 
-  @ManyToMany(fetch = FetchType.LAZY)
-  @OrderBy("name")
-  private Set<Flower> flowers;
+  @OneToMany(mappedBy = "boquet", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Set<BoquetFlowerCount> flowerCount;
 
   public Boquet() {
   }
 
-  public Boquet(String name, String description, String price, boolean active) {
+  public Boquet(String name, String description, String price, Size size, boolean active) {
     this.name = name;
     this.description = description;
     this.setPrice(price);
+    this.size = size;
     this.active = active;
   }
 
@@ -80,6 +85,14 @@ public class Boquet extends AbstractEntity {
 
   public void setPrice(String price) {
     this.price = (new BigDecimal(price)).setScale(2, BigDecimal.ROUND_CEILING);
+  }
+
+  public Size getSize() {
+    return this.size;
+  }
+
+  public void setSize(Size size) {
+    this.size = size;
   }
 
   public boolean isActive() {
@@ -113,26 +126,30 @@ public class Boquet extends AbstractEntity {
     this.categories = categories;
   }
 
-  public Set<Flower> getFlowers() {
-    return this.flowers;
+  public Set<BoquetFlowerCount> getBoquetFlowerCount() {
+    return this.flowerCount;
   }
 
-  public void addFlower(Flower flower) {
-    Objects.requireNonNull(flower);
-    if (this.flowers == null) {
-      this.flowers = new HashSet<>();
+  public void addBoquetFlowerCount(BoquetFlowerCount count) {
+    Objects.requireNonNull(count);
+    if (this.flowerCount == null) {
+      this.flowerCount = new HashSet<>();
     }
-    this.flowers.add(flower);
+    count.setBoquet(this);
+    this.flowerCount.add(count);
   }
 
-  public void removeFlower(Flower flower) {
-    Objects.requireNonNull(flower);
-    if (this.flowers != null) {
-      this.flowers.remove(flower);
+  public void removeBoquetFlowerCount(BoquetFlowerCount count) {
+    Objects.requireNonNull(count);
+    if (this.flowerCount != null) {
+      this.flowerCount.remove(count);
     }
   }
 
-  public void setFlowers(Set<Flower> flowers) {
-    this.flowers = flowers;
+  public void setBoquetFlowerCount(Set<BoquetFlowerCount> flowerCount) {
+    for (BoquetFlowerCount count : flowerCount) {
+      count.setBoquet(this);
+    }
+    this.flowerCount = flowerCount;
   }
 }

@@ -4,12 +4,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
+import javax.persistence.GenerationType;
 
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
   public Integer getId() {
