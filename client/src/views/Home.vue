@@ -10,12 +10,31 @@
       <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
       <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
       <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
-      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
     </carousel>
     <h1>V Akci</h1>
-    <product-tile name='Nazev kytice' price='899'></product-tile>
+    <carousel>
+      <product-tile name='Nazev kytice' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+    </carousel>
     <h1>Doporučené</h1>
-    <product-tile name='Nazev kytice' price='899'></product-tile>
+    <carousel>
+      <product-tile name='Nazev kytice' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+    </carousel>
   </div>
 </template>
 

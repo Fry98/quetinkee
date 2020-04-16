@@ -2,7 +2,7 @@
   <div id="sidebar">
     <div id='fulltext-search'>
       <input type='text' placeholder='Hledat podle názvu...'>
-      <div class='button search-button'>
+      <div class='btn search-button'>
         <font-awesome-icon id='search-icon' icon='search'></font-awesome-icon>
       </div>
     </div>
@@ -34,40 +34,40 @@
     <h2>Barva</h2>
     <div id='colors'>
       <div class="color-checkbox" style='background-color: #FFF' @click='handleColorClick(0)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[0]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[0]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #FFF281' @click='handleColorClick(1)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[1]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[1]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #FFB74A' @click='handleColorClick(2)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[2]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[2]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #FF4A4A' @click='handleColorClick(3)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[3]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[3]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #FF63AE' @click='handleColorClick(4)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[4]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[4]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #CB89FF' @click='handleColorClick(5)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[5]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[5]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #7785FF' @click='handleColorClick(6)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[6]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[6]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #8EEBFF' @click='handleColorClick(7)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[7]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[7]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #7AFFAF' @click='handleColorClick(8)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[8]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[8]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #82BD66' @click='handleColorClick(9)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[9]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[9]}'></font-awesome-icon>
       </div>
     </div>
     <h2>Květiny</h2>
     <div id='flowers'>
-      <multiselect select-label=''
-                   deselect-label=''
+      <multiselect select-label='Vybrat'
+                   deselect-label='Odebrat'
                    selected-label='Vybráno'
                    placeholder='Vyberte květiny'
                    v-model='selectedFlowers'
@@ -78,7 +78,7 @@
         <span slot="noResult">Květina nebyla nalezena...</span>
       </multiselect>
     </div>
-    <div class='button'>Vyhledat</div>
+    <div class='btn'>Vyhledat</div>
   </div>
 </template>
 
@@ -94,7 +94,7 @@
         priceTo: null,
         selectedFlowers: [],
         flowerOptions: ['Růže', 'Kopretiny', 'Tulipány', 'Orchideje', 'Gerbery', 'Chryzantémy'],
-        selectedSizes: [false, false, false],
+        selectedSizes: [false, true, false],
         selectedColors: [false, false, false, false, false, false, false, false, false, false],
         numberToColor: ['white', 'yellow', 'orange', 'red', 'pink', 'purple', 'blue', 'turquoise', 'seafoam', 'green']
       };
@@ -121,11 +121,21 @@
   }
   .multiselect__option--highlight {
     background-color: $mainBlue;
-    /*color: black;*/
+    &:after {
+      background-color: $mainBlue;
+    }
+    &.multiselect__option--selected {
+      &:after {
+        background-color: $darkOrange;
+      }
+      background-color: $darkOrange;
+      color: #fff;
+    }
   }
   .multiselect__tag {
     background-color: $mainBlue;
-    /*color: black;*/
+    cursor: default;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
   }
   i.multiselect__tag-icon {
     &:after {
@@ -147,6 +157,7 @@
 
 <style lang='scss' scoped>
   @import "../scss/_vars.scss";
+  @import "../scss/_button.scss";
 
   #price {
     padding: 10px 30px;
@@ -160,11 +171,12 @@
       font-size: 1.2em;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
       border-radius: 7px;
-      border: 0;
     }
   }
 
   .color-checkbox {
+    cursor: pointer;
+    user-select: none;
     margin: 4px;
     display: flex;
     justify-content: center;
@@ -176,13 +188,22 @@
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
     border-radius: 7px;
     transition: .2s;
+    cursor: pointer;
     &:hover {
       filter: brightness(90%);
     }
     svg {
       stroke: black;
       stroke-width: 20;
+      opacity: 0;
+      transform: translateY(10px);
+      transition-duration: .2s;
     }
+  }
+
+  .clr-show {
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   #colors {
@@ -200,11 +221,15 @@
   #sidebar {
     display: flex;
     flex-direction: column;
-    padding-top: 10px;
+    padding: 10px 0px;
     padding-right: 5px;
     background-color: $almostWhite;
     width: 290px;
     box-shadow: inset -3px 0px 5px rgba(0, 0, 0, 0.158);
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   #fulltext-search {
@@ -217,14 +242,8 @@
       padding: 7px 10px;
       font-size: 1.1em;
       border-radius: 50px;
-      border: 0;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
       margin-right: 8px;
-      outline: none;
-      border: 1px solid white;
-      &:focus {
-        border-color: $mainOrange;
-      }
     }
     .search-button {
       height: 37px;
@@ -232,26 +251,6 @@
       border-radius: 100%;
       padding: 0;
       font-size: .9em;
-    }
-  }
-
-  .button {
-    padding: 6px 10px;
-    user-select: none;
-    align-self: center;
-    border: none;
-    border-radius: 7px;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
-    background: $mainBlue;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1em;
-    cursor: pointer;
-    transition-duration: .2s;
-    &:hover {
-      background: $darkBlue;
     }
   }
 
@@ -282,6 +281,14 @@
       &:hover:not(.selected) {
         background-color: $almostWhite;
       }
+    }
+  }
+
+  input[type='number'],input[type='text'] {
+    border: 1px solid white;
+    outline: none;
+    &:focus {
+      border-color: $mainOrange;
     }
   }
 
