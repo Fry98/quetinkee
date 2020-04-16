@@ -4,20 +4,20 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "USER_ADDRESS")
+@Table(name = "USERS_ADDRESS")
 public class Address extends AbstractEntity {
 
-  @NotBlank(message = "Vyplnte ulici")
+  @NotBlank(message = "Ulice je povinná položka")
   @Basic(optional = false)
   @Column(nullable = false)
   private String street;
 
-  @NotBlank(message = "Vyplnte mesto")
+  @NotBlank(message = "Město je povinná položka")
   @Basic(optional = false)
   @Column(nullable = false)
   private String city;
 
-  @NotBlank(message = "Zadejte psc")
+  @NotBlank(message = "PSČ je povinná položka")
   @Basic(optional = false)
   @Column(nullable = false)
   private String zip;

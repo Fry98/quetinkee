@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,7 +64,7 @@ public class UserController {
    * Update user info by Id
    *
    * @param id
-   * @param user
+   * @param newUser
    * @return
    */
   @PutMapping(value = "/{id:[\\d]+}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -71,6 +72,13 @@ public class UserController {
     User original = this.getUser(id);
     this.service.update(original, newUser);
     return new ResponseEntity(HttpStatus.OK);
+  }
+
+  @DeleteMapping(value = "/{id:[\\d]+}")
+  public ResponseEntity delete(@PathVariable("id") Integer id) {
+    User user = this.getUser(id);
+    this.service.delete(user);
+    return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
 
   /**
@@ -102,7 +110,7 @@ public class UserController {
   public ResponseEntity updateAddressBillingId(@PathVariable("id") Integer id, @RequestBody Address address) {
     User user = this.getUser(id);
     if (user.getAddressBilling() == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Adresa neexistuje");
     }
     this.service.updateAddress(user.getAddressBilling(), address);
     return new ResponseEntity(HttpStatus.OK);
@@ -112,7 +120,7 @@ public class UserController {
   public ResponseEntity updateAddressDeliveryId(@PathVariable("id") Integer id, @RequestBody Address address) {
     User user = this.getUser(id);
     if (user.getAddressDelivery() == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Adresa neexistuje");
     }
     this.service.updateAddress(user.getAddressDelivery(), address);
     return new ResponseEntity(HttpStatus.OK);
@@ -129,7 +137,7 @@ public class UserController {
   public ResponseEntity createAddressBillingId(@PathVariable("id") Integer id, @Valid @RequestBody Address address) {
     User user = this.getUser(id);
     if (user.getAddressBilling() != null || address.getId() != null) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Address already exists");
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Adresa již existuje");
     }
     this.service.persistAddress(address);
     user.setAddressBilling(address);
@@ -141,7 +149,7 @@ public class UserController {
   public ResponseEntity createAddressDeliveryId(@PathVariable("id") Integer id, @Valid @RequestBody Address address) {
     User user = this.getUser(id);
     if (user.getAddressDelivery() != null || address.getId() != null) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Address already exists");
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Adresa již existuje");
     }
     this.service.persistAddress(address);
     user.setAddressDelivery(address);
@@ -152,7 +160,7 @@ public class UserController {
   private User getUser(Integer id) throws ResponseStatusException {
     User user = this.service.find(id);
     if (user == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Uživatel nenalezen");
     }
     return user;
   }

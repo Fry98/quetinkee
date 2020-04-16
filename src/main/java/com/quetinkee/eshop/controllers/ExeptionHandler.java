@@ -3,7 +3,6 @@ package com.quetinkee.eshop.controllers;
 import com.quetinkee.eshop.utils.ErrorMessage;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,12 +27,5 @@ public class ExeptionHandler {
       message = message.concat(e.getDefaultMessage() + "\n");
     }
     return new ErrorMessage(message);
-  }
-
-  @ExceptionHandler(AccessDeniedException.class)
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  public ErrorMessage handleAccessException(AccessDeniedException ce) {
-    if (ce.getCause() != null) return new ErrorMessage(ce.getCause().getMessage());
-    return new ErrorMessage(ce.getMessage());
   }
 }

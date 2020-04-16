@@ -8,22 +8,22 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "USERS")
 @JsonIgnoreProperties(value = "password", allowGetters = false, allowSetters = true)
 public class User extends AbstractEntity {
 
-  @NotBlank(message = "Zadejte Vase jmeno")
+  @NotBlank(message = "Jméno je povinná položka")
   @Basic(optional = false)
   @Column(nullable = false)
   private String firstName;
 
-  @NotBlank(message = "Zadejte Vase prijmeni")
+  @NotBlank(message = "Příjmení je povinná položka")
   @Basic(optional = false)
   @Column(nullable = false)
   private String lastName;
 
-  @NotBlank(message = "Zadejte Vas e-mail")
-  @Email(message = "Zadany e-mail je neplatny")
+  @NotBlank(message = "E-mail je povinná položka")
+  @Email(message = "Nesprávně zadaný email")
   @Basic(optional = false)
   @Column(nullable = false, unique = true)
   private String mail;
@@ -32,7 +32,7 @@ public class User extends AbstractEntity {
   @Column(nullable = false)
   private String password;
 
-  @NotBlank(message = "Zadejte Vas telefon")
+  @NotBlank(message = "Telefonní číslo je povinná položka")
   @Basic(optional = false)
   @Column(nullable = false)
   private String phone;

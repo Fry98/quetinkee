@@ -100,7 +100,7 @@ public class ProfileController {
   public ResponseEntity updateAddressBilling(@RequestBody Address address, Authentication authentication) {
     User user = this.getCurrentUser(authentication);
     if (user.getAddressBilling() == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Adresa neexistuje");
     }
     this.service.updateAddress(user.getAddressBilling(), address);
     return new ResponseEntity(HttpStatus.OK);
@@ -111,7 +111,7 @@ public class ProfileController {
   public ResponseEntity updateAddressDelivery(@RequestBody Address address, Authentication authentication) {
     User user = this.getCurrentUser(authentication);
     if (user.getAddressDelivery() == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Adresa neexistuje");
     }
     this.service.updateAddress(user.getAddressDelivery(), address);
     return new ResponseEntity(HttpStatus.OK);
@@ -129,7 +129,7 @@ public class ProfileController {
   public ResponseEntity createAddressBilling(@Valid @RequestBody Address address, Authentication authentication) {
     User user = this.getCurrentUser(authentication);
     if (user.getAddressBilling() != null || address.getId() != null) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Address already exists");
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Adresa již existuje");
     }
     this.service.persistAddress(address);
     user.setAddressBilling(address);
@@ -142,7 +142,7 @@ public class ProfileController {
   public ResponseEntity createAddressDelivery(@Valid @RequestBody Address address, Authentication authentication) {
     User user = this.getCurrentUser(authentication);
     if (user.getAddressDelivery() != null || address.getId() != null) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Address already exists");
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Adresa již existuje");
     }
     this.service.persistAddress(address);
     user.setAddressDelivery(address);
@@ -153,7 +153,7 @@ public class ProfileController {
   private User getCurrentUser(Authentication authentication) throws ResponseStatusException {
     User user = this.service.find(((UserDetail) authentication.getDetails()).getUser().getId());
     if (user == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address dont exists");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Uživatel nenalezen");
     }
     return user;
   }

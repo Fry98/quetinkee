@@ -88,6 +88,7 @@ public class UserService {
   @Transactional
   public void delete (User user) {
     Objects.requireNonNull(user);
+    // TODO: check pending orders first
     this.dao.delete(user);
   }
 
