@@ -29,10 +29,10 @@ public class Boquet extends AbstractEntity {
   @Lob
   private String description;
 
-  @Digits(integer=11, fraction=2, message = "Cena je ve špatném formátu")
+  @Digits(integer = 11, fraction = 2, message = "Cena je ve špatném formátu")
   @Min(value = 1, message = "Zadejte cenu kytice")
   @Basic(optional = false)
-  @Column(nullable = false, columnDefinition="DECIMAL(11,2)", precision=11, scale=2)
+  @Column(nullable = false, columnDefinition = "DECIMAL(11,2)", precision = 11, scale = 2)
   private BigDecimal price;
 
   @Enumerated(EnumType.STRING)
@@ -134,7 +134,7 @@ public class Boquet extends AbstractEntity {
     this.categories = categories;
   }
 
-  public List<BoquetFlowerCount> getBoquetFlowerCount() {
+  public List<BoquetFlowerCount> getBoquetflowerCount() {
     return this.boquetflowerCount;
   }
 
@@ -161,19 +161,24 @@ public class Boquet extends AbstractEntity {
     this.boquetflowerCount = flowerCount;
   }
 
-    public void setColors(List<Color> colors) {
-        this.colors = colors;
-    }
+  public void setColors(List<Color> colors) {
+    this.colors = colors;
+  }
 
-    public void addColor(Color color) {
-      Objects.requireNonNull(color);
-      if (this.colors == null) {
-        this.colors = new ArrayList<>();
-      }
-      this.colors.add(color);
+  public void addColor(Color color) {
+    Objects.requireNonNull(color);
+    if (this.colors == null) {
+      this.colors = new ArrayList<>();
     }
+    this.colors.add(color);
+  }
 
-    public List<Color> getColors() {
-        return this.colors;
-    }
+  public List<Color> getColors() {
+    return this.colors;
+  }
+
+  // TODO
+  public float getRating() {
+    return 3.5f;
+  }
 }

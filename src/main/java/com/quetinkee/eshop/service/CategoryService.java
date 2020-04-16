@@ -30,22 +30,22 @@ public class CategoryService {
   }
 
   @Transactional(readOnly = true)
-  public Category find(Integer id, boolean activeOnly) {
-    if (activeOnly) return this.dao.findByIdAndActiveTrue(id);
-    return this.find(id);
+  public Category find(Integer id, boolean showAll) {
+    if (showAll) return this.find(id);
+    return this.dao.findByIdAndActiveTrue(id);
   }
 
   @Transactional(readOnly = true)
-  public List<Category> findAll(boolean active) {
-    if (active) return this.dao.findAllByActiveTrue();
-    return this.dao.findAll();
+  public List<Category> findAll(boolean showAll) {
+    if (showAll) return this.dao.findAll();
+    return this.dao.findAllByActiveTrue();
   }
 
   @Transactional(readOnly = true)
-  public Slice<Category> findAll(Integer pageNum, Integer pageSize, boolean active) {
+  public Slice<Category> findAll(Integer pageNum, Integer pageSize, boolean showAll) {
     Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("name"));
-    if (active) return this.dao.findAllByActiveTrue(paging);
-    return this.dao.findAllBy(paging);
+    if (showAll) return this.dao.findAllBy(paging);
+    return this.dao.findAllByActiveTrue(paging);
   }
 
   @Transactional
