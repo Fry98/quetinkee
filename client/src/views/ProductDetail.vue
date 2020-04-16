@@ -28,11 +28,11 @@
       <div class="cart-add">
         <div class="count">
           <div class="quantity">
-            <input type="number" value="1"/>
-            <div class="q-up">
+            <input type="number" v-model="count"/>
+            <div class="q-up" @click="quantityAdd">
               <font-awesome-icon icon="arrow-up"/>
             </div>
-            <div class="q-down">
+            <div class="q-down" @click="quantitySubtraction">
               <font-awesome-icon icon="arrow-down"/>
             </div>
           </div>
@@ -55,7 +55,26 @@
 </template>
 
 <script>
-  export default {}
+  import GeneralInput from '../components/GeneralInput';
+
+  export default {
+    components: {GeneralInput},
+    data() {
+      return {
+        count: 1
+      }
+    },
+    methods: {
+      quantityAdd() {
+        this.count += 1;
+      },
+      quantitySubtraction() {
+        if (this.count > 1) {
+          this.count -= 1;
+        }
+      }
+    }
+  }
 
 
 </script>
@@ -149,7 +168,7 @@
             border-top-right-radius: 10px;
           }
 
-          .q-down{
+          .q-down {
             position: absolute;
             display: flex;
             justify-content: center;
