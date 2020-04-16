@@ -2,7 +2,7 @@
   <div id="sidebar">
     <div id='fulltext-search'>
       <input type='text' placeholder='Hledat podle názvu...'>
-      <div class="search-button">
+      <div class='button search-button'>
         <font-awesome-icon id='search-icon' icon='search'></font-awesome-icon>
       </div>
     </div>
@@ -16,6 +16,9 @@
     </ul>
     <h1>Vyhledávání</h1>
     <h2>Cena</h2>
+    <div id='price'>
+      <input type='number' placeholder='Od' v-model='priceFrom'> - <input type='number' placeholder='Do' v-model='priceTo'>
+    </div>
     <h2>Velikost</h2>
     <div id='sizes'>
       <span :class='{"checkbox-input": true, selected: selectedSizes[0]}' @click='handleSizeClick(0)'>
@@ -62,17 +65,38 @@
       </div>
     </div>
     <h2>Květiny</h2>
+    <div id='flowers'>
+      <multiselect select-label=''
+                   deselect-label=''
+                   selected-label='Vybráno'
+                   placeholder='Vyberte květiny'
+                   v-model='selectedFlowers'
+                   :options='flowerOptions'
+                   :multiple='true'
+                   :close-on-select='false'
+      >
+        <span slot="noResult">Květina nebyla nalezena...</span>
+      </multiselect>
+    </div>
+    <div class='button'>Vyhledat</div>
   </div>
 </template>
 
 <script>
+  import Multiselect from 'vue-multiselect';
+
   export default {
     name: 'Sidebar',
+    components: { Multiselect },
     data() {
       return {
+        priceFrom: null,
+        priceTo: null,
+        selectedFlowers: [],
+        flowerOptions: ['Růže', 'Kopretiny', 'Tulipány', 'Orchideje', 'Gerbery', 'Chryzantémy'],
         selectedSizes: [false, false, false],
         selectedColors: [false, false, false, false, false, false, false, false, false, false],
-        numberToColor: ['white', 'yellow', 'orange', 'red', 'pink', 'purple', 'turquoise', 'seafoam', 'green']
+        numberToColor: ['white', 'yellow', 'orange', 'red', 'pink', 'purple', 'blue', 'turquoise', 'seafoam', 'green']
       };
     },
     methods: {
@@ -86,8 +110,59 @@
   }
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
+<style lang='scss'>
+  @import "../scss/_vars.scss";
+
+  .multiselect__tags {
+    border-radius: 7px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+  }
+  .multiselect__option--highlight {
+    background-color: $mainBlue;
+    /*color: black;*/
+  }
+  .multiselect__tag {
+    background-color: $mainBlue;
+    /*color: black;*/
+  }
+  i.multiselect__tag-icon {
+    &:after {
+      color: #eee;
+    }
+    &:hover {
+      background-color: $darkBlue;
+    }
+  }
+  .multiselect--above .multiselect__content-wrapper {
+    border-radius: 7px 7px 0 0;
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.26);
+  }
+  .multiselect__content-wrapper {
+    border-radius: 0 0 7px 7px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+  }
+</style>
+
 <style lang='scss' scoped>
   @import "../scss/_vars.scss";
+
+  #price {
+    padding: 10px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    input {
+      width: 38%;
+      padding: 3px 10px;
+      font-size: 1.2em;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+      border-radius: 7px;
+      border: 0;
+    }
+  }
 
   .color-checkbox {
     margin: 4px;
@@ -115,6 +190,10 @@
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+    padding: 10px 30px;
+  }
+
+  #flowers {
     padding: 10px 30px;
   }
 
@@ -148,24 +227,31 @@
       }
     }
     .search-button {
-      user-select: none;
-      align-self: center;
       height: 37px;
       width: 37px;
-      border: none;
       border-radius: 100%;
-      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
-      background: $mainBlue;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      padding: 0;
       font-size: .9em;
-      cursor: pointer;
-      transition-duration: .2s;
-      &:hover {
-        background: $darkBlue;
-      }
+    }
+  }
+
+  .button {
+    padding: 6px 10px;
+    user-select: none;
+    align-self: center;
+    border: none;
+    border-radius: 7px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+    background: $mainBlue;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1em;
+    cursor: pointer;
+    transition-duration: .2s;
+    &:hover {
+      background: $darkBlue;
     }
   }
 
@@ -173,10 +259,13 @@
     user-select: none;
     display: flex;
     justify-content: center;
+    padding: 10px 0;
     .checkbox-input {
+      color: $darkGrey;
+      font-weight: bold;
       transition: .15s;
       cursor: pointer;
-      padding: 6px;
+      padding: 6px 8px;
       margin: 5px 0 5px 0;
       background-color: white;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.40);
@@ -200,7 +289,7 @@
     margin: 5px 0;
     padding-left: 7px;
     border-left: solid $mainOrange 3px;
-    font-size: 1.8em;
+    font-size: 1.6em;
   }
 
   h2 {
