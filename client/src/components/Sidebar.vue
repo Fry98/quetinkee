@@ -34,34 +34,34 @@
     <h2>Barva</h2>
     <div id='colors'>
       <div class="color-checkbox" style='background-color: #FFF' @click='handleColorClick(0)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[0]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[0]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #FFF281' @click='handleColorClick(1)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[1]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[1]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #FFB74A' @click='handleColorClick(2)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[2]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[2]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #FF4A4A' @click='handleColorClick(3)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[3]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[3]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #FF63AE' @click='handleColorClick(4)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[4]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[4]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #CB89FF' @click='handleColorClick(5)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[5]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[5]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #7785FF' @click='handleColorClick(6)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[6]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[6]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #8EEBFF' @click='handleColorClick(7)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[7]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[7]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #7AFFAF' @click='handleColorClick(8)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[8]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[8]}'></font-awesome-icon>
       </div>
       <div class="color-checkbox" style='background-color: #82BD66' @click='handleColorClick(9)'>
-        <font-awesome-icon icon='check' v-if='selectedColors[9]'></font-awesome-icon>
+        <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[9]}'></font-awesome-icon>
       </div>
     </div>
     <h2>Květiny</h2>
@@ -94,7 +94,7 @@
         priceTo: null,
         selectedFlowers: [],
         flowerOptions: ['Růže', 'Kopretiny', 'Tulipány', 'Orchideje', 'Gerbery', 'Chryzantémy'],
-        selectedSizes: [false, false, false],
+        selectedSizes: [false, true, false],
         selectedColors: [false, false, false, false, false, false, false, false, false, false],
         numberToColor: ['white', 'yellow', 'orange', 'red', 'pink', 'purple', 'blue', 'turquoise', 'seafoam', 'green']
       };
@@ -176,13 +176,22 @@
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
     border-radius: 7px;
     transition: .2s;
+    cursor: pointer;
     &:hover {
       filter: brightness(90%);
     }
     svg {
       stroke: black;
       stroke-width: 20;
+      opacity: 0;
+      transform: translateY(10px);
+      transition-duration: .2s;
     }
+  }
+
+  .clr-show {
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   #colors {
@@ -200,11 +209,15 @@
   #sidebar {
     display: flex;
     flex-direction: column;
-    padding-top: 10px;
+    padding: 10px 0px;
     padding-right: 5px;
     background-color: $almostWhite;
     width: 290px;
     box-shadow: inset -3px 0px 5px rgba(0, 0, 0, 0.158);
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   #fulltext-search {
