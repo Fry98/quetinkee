@@ -5,6 +5,7 @@ import Login from './views/Login';
 import Signup from './views/Signup';
 import Profile from './views/Profile';
 import MainLayout from './views/MainLayout';
+import ProductDetail from './views/ProductDetail';
 import store from './store';
 
 Vue.use(Router);
@@ -26,6 +27,10 @@ const router = new Router({
         {
           path: '',
           component: Home
+        },
+        {
+          path: '/detail',
+          component: ProductDetail
         }
       ]
     },
