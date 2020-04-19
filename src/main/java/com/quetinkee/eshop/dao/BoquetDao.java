@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public interface BoquetDao extends JpaRepository<Boquet, Integer> {
 
   static String ACTIVE = "WHERE (?1 = true OR b.active = true)";
-  static String ACTIVE_CATEGORY = "WHERE (?1 = true OR b.active = true) AND c.id = ?2";
+  static String ACTIVE_CATEGORY = "JOIN b.categories c WHERE (?1 = true OR b.active = true) AND c.id = ?2";
 
   Boquet findByIdAndActiveTrue(Integer id);
 
@@ -30,18 +30,18 @@ public interface BoquetDao extends JpaRepository<Boquet, Integer> {
   @Query(value = "SELECT b.size FROM Boquet b " + ACTIVE + " GROUP BY b.size")
   Set<Size> searchSizes(Boolean showAll);
 
-  @Query(value = "SELECT b.size FROM Boquet b, Category c " + ACTIVE_CATEGORY + " GROUP BY b.size")
+  @Query(value = "SELECT b.size FROM Boquet b " + ACTIVE_CATEGORY + " GROUP BY b.size")
   Set<Size> searchSizesyCategoriesId(Boolean showAll, Integer id);
 
   @Query(value = "SELECT clr FROM Boquet b JOIN b.colors clr " + ACTIVE + " GROUP BY clr")
   Set<Integer> searchColors(Boolean showAll);
 
-  @Query(value = "SELECT clr FROM Boquet b JOIN b.colors clr, Category c " + ACTIVE_CATEGORY + " GROUP BY clr")
+  @Query(value = "SELECT clr FROM Boquet b JOIN b.colors clr " + ACTIVE_CATEGORY + " GROUP BY clr")
   Set<Integer> searchColorsByCategoriesId(Boolean showAll, Integer id);
 
   @Query(value = "SELECT MIN(b.price) AS min, MAX(b.price) AS max FROM Boquet b " + ACTIVE)
   MinMaxPrice findFirstPrices(Boolean showAll);
 
-  @Query(value = "SELECT MIN(b.price) AS min, MAX(b.price) AS max FROM Boquet b, Category c " + ACTIVE_CATEGORY)
+  @Query(value = "SELECT MIN(b.price) AS min, MAX(b.price) AS max FROM Boquet b " + ACTIVE_CATEGORY)
   MinMaxPrice findFirstPricesByCategoriesId(Boolean showAll, Integer id);
 }
