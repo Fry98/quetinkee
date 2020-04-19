@@ -2,6 +2,7 @@ package com.quetinkee.eshop.service;
 
 import com.quetinkee.eshop.dao.CategoryDao;
 import com.quetinkee.eshop.model.Category;
+import com.quetinkee.eshop.model.projection.CategoryList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,12 +34,6 @@ public class CategoryService {
   public Category find(Integer id, boolean showAll) {
     if (showAll) return this.find(id);
     return this.dao.findByIdAndActiveTrue(id);
-  }
-
-  @Transactional(readOnly = true)
-  public List<Category> findAll(boolean showAll) {
-    if (showAll) return this.dao.findAll();
-    return this.dao.findAllByActiveTrue();
   }
 
   @Transactional(readOnly = true)

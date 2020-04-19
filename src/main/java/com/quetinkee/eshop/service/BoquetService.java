@@ -28,23 +28,9 @@ public class BoquetService {
   }
 
   @Transactional(readOnly = true)
-  public Boquet find(Integer id, boolean showAll) {
-    if (showAll) return this.find(id);
-    return this.dao.findByIdAndActiveTrue(id);
-  }
-
-  @Transactional(readOnly = true)
-  public Slice<Boquet> findAll(Integer pageNum, Integer pageSize, boolean showAll) {
+  public Slice<Boquet> findAll(Integer pageNum, Integer pageSize) {
     Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("name"));
-    if (showAll) return this.dao.findAllBy(paging);
-    return this.dao.findAllByActiveTrue(paging);
-  }
-
-  @Transactional(readOnly = true)
-  public Slice<Boquet> findAllInCategory(Integer id, Integer pageNum, Integer pageSize, boolean showAll) {
-    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("name"));
-    if (showAll) return this.dao.findAllByCategoriesId(id, paging);
-    return this.dao.findAllByCategoriesIdAndActiveTrue(id, paging);
+    return this.dao.findAllBy(paging);
   }
 
   @Transactional
