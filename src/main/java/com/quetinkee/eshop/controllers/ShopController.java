@@ -30,13 +30,13 @@ public class ShopController {
     return this.shopService.findCategories(this.isAdmin(authentication));
   }
 
-  @GetMapping(value = {"/search","/search/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-  public PanelInfo getSearchInfo(@PathVariable(name = "id", required = false) Integer id, Authentication authentication) {
+  @GetMapping(value = {"/filter","/filter/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
+  public PanelInfo getFilterInfo(@PathVariable(name = "id", required = false) Integer id, Authentication authentication) {
     return this.shopService.getSearchInfo(id, this.isAdmin(authentication));
   }
 
-  @PostMapping(value = {"/search","/search/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-  public SlimSlice<BoquetList> getSearchResults(@PathVariable("id") Integer id, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size, Authentication authentication) {
+  @PostMapping(value = {"/filter","/filter/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
+  public SlimSlice<BoquetList> getFilterResults(@PathVariable("id") Integer id, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size, Authentication authentication) {
     // TODO
     return null;
   }
