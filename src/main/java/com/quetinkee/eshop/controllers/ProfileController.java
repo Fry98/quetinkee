@@ -12,8 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,7 +61,7 @@ public class ProfileController {
    * @return
    */
   @PreAuthorize("isAuthenticated()")
-  @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity update(@RequestBody User newUser, Authentication authentication) {
     User original = this.getCurrentUser(authentication);
     this.service.update(original, newUser);
@@ -96,7 +96,7 @@ public class ProfileController {
    * @return
    */
   @PreAuthorize("isAuthenticated()")
-  @PutMapping(value = "/billing", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PatchMapping(value = "/billing", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity updateAddressBilling(@RequestBody Address address, Authentication authentication) {
     User user = this.getCurrentUser(authentication);
     if (user.getAddressBilling() == null) {
@@ -107,7 +107,7 @@ public class ProfileController {
   }
 
   @PreAuthorize("isAuthenticated()")
-  @PutMapping(value = "/delivery", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PatchMapping(value = "/delivery", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity updateAddressDelivery(@RequestBody Address address, Authentication authentication) {
     User user = this.getCurrentUser(authentication);
     if (user.getAddressDelivery() == null) {

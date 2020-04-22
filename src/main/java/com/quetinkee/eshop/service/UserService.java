@@ -59,33 +59,6 @@ public class UserService {
   }
 
   @Transactional
-  public void update(User original, User user) {
-    Objects.requireNonNull(original);
-    Objects.requireNonNull(user);
-
-    // password
-    if (user.getPassword() != null) {
-      if (!this.checkPassword(user.getPassword())) {
-        throw new ValidationError("Zadejte heslo");
-      }
-      original.setPassword(user.getPassword());
-      this.encodePassword(original);
-    }
-
-    if (user.getFirstName() != null) {
-      original.setFirstName(user.getFirstName());
-    }
-    if (user.getLastName() != null) {
-      original.setLastName(user.getLastName());
-    }
-    if (user.getPhone() != null) {
-      original.setFirstName(user.getFirstName());
-    }
-
-    this.dao.save(user);
-  }
-
-  @Transactional
   public void delete (User user) {
     Objects.requireNonNull(user);
     // TODO: check pending orders first
@@ -142,6 +115,55 @@ public class UserService {
   }
 
   @Transactional
+  public void update(User original, User user) {
+    Objects.requireNonNull(original);
+    Objects.requireNonNull(user);
+
+    // password
+    if (user.getPassword() != null) {
+      if (!this.checkPassword(user.getPassword())) {
+        throw new ValidationError("Zadejte heslo");
+      }
+      original.setPassword(user.getPassword());
+      this.encodePassword(original);
+    }
+
+    if (user.getFirstName() != null) {
+      original.setFirstName(user.getFirstName());
+    }
+    if (user.getLastName() != null) {
+      original.setLastName(user.getLastName());
+    }
+    if (user.getPhone() != null) {
+      original.setFirstName(user.getFirstName());
+    }
+
+    // delivery address update / create
+    if (user.getAddressDelivery() != null) {
+      if (original.getAddressDelivery() == null) {
+        original.setAddressDelivery(user.getAddressDelivery());
+      }
+      else {
+        this.updateAddress(original.getAddressDelivery(), user.getAddressDelivery());
+      }
+    }
+
+    //billing address update / create / remove
+    if (user.getAddressBilling() != null) {
+      if (original.getAddressBilling() != null && this.isAddressEmpty(user.getAddressBilling())) {
+        original.setAddressBilling(null);
+      }
+      else if (original.getAddressBilling() == null) {
+        original.setAddressBilling(user.getAddressBilling());
+      }
+      else {
+        this.updateAddress(original.getAddressBilling(), user.getAddressBilling());
+      }
+    }
+    this.dao.save(original);
+  }
+
+  @Transactional
   public void updateAddress (Address original, Address address) {
     Objects.requireNonNull(original);
     Objects.requireNonNull(address);
@@ -155,7 +177,6 @@ public class UserService {
     if (address.getZip() != null) {
       original.setZip(address.getZip());
     }
-
     this.addressDao.save(original);
   }
 
@@ -169,5 +190,9 @@ public class UserService {
   public void persistAddress (Address address) {
     Objects.requireNonNull(address);
     this.addressDao.save(address);
+  }
+
+  private boolean isAddressEmpty (Address address) {
+    return address.getStreet() == null && address.getCity() == null && address.getZip() == null;
   }
 }

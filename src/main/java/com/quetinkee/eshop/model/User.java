@@ -43,12 +43,12 @@ public class User extends AbstractEntity {
   private Role role;
 
   @Valid
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(nullable = true)
   private Address addressDelivery = null;
 
   @Valid
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(nullable = true)
   private Address addressBilling = null;
 
