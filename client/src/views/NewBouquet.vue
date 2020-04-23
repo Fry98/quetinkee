@@ -1,7 +1,7 @@
 <template>
   <div id='new-bouquet'>
     <div class='nb-wrap'>
-      <div class='form'>
+      <form>
         <h1>Nová kytice</h1>
         <label>
           <span>Název </span>
@@ -41,8 +41,8 @@
             </span>
           <input type='number' v-model='flower.count' min='1'>
         </div>
-        <div class='btn' :class='{ "disabled": saveIsDisabled }'>Uložit</div>
-      </div>
+        <button class='btn' :class='{ "disabled": saveIsDisabled }' :disabled='saveIsDisabled' type='submit'>Uložit</button>
+      </form>
     </div>
   </div>
 </template>
@@ -86,6 +86,7 @@
 
   .btn {
     margin-top: 15px;
+    align-self: center;
     &.disabled {
       background-color: $lightGrey;
       color: $darkGrey;
@@ -166,34 +167,38 @@
     padding: 30px 80px;
   }
 
-  .form label {
+  form {
     display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+    flex-direction: column;
 
-    span {
-      width: 130px;
-      float: left;
-      font-weight: bold;
+    label {
+      align-items: center;
+      margin-bottom: 10px;
+
+      span {
+        width: 130px;
+        float: left;
+        font-weight: bold;
+      }
+
+      input, select {
+        width: 200px;
+        border: transparent;
+        font-size: 1.2em;
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+        border-radius: 7px;
+        padding: 3px 10px 3px 10px;
+      }
+
+      select {
+        width: 220px;
+      }
     }
 
-    input, select {
-      width: 200px;
-      border: transparent;
-      font-size: 1.2em;
-      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
-      border-radius: 7px;
-      padding: 3px 10px 3px 10px;
+    h1 {
+      text-align: center;
+      padding: 0;
+      margin: 0 0 15px;
     }
-
-    select {
-      width: 220px;
-    }
-  }
-
-  h1 {
-    text-align: center;
-    padding: 0;
-    margin: 0 0 15px;
   }
 </style>
