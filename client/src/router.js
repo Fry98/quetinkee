@@ -5,6 +5,8 @@ import Login from './views/Login';
 import Signup from './views/Signup';
 import Profile from './views/Profile';
 import MainLayout from './views/MainLayout';
+import NewBouquet from "./views/NewBouquet";
+import AdminLayout from "./views/AdminLayout";
 import ProductDetail from './views/ProductDetail';
 import store from './store';
 
@@ -31,6 +33,17 @@ const router = new Router({
         {
           path: '/detail',
           component: ProductDetail
+        }
+      ]
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminLayout,
+      children: [
+        {
+          path: '/new-bouquet',
+          component: NewBouquet
         }
       ]
     },

@@ -2,7 +2,8 @@ import Vue from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
-  faStar as faStarRegular
+  faStar as faStarRegular,
+  faTrashAlt
 } from '@fortawesome/free-regular-svg-icons';
 import {
   faUser,
@@ -32,5 +33,6 @@ library.add(faStar);
 library.add(faStarRegular);
 library.add(faArrowDown);
 library.add(faArrowUp);
+library.add(faTrashAlt);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
