@@ -21,7 +21,7 @@ public class Inventory extends AbstractEntity {
     private boolean active;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "inventories", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "flower", fetch = FetchType.LAZY)
     public Set<FlowersInStock> flowersCounts;
 
     public Inventory(){
