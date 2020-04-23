@@ -14,9 +14,6 @@ export default {
   components: {
     Navbar,
     Modal
-  },
-  created() {
-    this.$store.dispatch('loadUser');
   }
 }
 </script>
@@ -36,5 +33,6 @@ export default {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    overflow: hidden;
   }
 </style>

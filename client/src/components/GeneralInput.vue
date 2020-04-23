@@ -31,9 +31,6 @@ export default {
     flex-direction: row;
     margin-bottom: 15px;
     font-size: 1.1em;
-    &:last-child {
-      margin: 0;
-    }
     & > input {
       font-size: .9em;
       border: 1px solid white;

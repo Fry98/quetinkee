@@ -62,10 +62,10 @@ public class ProfileController {
    */
   @PreAuthorize("isAuthenticated()")
   @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity update(@RequestBody User newUser, Authentication authentication) {
+  public User update(@RequestBody User newUser, Authentication authentication) {
     User original = this.getCurrentUser(authentication);
-    this.service.update(original, newUser);
-    return new ResponseEntity(HttpStatus.OK);
+    User user = this.service.update(original, newUser);
+    return user;
   }
 
   /**
