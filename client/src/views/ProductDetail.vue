@@ -29,7 +29,7 @@
         <div class="cart-add">
           <div class="count">
             <div class="quantity">
-              <input type="number" v-model="count"/>
+              <input type="number" v-model="count" readonly="" />
               <div class="q-up" @click="quantityAdd">
                 <font-awesome-icon icon="arrow-up"/>
               </div>
@@ -39,7 +39,7 @@
             </div>
           </div>
           <div class="cart-button">
-            <button class="button">
+            <button class="button" @click="addToCart()">
               <svg data-v-50bb8ed5="" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cart-plus"
                    role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" id="cart"
                    class="svg-inline--fa fa-cart-plus fa-w-18">
@@ -69,6 +69,44 @@
         scelerisque eu, varius gravida enim. Nam quis ex a mauris congue tincidunt. Mauris placerat ligula sem.
       </div>
       <div class="reviews" v-show="!description">
+        <div class="review-form">
+          <div class="rating">
+            <label for="rating-1">
+              <span class="star" v-bind:class="{fill: stars >= 1}">
+                <font-awesome-icon :icon="['fas', 'star']"/>
+              </span>
+            </label>
+            <input type="radio" id="rating-1" name="rating" v-model="stars" value="1"/>
+            <label for="rating-2">
+              <span class="star" v-bind:class="{fill: stars >= 2}">
+                <font-awesome-icon :icon="['fas', 'star']"/>
+              </span>
+            </label>
+            <input type="radio" id="rating-2" name="rating" v-model="stars" value="2"/>
+            <label for="rating-3">
+              <span class="star" v-bind:class="{fill: stars >= 3}">
+                <font-awesome-icon :icon="['fas', 'star']"/>
+              </span>
+            </label>
+            <input type="radio" id="rating-3" name="rating" v-model="stars" value="3"/>
+            <label for="rating-4">
+              <span class="star" v-bind:class="{fill: stars >= 4}">
+                <font-awesome-icon :icon="['fas', 'star']"/>
+              </span>
+            </label>
+            <input type="radio" id="rating-4" name="rating" v-model="stars" value="4"/>
+            <label for="rating-5">
+              <span class="star" v-bind:class="{fill: stars >= 5}">
+                <font-awesome-icon :icon="['fas', 'star']"/>
+              </span>
+            </label>
+            <input type="radio" id="rating-5" name="rating" v-model="stars" value="5"/>
+          </div>
+          <textarea v-model="text" title=""/><br/>
+          <button class="button" @click="submitForm">Přidat hodnocení</button>
+        </div>
+
+        <h2>Recenze</h2>
         <div class="review">
           <div class="rating">
             <span class="star fill"><font-awesome-icon :icon="['fas', 'star']"/></span>
@@ -140,7 +178,9 @@
           {name: 'Nazev kytice', price: 899},
           {name: 'Nazev kytice', price: 899},
           {name: 'Nazev kytice', price: 899}
-        ]
+        ],
+        stars: 0,
+        text: ''
       }
     },
     methods: {
@@ -154,6 +194,26 @@
       },
       showDetail(val) {
         this.description = val;
+      },
+      async addToCart(){
+        if(this.count < 1){
+          this.count = 1;
+        }
+
+
+      },
+      async submitForm() {
+        if (this.stars === 0) {
+          this.$store.dispatch('openModal', 'Zadejte hodnocení');
+          return;
+        }
+
+        if (this.text.trim().length === 0) {
+          this.$store.dispatch('openModal', 'Zadejte text hodnocení');
+          return;
+        }
+
+
       }
     }
   }
@@ -167,7 +227,6 @@
   .text-center {
     text-align: center;
   }
-
 
 
   .bouquet-all {
@@ -238,11 +297,11 @@
             position: relative;
 
             input {
-              width: 25px;
-              height: 15px;
+              width: 30px;
+              height: 25px;
               border: 1px solid $darkGrey;
               border-radius: 10px;
-              padding: 15px 25px;
+              padding: 10px 25px;
               font-size: 1.5rem;
             }
 
@@ -343,6 +402,61 @@
       .reviews {
         margin: 0 1rem;
 
+        .review-form {
+          .rating {
+            .star {
+              color: $midGrey;
+
+              &.fill {
+                svg {
+                  color: $mainOrange;
+                }
+              }
+            }
+
+            input {
+              opacity: 0;
+              position: absolute;
+            }
+          }
+
+          textarea {
+            width: 25rem;
+            height: 10rem;
+            resize: none;
+            font-size: .9em;
+            border: 1px solid white;
+            margin: 10px 0;
+            padding: 7px 10px;
+            border-radius: 7px;
+            box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+            box-sizing: border-box;
+            outline: none;
+
+            flex: 1;
+
+            &:focus {
+              border-color: $mainOrange;
+            }
+          }
+
+          .button {
+            border: none;
+            border-radius: 7px;
+            box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+            background: $mainBlue;
+            color: white;
+            padding: 7px 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition-duration: .2s;
+
+            &:hover {
+              background: $darkBlue;
+            }
+          }
+        }
+
         .review {
           margin-bottom: 2rem;
 
@@ -365,7 +479,7 @@
     .recommended {
       padding: 2rem 0;
 
-      h2{
+      h2 {
         font-size: 30px;
         font-weight: 600;
       }
