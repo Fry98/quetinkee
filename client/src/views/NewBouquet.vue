@@ -18,6 +18,55 @@
           <input v-model='price' type='number' step='.01'>
         </label>
         <label>
+          <span>Barvy </span>
+          <div id='colors'>
+            <div class="color-checkbox" style='background-color: #FFF' @click='handleColorClick(0)'>
+              <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[0]}'></font-awesome-icon>
+            </div>
+            <div class="color-checkbox" style='background-color: #FFF281' @click='handleColorClick(1)'>
+              <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[1]}'></font-awesome-icon>
+            </div>
+            <div class="color-checkbox" style='background-color: #FFB74A' @click='handleColorClick(2)'>
+              <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[2]}'></font-awesome-icon>
+            </div>
+            <div class="color-checkbox" style='background-color: #FF4A4A' @click='handleColorClick(3)'>
+              <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[3]}'></font-awesome-icon>
+            </div>
+            <div class="color-checkbox" style='background-color: #FF63AE' @click='handleColorClick(4)'>
+              <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[4]}'></font-awesome-icon>
+            </div>
+            <div class="color-checkbox" style='background-color: #CB89FF' @click='handleColorClick(5)'>
+              <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[5]}'></font-awesome-icon>
+            </div>
+            <div class="color-checkbox" style='background-color: #7785FF' @click='handleColorClick(6)'>
+              <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[6]}'></font-awesome-icon>
+            </div>
+            <div class="color-checkbox" style='background-color: #8EEBFF' @click='handleColorClick(7)'>
+              <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[7]}'></font-awesome-icon>
+            </div>
+            <div class="color-checkbox" style='background-color: #7AFFAF' @click='handleColorClick(8)'>
+              <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[8]}'></font-awesome-icon>
+            </div>
+            <div class="color-checkbox" style='background-color: #82BD66' @click='handleColorClick(9)'>
+              <font-awesome-icon icon='check' :class='{"clr-show": selectedColors[9]}'></font-awesome-icon>
+            </div>
+          </div>
+        </label>
+        <label>
+          <span>Velikost </span>
+          <div id='sizes'>
+            <span :class='{"checkbox-input": true, selected: selectedSize === 0}' @click='handleSizeClick(0)'>
+              Malá
+            </span>
+            <span :class='{"checkbox-input": true, selected: selectedSize === 1}' @click='handleSizeClick(1)'>
+              Střední
+            </span>
+            <span :class='{"checkbox-input": true, selected: selectedSize === 2}' @click='handleSizeClick(2)'>
+              Velká
+            </span>
+          </div>
+        </label>
+        <label>
           <span>Foto </span>
           <!-- TODO add image uploader -->
           <div class='photo-uploader'>+</div>
@@ -41,7 +90,8 @@
             </span>
           <input type='number' v-model='flower.count' min='1'>
         </div>
-        <button class='btn' :class='{ "disabled": saveIsDisabled }' :disabled='saveIsDisabled' type='submit'>Uložit</button>
+        <button class='btn' :class='{ "disabled": saveIsDisabled }' :disabled='saveIsDisabled' type='submit'>Uložit
+        </button>
       </form>
     </div>
   </div>
@@ -58,12 +108,19 @@
         selectedCategories: ['Nové'],
         flowers: ['Bílá růže', 'Červená růže', 'Modrá růže', 'Gerbera'],
         selectedFlowers: [],
-        selectedFlower: ''
+        selectedFlower: '',
+        selectedColors: [false, false, false, false, false, false, false, false, false, false],
+        selectedSize: null,
       }
     },
     computed: {
       saveIsDisabled() {
-        return this.selectedFlowers.length < 1 || this.selectedCategories.length < 1 || this.bouquetName === '' || this.price === '';
+        return this.selectedFlowers.length < 1 ||
+            this.selectedCategories.length < 1 ||
+            this.bouquetName === '' ||
+            this.price === '' ||
+            this.selectedSize === null ||
+            !this.selectedColors.find(value => value === true);
       }
     },
     methods: {
@@ -75,6 +132,12 @@
       },
       removeFlower(flowerName) {
         this.selectedFlowers = this.selectedFlowers.filter((value => value.name !== flowerName));
+      },
+      handleSizeClick(size) {
+        this.selectedSize = size
+      },
+      handleColorClick(color) {
+        this.$set(this.selectedColors, color, !this.selectedColors[color]);
       }
     }
   }
@@ -87,6 +150,7 @@
   .btn {
     margin-top: 15px;
     align-self: center;
+
     &.disabled {
       background-color: $lightGrey;
       color: $darkGrey;
@@ -172,10 +236,11 @@
     flex-direction: column;
 
     label {
+      display: flex;
       align-items: center;
       margin-bottom: 10px;
 
-      span {
+      &>span {
         width: 130px;
         float: left;
         font-weight: bold;
@@ -192,6 +257,83 @@
 
       select {
         width: 220px;
+      }
+
+      #sizes {
+        display: flex;
+        width: 220px;
+        justify-content: stretch;
+
+        .checkbox-input {
+          flex-grow: 1;
+          user-select: none;
+          color: $darkGrey;
+          transition: .15s;
+          cursor: pointer;
+          padding: 6px 8px;
+          background-color: white;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.40);
+          text-align: center;
+          font-weight: bold;
+
+          &.selected {
+            background-color: $mainBlue;
+            color: white;
+          }
+
+          &:last-child {
+            border-radius: 0 7px 7px 0;
+          }
+
+          &:first-child {
+            border-radius: 7px 0 0 7px;
+          }
+
+          &:hover:not(.selected) {
+            background-color: $almostWhite;
+          }
+        }
+      }
+
+      #colors {
+        justify-content: space-between;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        width: 220px;
+
+        .clr-show {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+
+        .color-checkbox {
+          cursor: pointer;
+          user-select: none;
+          margin: 4px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 35px;
+          width: 35px;
+          color: white;
+          font-size: 1.2em;
+          box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+          border-radius: 7px;
+          transition: .2s;
+          /*flex: 1 0 17%;*/
+          &:hover {
+            filter: brightness(90%);
+          }
+
+          svg {
+            stroke: black;
+            stroke-width: 20;
+            opacity: 0;
+            transform: translateY(10px);
+            transition-duration: .2s;
+          }
+        }
       }
     }
 
