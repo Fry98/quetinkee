@@ -22,7 +22,7 @@ public class Inventory extends AbstractEntity {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "inventories", fetch = FetchType.LAZY)
-    public Set<BouquetCount> boquetsCounts;
+    public Set<FlowersInStock> flowersCounts;
 
     public Inventory(){
 
@@ -49,29 +49,29 @@ public class Inventory extends AbstractEntity {
         this.active = active;
     }
 
-    public Set<BouquetCount> getBoquets() {
-        return this.boquetsCounts;
+    public Set<FlowersInStock> getFlowers() {
+        return this.flowersCounts;
     }
 
-    public void addBoquet(Boquet boquet ,int count) {
-        Objects.requireNonNull(boquet);
-        BouquetCount newCount = new BouquetCount(boquet);
+    public void addFlower(Flower flower ,int count) {
+        Objects.requireNonNull(flower);
+        FlowersInStock newCount = new FlowersInStock(flower);
         newCount.setCount(count);
-        if (this.boquetsCounts == null) {
-            this.boquetsCounts = new HashSet<BouquetCount>();
+        if (this.flowersCounts == null) {
+            this.flowersCounts = new HashSet<FlowersInStock>();
         }
-        this.boquetsCounts.add(newCount);
+        this.flowersCounts.add(newCount);
     }
 
-    public void setBoquetCount(BouquetCount boquetCount, int count) {
-        Objects.requireNonNull(boquetCount);
-        if (this.boquetsCounts != null) {
-            boquetCount.setCount(count);
+    public void setFlowersCount(FlowersInStock flowerCount, int count) {
+        Objects.requireNonNull(flowerCount);
+        if (this.flowersCounts != null) {
+            flowerCount.setCount(count);
         }
     }
 
-    public void setBoquets(Set<BouquetCount> boquets) {
-        this.boquetsCounts = boquets;
+    public void setFlowers(Set<FlowersInStock> flowers) {
+        this.flowersCounts = flowers;
     }
 
 }

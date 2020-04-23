@@ -8,28 +8,28 @@ import java.util.Objects;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class BouquetCount extends AbstractEntity {
+public class FlowersInStock extends AbstractEntity {
 
     @Id
     @ManyToOne
     @JoinColumn
-    Boquet bouquet;
+    Flower flower;
 
     @Basic(optional = false)
     @Column(nullable = false)
     private Integer count;
 
 
-    public BouquetCount() {
+    public FlowersInStock() {
 
     }
 
-    public BouquetCount(Boquet boquet) {
-        this.bouquet = boquet;
+    public FlowersInStock(Flower flower) {
+        this.flower = flower;
     }
 
-    public BouquetCount(Boquet boquet, int kkount){
-        this.bouquet = boquet;
+    public FlowersInStock(Flower flower, int kkount){
+        this.flower = flower;
         this.count = kkount;
     }
 
@@ -37,8 +37,8 @@ public class BouquetCount extends AbstractEntity {
         this.count = kkount;
     }
 
-    public Boquet getBouquet(){
-        return this.bouquet;
+    public Flower getFlower(){
+        return this.flower;
     }
     public int getCount(){
         return this.count;
