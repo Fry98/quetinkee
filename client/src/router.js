@@ -9,6 +9,7 @@ import NewBouquet from "./views/NewBouquet";
 import AdminLayout from "./views/AdminLayout";
 import ProductDetail from './views/ProductDetail';
 import store from './store';
+import ManageFlowers from "./views/ManageFlowers";
 
 Vue.use(Router);
 
@@ -31,7 +32,7 @@ const router = new Router({
           component: Home
         },
         {
-          path: '/detail',
+          path: 'detail',
           component: ProductDetail
         }
       ]
@@ -42,7 +43,11 @@ const router = new Router({
       component: AdminLayout,
       children: [
         {
-          path: '/new-bouquet',
+          path: 'manage-flowers',
+          component: ManageFlowers
+        },
+        {
+          path: 'new-bouquet',
           component: NewBouquet
         }
       ]
