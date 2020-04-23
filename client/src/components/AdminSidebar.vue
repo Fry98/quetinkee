@@ -4,6 +4,7 @@
     <h2>Kytice</h2>
     <ul>
       <li>Vytvořit novou kytici</li>
+      <li>Spravovat květiny</li>
     </ul>
     <h2>Sklad</h2>
     <ul>
