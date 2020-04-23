@@ -29,7 +29,7 @@
         <div class="cart-add">
           <div class="count">
             <div class="quantity">
-              <input type="number" v-model="count"/>
+              <input type="number" v-model="count" readonly="" />
               <div class="q-up" @click="quantityAdd">
                 <font-awesome-icon icon="arrow-up"/>
               </div>
@@ -39,7 +39,7 @@
             </div>
           </div>
           <div class="cart-button">
-            <button class="button">
+            <button class="button" @click="addToCart()">
               <svg data-v-50bb8ed5="" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cart-plus"
                    role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" id="cart"
                    class="svg-inline--fa fa-cart-plus fa-w-18">
@@ -195,6 +195,13 @@
       showDetail(val) {
         this.description = val;
       },
+      async addToCart(){
+        if(this.count < 1){
+          this.count = 1;
+        }
+
+
+      },
       async submitForm() {
         if (this.stars === 0) {
           this.$store.dispatch('openModal', 'Zadejte hodnocení');
@@ -290,11 +297,11 @@
             position: relative;
 
             input {
-              width: 25px;
-              height: 15px;
+              width: 30px;
+              height: 25px;
               border: 1px solid $darkGrey;
               border-radius: 10px;
-              padding: 15px 25px;
+              padding: 10px 25px;
               font-size: 1.5rem;
             }
 
