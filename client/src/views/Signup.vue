@@ -198,7 +198,7 @@
           });
           this.$router.push('/');
         } catch (err) {
-          this.$store.dispatch('openModal', err.response.data);
+          this.$store.dispatch('openModal', err.response.data.message);
         }
       }
     }

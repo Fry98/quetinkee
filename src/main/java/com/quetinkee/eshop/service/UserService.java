@@ -115,7 +115,7 @@ public class UserService {
   }
 
   @Transactional
-  public void update(User original, User user) {
+  public User update(User original, User user) {
     Objects.requireNonNull(original);
     Objects.requireNonNull(user);
 
@@ -135,7 +135,7 @@ public class UserService {
       original.setLastName(user.getLastName());
     }
     if (user.getPhone() != null) {
-      original.setFirstName(user.getFirstName());
+      original.setPhone(user.getPhone());
     }
 
     // delivery address update / create
@@ -161,6 +161,7 @@ public class UserService {
       }
     }
     this.dao.save(original);
+    return original;
   }
 
   @Transactional
