@@ -1,6 +1,7 @@
 package com.quetinkee.eshop.service;
 
 import com.quetinkee.eshop.dao.FlowerDao;
+import com.quetinkee.eshop.model.Boquet_;
 import com.quetinkee.eshop.model.Flower;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class FlowerService {
 
   @Transactional(readOnly = true)
   public Slice<Flower> findAll(Integer pageNum, Integer pageSize) {
-    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("name"));
+    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Boquet_.NAME));
     return this.dao.findAllBy(paging);
   }
 

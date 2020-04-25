@@ -68,7 +68,7 @@ public class SystemInitializer {
     flowerService.persist(flower3);
 
 
-    Boquet boqA = new Boquet("Nejhezčí kytice", "<p>popis A s <strong>HTML</strong></p>", "100.10", Size.SMALL, true);
+    Boquet boqA = new Boquet("Nejhezčí kytice", "<p>popis A s <strong>HTML</strong></p>", "", "100.10", Size.SMALL, true);
     boqA.addColor(Color.YELLOW);
     boqA.addCategory(catAction);
     boqA.addCategory(catNew);
@@ -76,7 +76,7 @@ public class SystemInitializer {
     boqA.addBoquetFlowerCount(bqfc1);
     boquetService.persist(boqA);
 
-    Boquet boqB = new Boquet("Kytice hezká", "<p>popis B s <strong>HTML</strong></p>", "200", Size.MEDIUM, true);
+    Boquet boqB = new Boquet("Kytice hezká", "<p>popis B s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "200", Size.MEDIUM, true);
     boqB.addColor(Color.RED);
     BoquetFlowerCount bqfc2 = new BoquetFlowerCount(flower2, 2);
     boqB.addBoquetFlowerCount(bqfc2);
@@ -85,7 +85,7 @@ public class SystemInitializer {
     boqB.addCategory(catHide);
     boquetService.persist(boqB);
 
-    Boquet boqC = new Boquet("Kyticke hezčí", "<p>popis C s <strong>HTML</strong></p>", "9999999.9999", Size.LARGE, true);
+    Boquet boqC = new Boquet("Kyticke hezčí", "<p>popis C s <strong>HTML</strong></p>", null, "9999999.9999", Size.LARGE, true);
     boqC.addColor(Color.PINK);
     boqC.addColor(Color.BLUE);
     boqC.addCategory(catAction);
@@ -98,7 +98,7 @@ public class SystemInitializer {
     boqC.addBoquetFlowerCount(bqfc4);
     boquetService.persist(boqC);
 
-    Boquet boqD = new Boquet("the EGG", "<p>popis C s <strong>HTML</strong></p>", "9999999.9999", Size.LARGE, false);
+    Boquet boqD = new Boquet("the EGG", "<p>popis C s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "9999999.9999", Size.LARGE, false);
     boqD.addColor(Color.LIME);
     boqD.addCategory(catAction);
     boqD.addCategory(catBirth);

@@ -27,6 +27,10 @@ public class Boquet extends AbstractEntity {
   @Basic(optional = false)
   @Column(nullable = false)
   @Lob
+  private String perex;
+
+  @Column(nullable = true)
+  @Lob
   private String description;
 
   @Digits(integer = 11, fraction = 2, message = "Cena je ve špatném formátu")
@@ -59,8 +63,9 @@ public class Boquet extends AbstractEntity {
   public Boquet() {
   }
 
-  public Boquet(String name, String description, String price, Size size, boolean active) {
+  public Boquet(String name, String perex, String description, String price, Size size, boolean active) {
     this.name = name;
+    this.perex = perex;
     this.description = description;
     this.setPrice(price);
     this.size = size;
@@ -73,6 +78,14 @@ public class Boquet extends AbstractEntity {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getPerex() {
+    return this.perex;
+  }
+
+  public void setPerex(String perex) {
+    this.perex = perex;
   }
 
   public String getDescription() {

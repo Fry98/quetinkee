@@ -1,6 +1,7 @@
 package com.quetinkee.eshop.service;
 
 import com.quetinkee.eshop.dao.CategoryDao;
+import com.quetinkee.eshop.model.Boquet_;
 import com.quetinkee.eshop.model.Category;
 import com.quetinkee.eshop.model.projection.CategoryList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class CategoryService {
 
   @Transactional(readOnly = true)
   public Slice<Category> findAll(Integer pageNum, Integer pageSize, boolean showAll) {
-    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("name"));
+    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Boquet_.NAME));
     if (showAll) return this.dao.findAllBy(paging);
     return this.dao.findAllByActiveTrue(paging);
   }

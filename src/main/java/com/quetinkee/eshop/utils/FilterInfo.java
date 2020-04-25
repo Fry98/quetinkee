@@ -6,7 +6,7 @@ import com.quetinkee.eshop.model.projection.FlowerList;
 import com.quetinkee.eshop.model.projection.MinMaxPrice;
 import java.util.Set;
 
-public class PanelInfo {
+public class FilterInfo {
 
   private final Set<CategoryList> categories;
   private final Set<FlowerList> flowers;
@@ -14,7 +14,7 @@ public class PanelInfo {
   private final Set<Size> sizes;
   private final MinMaxPrice prices;
 
-  public PanelInfo(final Set<CategoryList> categories, final Set<FlowerList> flowers, final Set<Integer> colors, final Set<Size> sizes, final MinMaxPrice prices) {
+  public FilterInfo(final Set<CategoryList> categories, final Set<FlowerList> flowers, final Set<Integer> colors, final Set<Size> sizes, final MinMaxPrice prices) {
     this.categories = categories;
     this.flowers = flowers;
     this.colors = colors;
