@@ -7,7 +7,7 @@ import com.quetinkee.eshop.model.projection.BoquetList;
 import com.quetinkee.eshop.service.ShopService;
 import com.quetinkee.eshop.utils.FilterInfo;
 import com.quetinkee.eshop.utils.FilterRequest;
-import java.util.Set;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
@@ -29,7 +29,7 @@ public class ShopController {
   private ShopService shopService;
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public Set<CategoryList> getFilters(Authentication authentication) {
+  public List<CategoryList> getFilters(Authentication authentication) {
     return this.shopService.findCategories(this.isAdmin(authentication));
   }
 

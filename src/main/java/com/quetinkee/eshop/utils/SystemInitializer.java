@@ -1,5 +1,6 @@
 package com.quetinkee.eshop.utils;
 
+import com.quetinkee.eshop.model.Address;
 import com.quetinkee.eshop.model.Boquet;
 import com.quetinkee.eshop.model.BoquetFlowerCount;
 import com.quetinkee.eshop.model.Category;
@@ -43,20 +44,21 @@ public class SystemInitializer {
     admin.setPassword("heslo");
     admin.setPhone("123456");
     admin.setRole(Role.ADMIN);
+    admin.setAddressDelivery(new Address("Street", "City", "12345"));
     this.userService.persist(admin);
 
 
-    Category catNew = new Category("Nové", true);
+    Category catNew = new Category("Nové", 1, true);
     categoryService.persist(catNew);
-    Category catAction = new Category("V akci", true);
+    Category catAction = new Category("V akci", 2, true);
     categoryService.persist(catAction);
-    Category catSeason = new Category("Sezonní nabídka", true);
+    Category catSeason = new Category("Sezonní nabídka", 3, true);
     categoryService.persist(catSeason);
-    Category catBirth = new Category("Narozeniny", true);
+    Category catBirth = new Category("Narozeniny", 4, true);
     categoryService.persist(catBirth);
-    Category catDed = new Category("Pohřeb", true);
+    Category catDed = new Category("Pohřeb", 5, true);
     categoryService.persist(catDed);
-    Category catHide = new Category("Překvapení", false);
+    Category catHide = new Category("Překvapení", 1, false);
     categoryService.persist(catHide);
 
 

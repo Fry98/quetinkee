@@ -5,6 +5,8 @@ import com.quetinkee.eshop.dao.CategoryDao;
 import com.quetinkee.eshop.dao.FilterDao;
 import com.quetinkee.eshop.model.Boquet;
 import com.quetinkee.eshop.model.Boquet_;
+import com.quetinkee.eshop.model.Category_;
+import com.quetinkee.eshop.model.Flower_;
 import com.quetinkee.eshop.model.Size;
 import com.quetinkee.eshop.model.projection.BoquetList;
 import com.quetinkee.eshop.model.projection.CategoryList;
@@ -12,6 +14,7 @@ import com.quetinkee.eshop.model.projection.FlowerList;
 import com.quetinkee.eshop.model.projection.MinMaxPrice;
 import com.quetinkee.eshop.utils.FilterInfo;
 import com.quetinkee.eshop.utils.FilterRequest;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +40,8 @@ public class ShopService {
   }
 
   @Transactional(readOnly = true)
-  public Set<CategoryList> findCategories(boolean showAll) {
-    if (showAll) return this.categoryDao.findAllBy();
+  public List<CategoryList> findCategories(boolean showAll) {
+    if (showAll) return this.categoryDao.findAllBy(Sort.by(Category_.NAME));
     return this.categoryDao.findAllByActiveTrue();
   }
 
@@ -75,8 +78,8 @@ public class ShopService {
   }
 
   private Set<FlowerList> findFlowers(Integer id, boolean showAll) {
-    if (id == null) return this.filterDao.searchFlowers(showAll);
-    return this.filterDao.searchFlowersByCategoriesId(showAll, id);
+    if (id == null) return this.filterDao.searchFlowers(showAll, Sort.by(Flower_.NAME));
+    return this.filterDao.searchFlowersByCategoriesId(showAll, id, Sort.by(Flower_.NAME));
   }
 
   private Set<Size> findSizes(Integer id, boolean showAll) {

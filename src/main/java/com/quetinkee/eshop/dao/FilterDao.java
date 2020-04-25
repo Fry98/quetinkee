@@ -5,6 +5,7 @@ import com.quetinkee.eshop.model.Size;
 import com.quetinkee.eshop.model.projection.FlowerList;
 import com.quetinkee.eshop.model.projection.MinMaxPrice;
 import java.util.Set;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -34,8 +35,8 @@ public interface FilterDao extends JpaRepository<Boquet, Integer>,FilterDynamic 
   MinMaxPrice findFirstPricesByCategoriesId(Boolean showAll, Integer id);
 
   @Query(value = "SELECT f FROM Flower f, BoquetFlowerCount fc, Boquet b " + ACTIVE + " GROUP BY f")
-  Set<FlowerList> searchFlowers(Boolean showAll);
+  Set<FlowerList> searchFlowers(Boolean showAll, Sort sort);
 
   @Query(value = "SELECT f FROM Flower f, BoquetFlowerCount fc, Boquet b, Category c " + ACTIVE + " AND c.id = ?2 GROUP BY f")
-  Set<FlowerList> searchFlowersByCategoriesId(Boolean showAll, Integer id);
+  Set<FlowerList> searchFlowersByCategoriesId(Boolean showAll, Integer id, Sort sort);
 }

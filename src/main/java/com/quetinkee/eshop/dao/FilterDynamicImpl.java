@@ -46,7 +46,7 @@ public class FilterDynamicImpl implements FilterDynamic {
     Set<Predicate> predicates = this.getPredicates(builder, root, showAll, id, request);
 
     // query
-    List<BoquetListImpl> content = this.em.createQuery(query.where(predicates.toArray(new Predicate[predicates.size()])).orderBy(builder.asc(root.get(Boquet_.name))).select(projection))
+    List<BoquetListImpl> content = this.em.createQuery(query.where(predicates.toArray(new Predicate[predicates.size()])).distinct(true).orderBy(builder.asc(root.get(Boquet_.name))).select(projection))
             .setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize() + 1).getResultList();
 
     // find if there is more items
