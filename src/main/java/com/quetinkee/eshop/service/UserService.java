@@ -6,7 +6,10 @@ import com.quetinkee.eshop.model.Address;
 import com.quetinkee.eshop.model.User;
 import java.util.Objects;
 import com.quetinkee.eshop.model.Role;
+import com.quetinkee.eshop.model.User_;
+import com.quetinkee.eshop.model.projection.UserList;
 import com.quetinkee.eshop.utils.ValidationError;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -54,8 +57,13 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public Slice<User> findAll(Integer pageNum, Integer pageSize) {
-    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("lastName"));
+    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(User_.LAST_NAME, User_.FIRST_NAME));
     return this.dao.findAllBy(paging);
+  }
+
+  @Transactional(readOnly = true)
+  public List<UserList> getList() {
+    return this.dao.findAllBy(Sort.by(User_.LAST_NAME, User_.FIRST_NAME));
   }
 
   @Transactional
@@ -161,6 +169,7 @@ public class UserService {
       }
     }
     this.dao.save(original);
+
     return original;
   }
 

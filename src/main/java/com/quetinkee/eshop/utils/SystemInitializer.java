@@ -1,5 +1,6 @@
 package com.quetinkee.eshop.utils;
 
+import com.quetinkee.eshop.model.Address;
 import com.quetinkee.eshop.model.Boquet;
 import com.quetinkee.eshop.model.BoquetFlowerCount;
 import com.quetinkee.eshop.model.Category;
@@ -43,20 +44,21 @@ public class SystemInitializer {
     admin.setPassword("heslo");
     admin.setPhone("123456");
     admin.setRole(Role.ADMIN);
+    admin.setAddressDelivery(new Address("Street", "City", "12345"));
     this.userService.persist(admin);
 
 
-    Category catNew = new Category("Nové", true);
+    Category catNew = new Category("Nové", 1, true);
     categoryService.persist(catNew);
-    Category catAction = new Category("V akci", true);
+    Category catAction = new Category("V akci", 2, true);
     categoryService.persist(catAction);
-    Category catSeason = new Category("Sezonní nabídka", true);
+    Category catSeason = new Category("Sezonní nabídka", 3, true);
     categoryService.persist(catSeason);
-    Category catBirth = new Category("Narozeniny", true);
+    Category catBirth = new Category("Narozeniny", 4, true);
     categoryService.persist(catBirth);
-    Category catDed = new Category("Pohřeb", true);
+    Category catDed = new Category("Pohřeb", 5, true);
     categoryService.persist(catDed);
-    Category catHide = new Category("Překvapení", false);
+    Category catHide = new Category("Překvapení", 1, false);
     categoryService.persist(catHide);
 
 
@@ -68,7 +70,7 @@ public class SystemInitializer {
     flowerService.persist(flower3);
 
 
-    Boquet boqA = new Boquet("Nejhezčí kytice", "<p>popis A s <strong>HTML</strong></p>", "100.10", Size.SMALL, true);
+    Boquet boqA = new Boquet("Nejhezčí kytice", "<p>popis A s <strong>HTML</strong></p>", "", "100.10", Size.SMALL, true);
     boqA.addColor(Color.YELLOW);
     boqA.addCategory(catAction);
     boqA.addCategory(catNew);
@@ -76,7 +78,7 @@ public class SystemInitializer {
     boqA.addBoquetFlowerCount(bqfc1);
     boquetService.persist(boqA);
 
-    Boquet boqB = new Boquet("Kytice hezká", "<p>popis B s <strong>HTML</strong></p>", "200", Size.MEDIUM, true);
+    Boquet boqB = new Boquet("Kytice hezká", "<p>popis B s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "200", Size.MEDIUM, true);
     boqB.addColor(Color.RED);
     BoquetFlowerCount bqfc2 = new BoquetFlowerCount(flower2, 2);
     boqB.addBoquetFlowerCount(bqfc2);
@@ -85,7 +87,7 @@ public class SystemInitializer {
     boqB.addCategory(catHide);
     boquetService.persist(boqB);
 
-    Boquet boqC = new Boquet("Kyticke hezčí", "<p>popis C s <strong>HTML</strong></p>", "9999999.9999", Size.LARGE, true);
+    Boquet boqC = new Boquet("Kyticke hezčí", "<p>popis C s <strong>HTML</strong></p>", null, "9999999.9999", Size.LARGE, true);
     boqC.addColor(Color.PINK);
     boqC.addColor(Color.BLUE);
     boqC.addCategory(catAction);
@@ -98,7 +100,7 @@ public class SystemInitializer {
     boqC.addBoquetFlowerCount(bqfc4);
     boquetService.persist(boqC);
 
-    Boquet boqD = new Boquet("the EGG", "<p>popis C s <strong>HTML</strong></p>", "9999999.9999", Size.LARGE, false);
+    Boquet boqD = new Boquet("the EGG", "<p>popis C s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "9999999.9999", Size.LARGE, false);
     boqD.addColor(Color.LIME);
     boqD.addCategory(catAction);
     boqD.addCategory(catBirth);

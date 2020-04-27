@@ -2,6 +2,9 @@ package com.quetinkee.eshop.service;
 
 import com.quetinkee.eshop.dao.BoquetDao;
 import com.quetinkee.eshop.model.Boquet;
+import com.quetinkee.eshop.model.Boquet_;
+import com.quetinkee.eshop.model.projection.BoquetList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +32,13 @@ public class BoquetService {
 
   @Transactional(readOnly = true)
   public Slice<Boquet> findAll(Integer pageNum, Integer pageSize) {
-    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("name"));
+    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Boquet_.NAME));
     return this.dao.findAllBy(paging);
+  }
+
+  @Transactional(readOnly = true)
+  public List<BoquetList> getList() {
+    return this.dao.findAllBy(Sort.by(Boquet_.NAME));
   }
 
   @Transactional

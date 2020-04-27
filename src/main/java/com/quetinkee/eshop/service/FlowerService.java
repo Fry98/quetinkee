@@ -2,6 +2,9 @@ package com.quetinkee.eshop.service;
 
 import com.quetinkee.eshop.dao.FlowerDao;
 import com.quetinkee.eshop.model.Flower;
+import com.quetinkee.eshop.model.Flower_;
+import com.quetinkee.eshop.model.projection.FlowerList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +33,13 @@ public class FlowerService {
 
   @Transactional(readOnly = true)
   public Slice<Flower> findAll(Integer pageNum, Integer pageSize) {
-    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("name"));
+    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Flower_.NAME));
     return this.dao.findAllBy(paging);
+  }
+
+  @Transactional(readOnly = true)
+  public List<FlowerList> getList() {
+    return this.dao.findAllBy(Sort.by(Flower_.NAME));
   }
 
   @Transactional
