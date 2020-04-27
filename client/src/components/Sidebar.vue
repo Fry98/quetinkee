@@ -94,7 +94,7 @@
         priceTo: null,
         selectedFlowers: [],
         flowerOptions: ['Růže', 'Kopretiny', 'Tulipány', 'Orchideje', 'Gerbery', 'Chryzantémy'],
-        selectedSizes: [false, true, false],
+        selectedSizes: [false, false, false],
         selectedColors: [false, false, false, false, false, false, false, false, false, false],
         numberToColor: ['white', 'yellow', 'orange', 'red', 'pink', 'purple', 'blue', 'turquoise', 'seafoam', 'green']
       };

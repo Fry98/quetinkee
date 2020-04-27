@@ -24,16 +24,19 @@ export default {
     flex: 1;
     overflow: hidden;
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
   #layout {
     display: flex;
     flex-direction: row;
     max-height: 100%;
+    flex: 1;
   }
 
   main {
-    overflow-y: scroll;
+    overflow-y: auto;
     flex: 1;
   }
 </style>

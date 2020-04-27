@@ -24,7 +24,6 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
       component: MainLayout,
       children: [
         {
@@ -39,7 +38,6 @@ const router = new Router({
     },
     {
       path: '/admin',
-      name: 'admin',
       component: AdminLayout,
       children: [
         {
@@ -54,17 +52,14 @@ const router = new Router({
     },
     {
       path: '/login',
-      name: 'login',
       component: Login
     },
     {
       path: '/signup',
-      name: 'signup',
       component: Signup
     },
     {
       path: '/profile',
-      name: 'profile',
       meta: {
         auth: AuthLevel.REGULAR
       },
