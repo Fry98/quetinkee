@@ -58,6 +58,7 @@
 
 <script>
   import GeneralInput from '../components/GeneralInput';
+  import axios from 'axios';
 
   export default {
     data() {
@@ -135,7 +136,7 @@
           `${this.billingIsSame ? '' : '[Doručovací adresa] '}${err}`
         );
       },
-      submitForm() {
+      async submitForm() {
         if (this.city.trim().length === 0) {
           this.addressError('Město je povinná položka');
           return;
@@ -168,7 +169,37 @@
           }
         }
 
-        alert('submitted');
+        const data = {
+          firstName: this.name,
+          lastName: this.surname,
+          mail: this.mail,
+          password: this.pwd,
+          phone: this.phone,
+          addressDelivery: {
+            street: this.street,
+            city: this.city,
+            zip: this.zip
+          }
+        };
+
+        if (!this.billingIsSame) {
+          data.addressBilling = {
+            street: this.billingStreet,
+            city: this.billingCity,
+            zip: this.billingZip
+          };
+        }
+
+        try {
+          await axios({
+            url: '/api/profile',
+            method: 'post',
+            data
+          });
+          this.$router.push('/');
+        } catch (err) {
+          this.$store.dispatch('openModal', err.response.data.message);
+        }
       }
     }
   }

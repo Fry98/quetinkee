@@ -1,7 +1,7 @@
 package com.quetinkee.eshop.model;
 
 public enum Size {
-  SMALL("SMALL"), MEDIUM("MEDIUM"), LARGE("LARGE");
+  SMALL("S"), MEDIUM("M"), LARGE("L");
 
   private final String name;
 

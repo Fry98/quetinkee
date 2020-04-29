@@ -1,0 +1,19 @@
+.btn {
+  padding: 6px 10px;
+  user-select: none;
+  align-self: center;
+  border: none;
+  border-radius: 7px;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+  background: $mainBlue;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1em;
+  cursor: pointer;
+  transition-duration: .2s;
+  &:hover {
+    background: $darkBlue;
+  }
+}

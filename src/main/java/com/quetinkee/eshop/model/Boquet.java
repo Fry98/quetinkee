@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 import javax.persistence.*;
@@ -25,12 +27,16 @@ public class Boquet extends AbstractEntity {
   @Basic(optional = false)
   @Column(nullable = false)
   @Lob
+  private String perex;
+
+  @Column(nullable = true)
+  @Lob
   private String description;
 
-  @Digits(integer=11, fraction=2, message = "Cena je ve špatném formátu")
+  @Digits(integer = 11, fraction = 2, message = "Cena je ve špatném formátu")
   @Min(value = 1, message = "Zadejte cenu kytice")
   @Basic(optional = false)
-  @Column(nullable = false, columnDefinition="DECIMAL(11,2)", precision=11, scale=2)
+  @Column(nullable = false, columnDefinition = "DECIMAL(11,2)", precision = 11, scale = 2)
   private BigDecimal price;
 
   @Enumerated(EnumType.STRING)
@@ -41,18 +47,25 @@ public class Boquet extends AbstractEntity {
   private boolean active;
 
   @JsonIgnore
+  @ElementCollection
+  @Column(columnDefinition = "Integer")
+  private List<Color> colors;
+
+  @JsonIgnore
   @ManyToMany(fetch = FetchType.LAZY)
   @OrderBy("name")
   private Set<Category> categories;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "boquet", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private Set<BoquetFlowerCount> flowerCount;
+  private List<BoquetFlowerCount> boquetflowerCount;
 
   public Boquet() {
   }
 
-  public Boquet(String name, String description, String price, Size size, boolean active) {
+  public Boquet(String name, String perex, String description, String price, Size size, boolean active) {
     this.name = name;
+    this.perex = perex;
     this.description = description;
     this.setPrice(price);
     this.size = size;
@@ -65,6 +78,14 @@ public class Boquet extends AbstractEntity {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getPerex() {
+    return this.perex;
+  }
+
+  public void setPerex(String perex) {
+    this.perex = perex;
   }
 
   public String getDescription() {
@@ -126,30 +147,51 @@ public class Boquet extends AbstractEntity {
     this.categories = categories;
   }
 
-  public Set<BoquetFlowerCount> getBoquetFlowerCount() {
-    return this.flowerCount;
+  public List<BoquetFlowerCount> getBoquetflowerCount() {
+    return this.boquetflowerCount;
   }
 
   public void addBoquetFlowerCount(BoquetFlowerCount count) {
     Objects.requireNonNull(count);
-    if (this.flowerCount == null) {
-      this.flowerCount = new HashSet<>();
+    if (this.boquetflowerCount == null) {
+      this.boquetflowerCount = new ArrayList<>();
     }
     count.setBoquet(this);
-    this.flowerCount.add(count);
+    this.boquetflowerCount.add(count);
   }
 
   public void removeBoquetFlowerCount(BoquetFlowerCount count) {
     Objects.requireNonNull(count);
-    if (this.flowerCount != null) {
-      this.flowerCount.remove(count);
+    if (this.boquetflowerCount != null) {
+      this.boquetflowerCount.remove(count);
     }
   }
 
-  public void setBoquetFlowerCount(Set<BoquetFlowerCount> flowerCount) {
+  public void setBoquetFlowerCount(List<BoquetFlowerCount> flowerCount) {
     for (BoquetFlowerCount count : flowerCount) {
       count.setBoquet(this);
     }
-    this.flowerCount = flowerCount;
+    this.boquetflowerCount = flowerCount;
+  }
+
+  public void setColors(List<Color> colors) {
+    this.colors = colors;
+  }
+
+  public void addColor(Color color) {
+    Objects.requireNonNull(color);
+    if (this.colors == null) {
+      this.colors = new ArrayList<>();
+    }
+    this.colors.add(color);
+  }
+
+  public List<Color> getColors() {
+    return this.colors;
+  }
+
+  // TODO
+  public float getRating() {
+    return 3.5f;
   }
 }

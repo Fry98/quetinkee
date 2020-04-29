@@ -5,7 +5,11 @@ import Login from './views/Login';
 import Signup from './views/Signup';
 import Profile from './views/Profile';
 import MainLayout from './views/MainLayout';
+import NewBouquet from "./views/NewBouquet";
+import AdminLayout from "./views/AdminLayout";
+import ProductDetail from './views/ProductDetail';
 import store from './store';
+import ManageFlowers from "./views/ManageFlowers";
 
 Vue.use(Router);
 
@@ -20,28 +24,42 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
       component: MainLayout,
       children: [
         {
           path: '',
           component: Home
+        },
+        {
+          path: 'detail',
+          component: ProductDetail
+        }
+      ]
+    },
+    {
+      path: '/admin',
+      component: AdminLayout,
+      children: [
+        {
+          path: 'manage-flowers',
+          component: ManageFlowers
+        },
+        {
+          path: 'new-bouquet',
+          component: NewBouquet
         }
       ]
     },
     {
       path: '/login',
-      name: 'login',
       component: Login
     },
     {
       path: '/signup',
-      name: 'signup',
       component: Signup
     },
     {
       path: '/profile',
-      name: 'profile',
       meta: {
         auth: AuthLevel.REGULAR
       },

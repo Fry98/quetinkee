@@ -13,12 +13,12 @@
         <font-awesome-icon id='nav-profile-icon' class='nav-icon' icon='user'></font-awesome-icon>
         <div class='profile-opts'>
           <div class='opt-box'>
-            <div class='opt-item'>
+            <div class='opt-item' @click='navigate("/profile")'>
               <font-awesome-icon icon='address-card'></font-awesome-icon>
               <span>Profil</span>
             </div>
             <div class='opt-spacer'></div>
-            <div class='opt-item'>
+            <div class='opt-item' @click='logout'>
               <font-awesome-icon icon='sign-out-alt'></font-awesome-icon>
               <span>Odhlásit se</span>
             </div>
@@ -35,10 +35,23 @@
 </template>
 
 <script>
+  import axios from 'axios';
+
   export default {
     methods: {
       navigate(path) {
         if (this.$route.path !== path) this.$router.push(path);
+      },
+      logout() {
+        axios({
+          url: '/api/logout',
+          method: 'get'
+        }).then(() => {
+          this.$store.dispatch('logout');
+          this.$router.push('/');
+        }).catch(() => {
+          this.$store.dispatch('openModal', "Chyba při odhlášení");
+        });
       }
     }
   };

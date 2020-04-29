@@ -18,6 +18,10 @@ public class Category extends AbstractEntity {
   @Column(nullable = false)
   private String name;
 
+  @Basic(optional = false)
+  @Column(nullable = false)
+  private Integer priority;
+
   private boolean active;
 
   @JsonIgnore
@@ -27,8 +31,9 @@ public class Category extends AbstractEntity {
   public Category() {
   }
 
-  public Category(String name, boolean active) {
+  public Category(String name, Integer priority, boolean active) {
     this.name = name;
+    this.priority = priority;
     this.active = active;
   }
 
@@ -38,6 +43,14 @@ public class Category extends AbstractEntity {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public Integer getPriority() {
+    return priority;
+  }
+
+  public void setPriority(Integer priority) {
+    this.priority = priority;
   }
 
   public boolean isActive() {

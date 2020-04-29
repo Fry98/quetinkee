@@ -6,7 +6,10 @@ import com.quetinkee.eshop.model.Address;
 import com.quetinkee.eshop.model.User;
 import java.util.Objects;
 import com.quetinkee.eshop.model.Role;
+import com.quetinkee.eshop.model.User_;
+import com.quetinkee.eshop.model.projection.UserList;
 import com.quetinkee.eshop.utils.ValidationError;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -54,14 +57,13 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public Slice<User> findAll(Integer pageNum, Integer pageSize) {
-    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("lastName"));
+    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(User_.LAST_NAME, User_.FIRST_NAME));
     return this.dao.findAllBy(paging);
   }
 
-  @Transactional
-  public void update(User original, User user) {
-    Objects.requireNonNull(original);
-    Objects.requireNonNull(user);
+  @Transactional(readOnly = true)
+  public List<UserList> getList() {
+    return this.dao.findAllBy(Sort.by(User_.LAST_NAME, User_.FIRST_NAME));
 
     // password
     if (user.getPassword() != null) {
@@ -82,7 +84,6 @@ public class UserService {
       original.setFirstName(user.getFirstName());
     }
 
-    this.dao.save(user);
   }
 
   @Transactional
@@ -142,6 +143,57 @@ public class UserService {
   }
 
   @Transactional
+  public User update(User original, User user) {
+    Objects.requireNonNull(original);
+    Objects.requireNonNull(user);
+
+    // password
+    if (user.getPassword() != null) {
+      if (!this.checkPassword(user.getPassword())) {
+        throw new ValidationError("Zadejte heslo");
+      }
+      original.setPassword(user.getPassword());
+      this.encodePassword(original);
+    }
+
+    if (user.getFirstName() != null) {
+      original.setFirstName(user.getFirstName());
+    }
+    if (user.getLastName() != null) {
+      original.setLastName(user.getLastName());
+    }
+    if (user.getPhone() != null) {
+      original.setPhone(user.getPhone());
+    }
+
+    // delivery address update / create
+    if (user.getAddressDelivery() != null) {
+      if (original.getAddressDelivery() == null) {
+        original.setAddressDelivery(user.getAddressDelivery());
+      }
+      else {
+        this.updateAddress(original.getAddressDelivery(), user.getAddressDelivery());
+      }
+    }
+
+    //billing address update / create / remove
+    if (user.getAddressBilling() != null) {
+      if (original.getAddressBilling() != null && this.isAddressEmpty(user.getAddressBilling())) {
+        original.setAddressBilling(null);
+      }
+      else if (original.getAddressBilling() == null) {
+        original.setAddressBilling(user.getAddressBilling());
+      }
+      else {
+        this.updateAddress(original.getAddressBilling(), user.getAddressBilling());
+      }
+    }
+    this.dao.save(original);
+
+    return original;
+  }
+
+  @Transactional
   public void updateAddress (Address original, Address address) {
     Objects.requireNonNull(original);
     Objects.requireNonNull(address);
@@ -155,7 +207,7 @@ public class UserService {
     if (address.getZip() != null) {
       original.setZip(address.getZip());
     }
-
+    this.addressDao.save(original);
     this.addressDao.save(original);
   }
 
@@ -169,5 +221,9 @@ public class UserService {
   public void persistAddress (Address address) {
     Objects.requireNonNull(address);
     this.addressDao.save(address);
+  }
+
+  private boolean isAddressEmpty (Address address) {
+    return address.getStreet() == null && address.getCity() == null && address.getZip() == null;
   }
 }

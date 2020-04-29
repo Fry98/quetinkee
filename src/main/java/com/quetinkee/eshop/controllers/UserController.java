@@ -2,7 +2,9 @@ package com.quetinkee.eshop.controllers;
 
 import com.quetinkee.eshop.model.Address;
 import com.quetinkee.eshop.model.User;
+import com.quetinkee.eshop.model.projection.UserList;
 import com.quetinkee.eshop.service.UserService;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
@@ -49,7 +51,10 @@ public class UserController {
     return new ResponseEntity(user.getId(), HttpStatus.CREATED);
   }
 
-  /**
+
+  @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<UserList> getList() {
+    return this.service.getList();
    * Get user info by Id
    *
    * @param id

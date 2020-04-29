@@ -34,7 +34,7 @@ public class Flower extends AbstractEntity {
 
   @JsonIgnore
   @OneToMany(mappedBy = "flower", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private Set<BoquetFlowerCount> flowerCount;
+  private Set<BoquetFlowerCount> boquetflowerCount;
 
   public Flower() {
   }
@@ -74,22 +74,22 @@ public class Flower extends AbstractEntity {
   }
 
   public Set<BoquetFlowerCount> getBoquetFlowerCount() {
-    return this.flowerCount;
+    return this.boquetflowerCount;
   }
 
   public void addBoquetFlowerCount(BoquetFlowerCount count) {
     Objects.requireNonNull(count);
-    if (this.flowerCount == null) {
-      this.flowerCount = new HashSet<>();
+    if (this.boquetflowerCount == null) {
+      this.boquetflowerCount = new HashSet<>();
     }
     count.setFlower(this);
-    this.flowerCount.add(count);
+    this.boquetflowerCount.add(count);
   }
 
   public void removeBoquetFlowerCount(BoquetFlowerCount count) {
     Objects.requireNonNull(count);
-    if (this.flowerCount != null) {
-      this.flowerCount.remove(count);
+    if (this.boquetflowerCount != null) {
+      this.boquetflowerCount.remove(count);
     }
   }
 
@@ -97,6 +97,6 @@ public class Flower extends AbstractEntity {
     for (BoquetFlowerCount count : flowerCount) {
       count.setFlower(this);
     }
-    this.flowerCount = flowerCount;
+    this.boquetflowerCount = flowerCount;
   }
 }

@@ -72,13 +72,11 @@ public class BoquetFlowerCount implements Serializable {
       return false;
     }
     final BoquetFlowerCount other = (BoquetFlowerCount) obj;
-    return Objects.equals(this.boquet, other.boquet)
-            && Objects.equals(this.flower, other.flower)
-            && Objects.equals(this.count, other.count);
+    return this.hashCode() == other.hashCode();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.boquet, this.flower, this.count);
+    return Objects.hash(this.boquet == null ? 0 : this.boquet.getId(), this.flower == null ? 0 : this.flower.getId());
   }
 }

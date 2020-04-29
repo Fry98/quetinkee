@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     error: null,
     user: null
@@ -44,3 +44,6 @@ export default new Vuex.Store({
     }
   }
 });
+
+store.dispatch('loadUser');
+export default store;

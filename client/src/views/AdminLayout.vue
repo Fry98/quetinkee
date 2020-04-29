@@ -1,7 +1,7 @@
 <template>
   <div id='layout-wrap'>
     <div id='layout'>
-      <sidebar></sidebar>
+      <admin-sidebar></admin-sidebar>
       <main>
         <router-view></router-view>
       </main>
@@ -10,11 +10,11 @@
 </template>
 
 <script>
-import Sidebar from "../components/Sidebar";
+import AdminSidebar from "../components/AdminSidebar";
 
 export default {
   components: {
-    Sidebar
+    AdminSidebar
   }
 }
 </script>

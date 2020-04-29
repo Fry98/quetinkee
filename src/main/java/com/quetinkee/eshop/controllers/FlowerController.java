@@ -1,7 +1,9 @@
 package com.quetinkee.eshop.controllers;
 
 import com.quetinkee.eshop.model.Flower;
+import com.quetinkee.eshop.model.projection.FlowerList;
 import com.quetinkee.eshop.service.FlowerService;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
@@ -20,9 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RestController
 @RequestMapping("/api/flowers")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class FlowerController {
 
   @Autowired
@@ -35,23 +37,28 @@ public class FlowerController {
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity create(@Valid @RequestBody Flower flower) {
-    service.persist(flower);
+    this.service.persist(flower);
     return new ResponseEntity(flower.getId(), HttpStatus.CREATED);
   }
 
-  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<FlowerList> getList() {
+    return this.service.getList();
+  }
+
+  @GetMapping(value = "/{id:[\\d]+}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Flower getId(@PathVariable("id") Integer id) {
     return this.getFlower(id);
   }
 
-  @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PutMapping(value = "/{id:[\\d]+}", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity updateId(@PathVariable("id") Integer id, @RequestBody Flower flower) {
     Flower original = this.getFlower(id);
     // TODO
     return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  @DeleteMapping(value = "/{id}")
+  @DeleteMapping(value = "/{id:[\\d]+}")
   public ResponseEntity deleteId(@PathVariable("id") Integer id) {
     Flower flower = this.getFlower(id);
     service.delete(flower);

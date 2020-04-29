@@ -2,20 +2,16 @@
   <div id="content">
     <h1>Nové</h1>
     <carousel>
-      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
-      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
-      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
-      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
-      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
-      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
-      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
-      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
-      <product-tile name='Nazev kytice tohle je dlouhej text' price='899'></product-tile>
+      <product-tile v-for='flower in newFlowers' :key='flower.id' :name='flower.name' :price='flower.price'></product-tile>
     </carousel>
     <h1>V Akci</h1>
-    <product-tile name='Nazev kytice' price='899'></product-tile>
+    <carousel>
+      <product-tile v-for='flower in discountedFlowers' :key='flower.id' :name='flower.name' :price='flower.price'></product-tile>
+    </carousel>
     <h1>Doporučené</h1>
-    <product-tile name='Nazev kytice' price='899'></product-tile>
+    <carousel>
+      <product-tile v-for='flower in recommendedFlowers' :key='flower.id' :name='flower.name' :price='flower.price'></product-tile>
+    </carousel>
   </div>
 </template>
 
@@ -28,6 +24,34 @@
     components: {
       ProductTile,
       Carousel
+    },
+    data() {
+      return {
+        newFlowers: [
+          {id: 0, name:'Nazev kytice', price:899},
+          {id: 1, name:'Velmi dlouhy nazev kytice', price:899},
+          {id: 2, name:'Nazev kytice', price:899},
+          {id: 3, name:'Nazev kytice', price:899},
+          {id: 4, name:'Nazev kytice', price:899},
+          {id: 5, name:'Nazev kytice', price:899}
+        ],
+        discountedFlowers: [
+          {name:'Nazev kytice', price:899},
+          {name:'Velmi dlouhy nazev kytice', price:899},
+          {name:'Nazev kytice', price:899},
+          {name:'Nazev kytice', price:899},
+          {name:'Nazev kytice', price:899},
+          {name:'Nazev kytice', price:899}
+        ],
+        recommendedFlowers: [
+          {name:'Nazev kytice', price:899},
+          {name:'Velmi dlouhy nazev kytice', price:899},
+          {name:'Nazev kytice', price:899},
+          {name:'Nazev kytice', price:899},
+          {name:'Nazev kytice', price:899},
+          {name:'Nazev kytice', price:899}
+        ]
+      }
     }
   };
 </script>

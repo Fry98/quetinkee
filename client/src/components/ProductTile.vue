@@ -52,6 +52,8 @@
     flex-direction: column;
     background: white;
     margin-right: 10px;
+    cursor: pointer;
+    flex-shrink: 0;
 
     .image {
       border-radius: 7px;
@@ -95,7 +97,6 @@
     color: white;
     padding: .5em;
     font-size: 1.1em;
-    cursor: pointer;
     transition-duration: .2s;
     &:hover {
       background: $darkBlue;
