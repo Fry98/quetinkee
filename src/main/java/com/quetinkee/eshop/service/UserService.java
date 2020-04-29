@@ -64,26 +64,6 @@ public class UserService {
   @Transactional(readOnly = true)
   public List<UserList> getList() {
     return this.dao.findAllBy(Sort.by(User_.LAST_NAME, User_.FIRST_NAME));
-
-    // password
-    if (user.getPassword() != null) {
-      if (!this.checkPassword(user.getPassword())) {
-        throw new ValidationError("Zadejte heslo");
-      }
-      original.setPassword(user.getPassword());
-      this.encodePassword(original);
-    }
-
-    if (user.getFirstName() != null) {
-      original.setFirstName(user.getFirstName());
-    }
-    if (user.getLastName() != null) {
-      original.setLastName(user.getLastName());
-    }
-    if (user.getPhone() != null) {
-      original.setFirstName(user.getFirstName());
-    }
-
   }
 
   @Transactional
@@ -207,7 +187,6 @@ public class UserService {
     if (address.getZip() != null) {
       original.setZip(address.getZip());
     }
-    this.addressDao.save(original);
     this.addressDao.save(original);
   }
 

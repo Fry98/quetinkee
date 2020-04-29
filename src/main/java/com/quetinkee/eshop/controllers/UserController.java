@@ -55,6 +55,9 @@ public class UserController {
   @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<UserList> getList() {
     return this.service.getList();
+  }
+
+  /**
    * Get user info by Id
    *
    * @param id
