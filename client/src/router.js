@@ -47,11 +47,17 @@ const router = new Router({
       children: [
         {
           path: 'manage-flowers',
-          component: ManageFlowers
+          component: ManageFlowers,
+          meta: {
+            auth: AuthLevel.ADMIN
+          },
         },
         {
           path: 'new-bouquet',
-          component: NewBouquet
+          component: NewBouquet,
+          meta: {
+            auth: AuthLevel.ADMIN
+          },
         }
       ]
     },
@@ -78,13 +84,19 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+  if (to.path === '/admin') {
+    router.push('/admin/manage-flowers');
+    return;
+  }
+
   if (!to.meta.auth) return next();
   switch (to.meta.auth) {
     case AuthLevel.REGULAR:
       if (store.getters.isLogged) return next();
       return next('/');
     case AuthLevel.ADMIN:
-      break;
+      if (store.getters.isAdmin) return next();
+      return next('/');
     case AuthLevel.DELIVERY:
       break;
   }
