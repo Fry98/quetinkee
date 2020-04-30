@@ -1,5 +1,6 @@
 <template>
   <div id='manage-flowers'>
+    <confirm :msg='popup' @cancel='cancel' @confirm='confirm'></confirm>
     <div class='mf-wrap'>
       <h1>Správa květin</h1>
       <div class='new-flower'>
@@ -10,8 +11,8 @@
         <div class='btn'>+</div>
       </div>
       <div class='existing-flowers'>
-        <div v-for='flower in flowers' class='flower'>
-          <span>{{ flower }}</span>
+        <div v-for='flower in flowers' :key='flower.id' class='flower'>
+          <span>{{ flower.name }}</span>
           <font-awesome-icon
               class='icon'
               :icon="['far', 'trash-alt']"
@@ -24,17 +25,48 @@
 </template>
 
 <script>
+  import Confirm from '../components/Confirm';
+
   export default {
     name: "ManageFlowers",
+    components: {
+      Confirm
+    },
     data() {
       return {
+        popup: null,
         newFlower: '',
-        flowers: ['Bílá růže', 'Červená růže', 'Gerbera', 'Modrá růže']
+        flowers: [
+          {
+            id: 0,
+            name: 'Bílá růže'
+          },
+          {
+            id: 1,
+            name: 'Červená růže'
+          },
+          {
+            id: 2,
+            name: 'Gerbera'
+          },
+          {
+            id: 3,
+            name: 'Modrá růže'
+          }
+        ]
       }
     },
     methods: {
-      removeFlower() {
-        // todo call api to remove flower
+      removeFlower(flower) {
+        this.popup = `Opravdu chcete smazat květinu <strong>${flower.name}</strong>?`;
+      },
+      cancel() {
+        this.popup = null;
+        alert("Zrušeno");
+      },
+      confirm() {
+        this.popup = null;
+        alert("Smazáno");
       }
     }
   }
