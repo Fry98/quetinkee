@@ -10,17 +10,7 @@
         </div>
         <div class="right">
           <span class="price">{{item.price * item.count}}&nbsp;Kč</span>
-          <div class="count">
-            <div class="quantity">
-              <div class="q-btn" @click="changeQuantity(-1, item)">
-                <font-awesome-icon icon="minus"/>
-              </div>
-              <input type="text" v-model="item.count" @change="resetQuantity(item)">
-              <div class="q-btn" @click="changeQuantity(1, item)">
-                <font-awesome-icon icon="plus"/>
-              </div>
-            </div>
-          </div>
+          <counter v-model="item.count" class="counter" />
           <span class="delete" @click="remove(item.id)">
             <font-awesome-icon icon="times"/>
           </span>
@@ -35,9 +25,12 @@
 </template>
 
 <script>
+  import Counter from "../components/Counter";
 
   export default {
-    components: {},
+    components: {
+      Counter
+    },
     data() {
       return {
         items: {
@@ -90,9 +83,7 @@
         this.count = this.oldCount;
       },
     },
-    computed: {
-
-    },
+    computed: {},
     methods: {
       changeQuantity(x, item) {
         const newCount = item.count + x;
@@ -115,7 +106,7 @@
       },
       getTotal() {
         let total = 0;
-        
+
         for (const item in this.items) {
           total += this.items[item].price * this.items[item].count;
         }
@@ -183,9 +174,13 @@
         .right {
           display: flex;
           align-items: center;
-          justify-content: end;
+          justify-content: flex-end;
           width: 50%;
           margin: 0 25px;
+
+          .counter{
+            margin: 0 15px;
+          }
         }
       }
     }
@@ -197,43 +192,6 @@
       }
     }
 
-    .quantity {
-      display: flex;
-      position: relative;
-      align-items: center;
-      height: 37px;
-      border: 0.5px solid black;
-      border-radius: 7px;
-      font-size: 0.9em;
-      overflow: hidden;
-      margin: 0 15px;
-
-      input {
-        font-size: 1.3em;
-        height: 100%;
-        box-sizing: border-box;
-        text-align: center;
-        width: 40px;
-        border: none;
-        border-left: 0.5px solid black;
-        border-right: 0.5px solid black;
-      }
-
-      .q-btn {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 30px;
-        height: 100%;
-        cursor: pointer;
-        transition-duration: .2s;
-
-        &:hover {
-          color: white;
-          background: $mainBlue;
-        }
-      }
-    }
 
     input[type="number"] {
       -webkit-appearance: textfield;
@@ -249,8 +207,8 @@
 
     .summary {
       display: flex;
-      justify-content: end;
       flex-direction: column;
+      align-items: flex-end;  
 
       .total {
         font-size: 1.5em;
