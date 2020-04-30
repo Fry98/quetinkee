@@ -264,6 +264,7 @@
               height: 100%;
               cursor: pointer;
               transition-duration: .2s;
+              user-select: none;
 
               &:hover {
                 color: white;
