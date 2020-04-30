@@ -15,7 +15,7 @@
         </label>
         <label>
           <span>Cena </span>
-          <input v-model='price' type='number' step='.01'>
+          <input class='price' v-model='price' type='number' step='.01'>
         </label>
         <label>
           <span>Barvy </span>
@@ -199,7 +199,6 @@
       font-weight: bold;
       flex: 3;
       background-color: transparent;
-      border: transparent;
       margin-right: 5px;
       text-align: center;
     }
@@ -247,16 +246,18 @@
       }
 
       input, select {
-        width: 200px;
-        border: transparent;
+        box-sizing: border-box;
+        width: 220px;
         font-size: 1.2em;
         box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
         border-radius: 7px;
         padding: 3px 10px 3px 10px;
-      }
+        border: solid 1px white;
 
-      select {
-        width: 220px;
+        &:focus {
+          outline: none;
+          border: solid 1px $mainOrange;
+        }
       }
 
       #sizes {

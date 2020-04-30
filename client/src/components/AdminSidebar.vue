@@ -3,13 +3,12 @@
     <h1>Akce</h1>
     <h2>Kytice</h2>
     <ul>
-      <li>Vytvořit novou kytici</li>
-      <li>Spravovat květiny</li>
+      <li @click='$router.push("/admin/new-bouquet")'>Vytvořit novou kytici</li>
+      <li @click='$router.push("/admin/manage-flowers")'>Spravovat květiny</li>
     </ul>
     <h2>Sklad</h2>
     <ul>
-      <li>Zobrazit sklad</li>
-      <li>Naskladnit</li>
+      <li @click='$router.push("/admin/manage-storage")'>Spravovat sklad</li>
     </ul>
     <h2>Kategorie</h2>
     <ul>
