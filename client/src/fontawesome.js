@@ -17,7 +17,8 @@ import {
   faCheck,
   faStar,
   faPlus,
-  faMinus
+  faMinus,
+  faUsersCog
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faUser);
@@ -34,5 +35,6 @@ library.add(faStarRegular);
 library.add(faPlus);
 library.add(faMinus);
 library.add(faTrashAlt);
+library.add(faUsersCog);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);

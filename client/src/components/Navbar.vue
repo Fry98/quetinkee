@@ -13,6 +13,13 @@
         <font-awesome-icon id='nav-profile-icon' class='nav-icon' icon='user'></font-awesome-icon>
         <div class='profile-opts'>
           <div class='opt-box'>
+            <div v-if='$store.getters.isAdmin'>
+              <div class='opt-item' @click='navigate("/admin")'>
+                <font-awesome-icon icon='users-cog'></font-awesome-icon>
+                <span>Admin</span>
+              </div>
+              <div class='opt-spacer'></div>
+            </div>
             <div class='opt-item' @click='navigate("/profile")'>
               <font-awesome-icon icon='address-card'></font-awesome-icon>
               <span>Profil</span>

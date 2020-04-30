@@ -10,6 +10,7 @@ import AdminLayout from "./views/AdminLayout";
 import ProductDetail from './views/ProductDetail';
 import ManageFlowers from "./views/ManageFlowers";
 import ManageStorage from "./views/ManageStorage";
+import Cart from './views/Cart';
 import store from './store';
 
 Vue.use(Router);
@@ -44,10 +45,6 @@ const router = new Router({
         {
           path: 'manage-flowers',
           component: ManageFlowers
-        },
-        {
-          path: 'manage-storage',
-          component: ManageStorage
         },
         {
           path: 'new-bouquet',
