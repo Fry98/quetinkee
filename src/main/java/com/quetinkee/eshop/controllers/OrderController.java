@@ -1,5 +1,6 @@
 package com.quetinkee.eshop.controllers;
 
+import com.quetinkee.eshop.model.Boquet;
 import com.quetinkee.eshop.model.Category;
 import com.quetinkee.eshop.model.Order;
 import com.quetinkee.eshop.model.User;
@@ -7,8 +8,11 @@ import com.quetinkee.eshop.service.OrderService;
 import com.quetinkee.eshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/order")
@@ -25,6 +29,27 @@ public class OrderController {
         return this.orderService.findAll(page, size, false);
     }
 
+    @PutMapping(value = "/{id:[\\d]+}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateId(@PathVariable("id") Integer id, @RequestBody Order order) {
+        Order current = this.getOrder(id);
+        // TODO
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{id:[\\d]+}")
+    public ResponseEntity deleteId(@PathVariable("id") Integer id) {
+        Order order = this.getOrder(id);
+        orderService.delete(order);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    private Order getOrder(Integer id) throws ResponseStatusException {
+        Order order = this.orderService.find(id);
+        if (order == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order nenalezen");
+        }
+        return order;
+    }
 
 
 
