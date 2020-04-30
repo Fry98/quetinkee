@@ -3,7 +3,7 @@
     <h2 class="text-center">Košík</h2>
 
     <div class="items">
-      <div class="item" v-for="item in items">
+      <div class="item" v-for="item in items" :key="item.id">
         <div class="left">
           <div class="image"></div>
           <span class="name">{{item.name}}</span>
@@ -21,13 +21,13 @@
               </div>
             </div>
           </div>
-          <span class="delete" @click="remove(item)">
+          <span class="delete" @click="remove(item.id)">
             <font-awesome-icon icon="times"/>
           </span>
         </div>
       </div>
       <div class="summary">
-        <span class="total">Cena celkem: {{total}}</span>
+        <span class="total">Cena celkem: {{ getTotal() }}</span>
         <button class="button">Pokračovat</button>
       </div>
     </div>
@@ -41,32 +41,35 @@
     data() {
       return {
         items: {
-          item1: {
+          0: {
+            id: 0,
             name: 'Název kytice',
             price: 249,
             count: 1,
             oldCount: 1
           },
-          item2: {
+          1: {
+            id: 1,
             name: 'Bezva kytice',
             price: 549,
             count: 1,
             oldCount: 1
           },
-          item3: {
+          2: {
+            id: 2,
             name: 'Super kytice',
             price: 749,
             count: 1,
             oldCount: 1
           },
-          item4: {
+          3: {
+            id: 3,
             name: 'Pěkná kytice',
             price: 349,
             count: 1,
             oldCount: 1
           }
-        },
-        total: 0
+        }
       }
     },
     watch: {
@@ -85,12 +88,19 @@
           return;
         }
         this.count = this.oldCount;
-      }
+      },
+    },
+    computed: {
+
     },
     methods: {
       changeQuantity(x, item) {
         const newCount = item.count + x;
-        if (newCount < 1 || newCount > 50) return;
+        if (newCount > 50) return;
+        if (newCount < 1) {
+          delete this.items[item.id];
+          this.$forceUpdate();
+        }
         item.count = newCount;
       },
       resetQuantity(item) {
@@ -99,8 +109,18 @@
           item.oldCount = 1;
         }
       },
-      remove(item) {
-        Vue.$delete(this.items, item);
+      remove(id) {
+        delete this.items[id];
+        this.$forceUpdate();
+      },
+      getTotal() {
+        let total = 0;
+        
+        for (const item in this.items) {
+          total += this.items[item].price * this.items[item].count;
+        }
+
+        return total;
       },
       submitForm() {
 
