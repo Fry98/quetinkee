@@ -131,11 +131,16 @@
 
   input {
     margin-left: 5px;
-    border: transparent;
     font-size: 1.2em;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
     border-radius: 7px;
     padding: 3px 10px 3px 10px;
+    border: solid 1px white;
+
+    &:focus {
+      outline: none;
+      border: solid 1px $mainOrange;
+    }
   }
 
   .btn {

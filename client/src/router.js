@@ -8,9 +8,10 @@ import MainLayout from './views/MainLayout';
 import NewBouquet from "./views/NewBouquet";
 import AdminLayout from "./views/AdminLayout";
 import ProductDetail from './views/ProductDetail';
+import ManageFlowers from "./views/ManageFlowers";
+import ManageStorage from "./views/ManageStorage";
 import Cart from './views/Cart';
 import store from './store';
-import ManageFlowers from "./views/ManageFlowers";
 
 Vue.use(Router);
 
@@ -51,6 +52,10 @@ const router = new Router({
           meta: {
             auth: AuthLevel.ADMIN
           },
+        },
+        {
+          path: 'manage-storage',
+          component: ManageStorage
         },
         {
           path: 'new-bouquet',
