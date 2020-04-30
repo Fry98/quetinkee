@@ -55,7 +55,10 @@ const router = new Router({
         },
         {
           path: 'manage-storage',
-          component: ManageStorage
+          component: ManageStorage,
+          meta: {
+            auth: AuthLevel.ADMIN
+          },
         },
         {
           path: 'new-bouquet',
