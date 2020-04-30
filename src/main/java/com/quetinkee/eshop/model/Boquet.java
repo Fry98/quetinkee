@@ -100,6 +100,8 @@ public class Boquet extends AbstractEntity {
     return this.price.toString();
   }
 
+  public BigDecimal getPricee(){return this.price;}
+
   public void setPrice(BigDecimal price) {
     this.price = price;
   }
