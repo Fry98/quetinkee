@@ -8,6 +8,7 @@ import MainLayout from './views/MainLayout';
 import NewBouquet from "./views/NewBouquet";
 import AdminLayout from "./views/AdminLayout";
 import ProductDetail from './views/ProductDetail';
+import Cart from './views/Cart';
 import store from './store';
 import ManageFlowers from "./views/ManageFlowers";
 
@@ -33,6 +34,10 @@ const router = new Router({
         {
           path: 'detail',
           component: ProductDetail
+        },
+        {
+          path: 'cart',
+          component: Cart
         }
       ]
     },
