@@ -21,16 +21,29 @@ public class Order extends AbstractEntity{
     @Column(nullable = false)
     private BigDecimal totalPrice;
 
+    @Column(nullable = false)
+    @OneToOne
+    private User user;
+
+    @Column(nullable = false)
+    @OneToOne
+    private OrderAddress address;
+
     @NotBlank(message = "Objednavka je prazdna")
     @ManyToMany(fetch = FetchType.LAZY)
-    private Set<Position> contains;
+    private Set<Item> contains;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "orders", fetch = FetchType.LAZY)
     private Set<Order> orders;
 
-    public Order() {
 
+
+
+
+    public Order() {
+        this.user = user;
+        this.address = address;
     }
 
     public boolean isActive() {
@@ -57,12 +70,12 @@ public class Order extends AbstractEntity{
         return this.totalPrice;
     }
 
-    public Set<Position> getContains(){
+    public Set<Item> getContains(){
         return this.contains;
     }
 
     public void addPosition(Boquet boquet, Integer quantity){
-        Position pos = new Position(boquet, quantity);
+        Item pos = new Item(boquet, quantity);
         if (this.contains == null) {
             this.contains = new HashSet<>();
         }
@@ -70,27 +83,27 @@ public class Order extends AbstractEntity{
     }
 
     public void removePosition(Boquet boquet){
-        for(Position pos : contains){
+        for(Item pos : contains){
             if (boquet == pos.getBoquet()) {
                 contains.remove(pos);
             }
         }
     }
 
-    public void removePosition(Position pos){
+    public void removePosition(Item pos){
         contains.remove(pos);
     }
 
     public void adjustQuantity(Boquet boquet, Integer quantity){
-        for(Position pos : contains){
+        for(Item pos : contains){
             if (boquet == pos.getBoquet()) {
                 pos.setQuantity(quantity);
             }
         }
     }
 
-    public void adjustQuantity(Position pos , Integer quantity){
-        for(Position posi : contains){
+    public void adjustQuantity(Item pos , Integer quantity){
+        for(Item posi : contains){
             if (pos == posi) {
                 posi.setQuantity(quantity);
             }
@@ -99,7 +112,7 @@ public class Order extends AbstractEntity{
 
     public void calculateTotalPrice(){
         this.totalPrice = new BigDecimal(0);
-        for(Position pos : contains){
+        for(Item pos : contains){
             this.totalPrice.add(pos.getBoquet().getPricee()) ;
         }
     }

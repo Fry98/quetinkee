@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Position extends AbstractEntity {
+public class Item extends AbstractEntity {
 
     @JsonIgnore
     @NotBlank(message = "Prazdná položka")
@@ -21,11 +21,11 @@ public class Position extends AbstractEntity {
     @Column(nullable = false)
     private Integer Quantity;
 
-    public Position(){
+    public Item(){
 
     };
 
-    public Position(Boquet boquet, Integer Quantity){
+    public Item(Boquet boquet, Integer Quantity){
         this.boquet = boquet;
         this.Quantity = Quantity;
     };
