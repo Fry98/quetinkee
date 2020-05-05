@@ -1,24 +1,67 @@
 <template>
-  <div class="cart">
-    <h2 class="text-center">Košík</h2>
+  <div class="all">
+    <div class="cart" v-if="step === 1">
+      <h2 class="text-center">1. Košík</h2>
 
-    <div class="items">
-      <div class="item" v-for="item in items" :key="item.id">
-        <div class="left">
-          <div class="image"></div>
-          <span class="name">{{item.name}}</span>
-        </div>
-        <div class="right">
-          <span class="price">{{item.price * item.count}}&nbsp;Kč</span>
-          <counter v-model="item.count" class="counter" />
-          <span class="delete" @click="remove(item.id)">
+      <div class="items">
+        <div class="item" v-for="item in items" :key="item.id">
+          <div class="left">
+            <div class="image"></div>
+            <span class="name">{{item.name}}</span>
+          </div>
+          <div class="right">
+            <span class="price">{{item.price * item.count}}&nbsp;Kč</span>
+            <counter v-model="item.count" class="counter"/>
+            <span class="delete" @click="remove(item.id)">
             <font-awesome-icon icon="times"/>
           </span>
+          </div>
         </div>
       </div>
       <div class="summary">
         <span class="total">Cena celkem: {{ getTotal() }}</span>
-        <button class="button">Pokračovat</button>
+        <button class="button" :class="{disabled: Object.keys(items).length === 0}" @click="nextStep(step)">Pokračovat
+        </button>
+      </div>
+    </div>
+    <div class="delivery" v-if="step === 2">
+      <h2 class="text-center">2. Doručení a platba</h2>
+
+      <div class="info">
+        <div class="row">
+          <div class="date">
+            <span>Datum doručení:</span>
+            <div class="datepick">
+              <font-awesome-icon icon="calendar-alt"/>
+              <functional-calendar :configs="calendarConfigs" v-model="calendarData"></functional-calendar>
+            </div>
+          </div>
+          <div class="time">
+            Čas doručení: {{calendarData.selectedHour && calendarData.selectedHour ? calendarData.selectedHour + ":"
+            +calendarData.selectedMinute : ''}}
+          </div>
+          <div class="payment">
+            Platba:
+            <select v-model="payment">
+              <option v-bind:value="{ card: 'Platba kartou' }">Platba kartou</option>
+              <option v-bind:value="{ cash: 'Hotově' }">Hotově</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="personal-info">
+          <h3>Osobní informace</h3>
+          <GeneralInput v-model="firstName" title="Jméno"/>
+          <GeneralInput v-model="lastName" title="Příjmení"/>
+          <GeneralInput v-model="mail" title="E-mail"/>
+          <GeneralInput v-model="phone" title="Telefon"/>
+          <label class="checkbox-container">
+            <span class="checkmark" :class="{checked: billingIsSame}"><font-awesome-icon icon='check'
+                                                                                         v-show="billingIsSame"/></span>
+            Doručovací adresa je shodná s fakturační adresou
+            <input type="checkbox" v-model="billingIsSame">
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -26,12 +69,17 @@
 
 <script>
   import Counter from "../components/Counter";
+  import {FunctionalCalendar} from 'vue-functional-calendar';
+  import GeneralInput from "../components/GeneralInput";
 
   export default {
     components: {
-      Counter
+      Counter,
+      FunctionalCalendar,
+      GeneralInput
     },
     data() {
+      const user = this.$store.getters.user;
       return {
         items: {
           0: {
@@ -62,7 +110,33 @@
             count: 1,
             oldCount: 1
           }
-        }
+        },
+        step: 2,
+        calendarData: {},
+        calendarConfigs: {
+          sundayStart: false,
+          dateFormat: 'dd.mm.yyyy',
+          isDatePicker: true,
+          isModal: true,
+          disabledDates: ['beforeToday', 'afterToday + 5'],
+          placeholder: ' ',
+          dayNames: ['Po', 'Út', 'St', 'Čt', 'Pa', 'So', 'Ne'],
+          disabledDayNames: ['So', 'Ne'],
+          monthNames: ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"],
+          withTimePicker: true,
+        },
+        payment: 'card',
+        firstName: user ? user.firstName : '',
+        lastName: user ? user.lastName : '',
+        phone: user ? user.phone : '',
+        mail: user ? user.mail : '',
+        city: user ? user.addressDelivery.city : '',
+        street: user ? user.addressDelivery.street : '',
+        zip: user ? user.addressDelivery.zip : '',
+        billingCity: user ? (user.addressBilling ? user.addressBilling.city : '') : '',
+        billingStreet: user ? (user.addressBilling ? user.addressBilling.street : '') : '',
+        billingZip: user ? (user.addressBilling ? user.addressBilling.zip : '') : '',
+        billingIsSame: user ? user.addressBilling === null : true
       }
     },
     watch: {
@@ -113,13 +187,20 @@
 
         return total;
       },
-      submitForm() {
-
-        alert('added');
+      nextStep(step) {
+        switch (step) {
+          case 1:
+            this.step = 2;
+            break;
+          case 2:
+            this.step = 3;
+            break;
+          default:
+            break;
+        }
       }
     }
   }
-
 
 </script>
 
@@ -130,13 +211,25 @@
     text-align: center;
   }
 
-  .cart {
-    padding: 50px;
+  .text-right {
+    text-align: right;
+  }
 
-    h2 {
-      font-size: 3em;
-      font-weight: 500;
-    }
+  .row {
+    display: flex;
+    width: 100%;
+  }
+
+  .all {
+    padding: 0 50px;
+  }
+
+  h2 {
+    font-size: 3em;
+    font-weight: 500;
+  }
+
+  .cart {
 
     .price, .name {
       font-weight: 700;
@@ -147,6 +240,7 @@
       background-color: $almostWhite;
       border-radius: 12px;
       padding: 25px;
+
 
       .item {
         background-color: #fff;
@@ -178,7 +272,7 @@
           width: 50%;
           margin: 0 25px;
 
-          .counter{
+          .counter {
             margin: 0 15px;
           }
         }
@@ -208,7 +302,7 @@
     .summary {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;  
+      align-items: flex-end;
 
       .total {
         font-size: 1.5em;
@@ -229,10 +323,146 @@
       font-size: 1.1em;
       cursor: pointer;
       transition-duration: .2s;
+      margin: 8px 0;
 
       &:hover {
         background: $darkBlue;
       }
+
+      &.disabled {
+        cursor: default;
+        background: $darkGrey;
+
+        &:hover {
+          background: $darkGrey;
+        }
+      }
     }
   }
+
+  .delivery {
+
+    .row {
+      align-items: center;
+    }
+
+    .info {
+      background-color: $almostWhite;
+      border-radius: 12px;
+      padding: 25px;
+    }
+
+    h3 {
+      color: $midGrey;
+    }
+
+    .date {
+      width: 33.333%;
+      display: flex;
+      align-items: center;
+
+      .datepick {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 33.333%;
+        margin-left: 5px;
+
+        svg {
+          position: absolute;
+          left: 10px;
+        }
+
+        .vfc-single-input {
+          font-size: .9em;
+          border: 1px solid white;
+          margin-top: 3px;
+          padding: 7px 10px;
+          border-radius: 7px;
+          box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+          box-sizing: border-box;
+          outline: none;
+          width: 10em;
+          flex: 1;
+
+          &:focus {
+            border-color: $mainOrange;
+          }
+        }
+
+      }
+    }
+
+    .time {
+      width: 33.333%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .payment {
+      width: 33.333%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+
+      select {
+        margin-left: 5px;
+        font-size: .9em;
+        border: 1px solid white;
+        margin-top: 3px;
+        padding: 3px 10px;
+        border-radius: 7px;
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+        box-sizing: border-box;
+        outline: none;
+        width: 10em;
+
+        &:focus {
+          border-color: $mainOrange;
+        }
+      }
+    }
+
+    .personal-info {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      width: 70%;
+      margin: 0 auto;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+
+      input {
+        position: absolute;
+        opacity: 0;
+      }
+
+      .checkmark {
+        display: inline-block;
+        position: relative;
+        width: 16px;
+        height: 16px;
+        background: #fff;
+        padding: 5px;
+        margin-right: 15px;
+        transition-duration: .5s;
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
+
+        path {
+          color: #fff;
+        }
+
+        &.checked {
+          background: $mainBlue ;
+        }
+      }
+    }
+  }
+
 </style>
