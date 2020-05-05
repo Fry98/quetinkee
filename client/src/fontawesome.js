@@ -20,7 +20,8 @@ import {
   faMinus,
   faTimes,
   faUsersCog,
-  faCalendarAlt
+  faCalendarAlt,
+  faTruck
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faUser);
@@ -39,6 +40,7 @@ library.add(faMinus);
 library.add(faTrashAlt);
 library.add(faTimes);
 library.add(faUsersCog);
-library.add(faCalendarAlt)
+library.add(faCalendarAlt);
+library.add(faTruck);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);

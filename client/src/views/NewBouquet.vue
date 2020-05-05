@@ -9,8 +9,8 @@
         </label>
         <label>
           <span>Kategorie </span>
-          <select name='category' v-model='selectedCategories' multiple>
-            <option v-for='option in categories'>{{ option }}</option>
+          <select ref='sel' name='category' v-model='selectedCategories' multiple>
+            <option v-for='category in categories' @mousedown='handleOptionMousedown(category, $event)'>{{ category }}</option>
           </select>
         </label>
         <label>
@@ -138,6 +138,20 @@
       },
       handleColorClick(color) {
         this.$set(this.selectedColors, color, !this.selectedColors[color]);
+      },
+      handleOptionMousedown(category, event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.$refs.sel.focus();
+        this.toggleCategory(category);
+      },
+      toggleCategory(category) {
+        const i = this.selectedCategories.indexOf(category);
+        if (i > -1) {
+          this.selectedCategories.splice(i, 1);
+        } else {
+          this.selectedCategories.push(category);
+        }
       }
     }
   }
