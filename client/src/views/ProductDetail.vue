@@ -22,17 +22,7 @@
           Skladem > 5 ks
         </div>
         <div class="cart-add">
-          <div class="count">
-            <div class="quantity">
-              <div class="q-btn" @click="changeQuantity(-1)">
-                <font-awesome-icon icon="minus"/>
-              </div>
-              <input type="text" v-model="count" @change="resetQuantity">
-              <div class="q-btn" @click="changeQuantity(1)">
-                <font-awesome-icon icon="plus"/>
-              </div>
-            </div>
-          </div>
+          <counter v-model='count'></counter>
           <div class="cart-button">
             <button class="button" @click="addToCart()">
               <font-awesome-icon icon="cart-plus" />
@@ -101,52 +91,24 @@
   import Carousel from '../components/Carousel';
   import ProductTile from '../components/ProductTile';
   import StarRating from '../components/StarRating';
+  import Counter from '../components/Counter';
 
   export default {
     components: {
       GeneralInput,
       ProductTile,
-      StarRating
+      StarRating,
+      Counter
     },
     data() {
       return {
         stars: 3,
         text: '',
         reviewStars: 3,
-        count: 1,
-        oldCount: 1
-      }
-    },
-    watch: {
-      count() {
-        if (/^[0-9]{0,2}$/.test(this.count)) {
-          let numCount = this.count;
-          if (this.count !== '') {
-            numCount = Number(this.count);
-            if (numCount < 1 || numCount > 50) {
-              this.count = this.oldCount;
-              return;
-            }
-          }
-          this.count = numCount;
-          this.oldCount = numCount;
-          return;
-        }
-        this.count = this.oldCount;
+        count: 1
       }
     },
     methods: {
-      changeQuantity(x) {
-        const newCount = this.count + x;
-        if (newCount < 1 || newCount > 50) return;
-        this.count = newCount;
-      },
-      resetQuantity() {
-        if (this.count === '') {
-          this.count = 1;
-          this.oldCount = 1;
-        }
-      },
       submitForm() {
         if (this.text.trim().length === 0) {
           this.$store.dispatch('openModal', 'Zadejte text hodnocení');
@@ -234,55 +196,6 @@
         .cart-add {
           display: flex;
           align-items: center;
-
-          .quantity {
-            display: flex;
-            position: relative;
-            align-items: center;
-            height: 37px;
-            border: 0.5px solid black;
-            border-radius: 7px;
-            font-size: 0.9em;
-            overflow: hidden;
-
-            input {
-              font-size: 1.3em;
-              height: 100%;
-              box-sizing: border-box;
-              text-align: center;
-              width: 40px;
-              border: none;
-              border-left: 0.5px solid black;
-              border-right: 0.5px solid black;
-            }
-
-            .q-btn {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              width: 30px;
-              height: 100%;
-              cursor: pointer;
-              transition-duration: .2s;
-              user-select: none;
-
-              &:hover {
-                color: white;
-                background: $mainBlue;
-              }
-            }
-          }
-
-          input[type="number"] {
-            -webkit-appearance: textfield;
-            -moz-appearance: textfield;
-            appearance: textfield;
-          }
-
-          input[type=number]::-webkit-inner-spin-button,
-          input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-          }
 
           .cart-button {
             margin-left: 10px;
