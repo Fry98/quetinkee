@@ -208,6 +208,8 @@
     }
 
     input {
+      border: 0;
+      min-width: 0;
       font-size: 1em;
       width: 1px;
       font-weight: bold;
@@ -215,6 +217,7 @@
       background-color: transparent;
       margin-right: 5px;
       text-align: center;
+      -moz-appearance: textfield;
     }
 
     input[type=number]::-webkit-inner-spin-button,
@@ -267,6 +270,7 @@
         border-radius: 7px;
         padding: 3px 10px 3px 10px;
         border: solid 1px white;
+        -moz-appearance: textfield;
 
         &:focus {
           outline: none;
