@@ -6,8 +6,10 @@
   "scripts": {
     "build": "vue-cli-service build && mvn clean package",
     "server": "mvn spring-boot:run",
+    "service": "cd service && npm start",
     "client": "vue-cli-service serve",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run service\"",
+    "postinstall": "cd service && npm i"
   },
   "keywords": [],
   "author": "quetnikee",
