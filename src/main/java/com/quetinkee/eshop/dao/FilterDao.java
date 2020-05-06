@@ -37,6 +37,6 @@ public interface FilterDao extends JpaRepository<Boquet, Integer>,FilterDynamic 
   @Query(value = "SELECT f FROM Flower f, BoquetFlowerCount fc, Boquet b " + ACTIVE + " GROUP BY f")
   Set<FlowerList> searchFlowers(Boolean showAll, Sort sort);
 
-  @Query(value = "SELECT f FROM Flower f, BoquetFlowerCount fc, Boquet b, Category c " + ACTIVE + " AND c.id = ?2 GROUP BY f")
+  @Query(value = "SELECT f FROM Flower f JOIN f.boquetflowerCount fc JOIN fc.boquet b " + ACTIVE + " AND c.id = ?2 GROUP BY f")
   Set<FlowerList> searchFlowersByCategoriesId(Boolean showAll, Integer id, Sort sort);
 }
