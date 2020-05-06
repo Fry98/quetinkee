@@ -82,13 +82,13 @@
         <div class='flower' v-for='flower in selectedFlowers'>
             <span class='flower-name'>
               {{ flower.name }}
-              <font-awesome-icon
+              <font-awesome-icomn
                   class='icon'
                   :icon="['far', 'trash-alt']"
                   @click='removeFlower(flower.name)'
-              ></font-awesome-icon>
+              ></font-awesome-icomn>
             </span>
-          <input type='number' v-model='flower.count' min='1'>
+          <input type='number' v-model='flower.count' min='1' @focus='$event.target.select()'>
         </div>
         <button class='btn' :class='{ "disabled": saveIsDisabled }' :disabled='saveIsDisabled' type='submit'>Uložit
         </button>

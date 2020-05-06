@@ -16,7 +16,11 @@
           <td>{{ flower.name }}</td>
           <td>
             <span class='countChange' @click='changeCount(flower, -1)'><font-awesome-icon icon="minus"/></span>
-            <input type='number' v-model='flower.newCount' @change='handleFlowerCountChange(flower)' @keydown='cancelSubmit($event)'>
+            <input type='number'
+                   v-model='flower.newCount'
+                   @blur='handleFlowerCountBlur(flower)'
+                   @keydown='cancelSubmit($event)'
+                   @focus='$event.target.select()'>
             <span class='countChange' @click='changeCount(flower, 1)'><font-awesome-icon icon="plus"/></span>
           </td>
         </tr>
@@ -47,7 +51,8 @@
     },
 
     methods: {
-      handleFlowerCountChange(flower) {
+      handleFlowerCountBlur(flower) {
+        console.log(flower.newCount);
         this.flowers.find(el => el.name === flower.name).newCount = Number(flower.newCount);
       },
       changeCount(flower, by) {
@@ -119,6 +124,7 @@
     text-align: center;
     vertical-align: center;
     border: solid black 1px;
+    padding: 3px;
 
     input {
       text-align: center;
