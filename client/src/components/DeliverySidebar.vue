@@ -21,6 +21,7 @@
     width: 290px;
     box-shadow: inset -3px 0px 5px rgba(0, 0, 0, 0.158);
     overflow-y: scroll;
+    scrollbar-width: none;
     &::-webkit-scrollbar {
       display: none;
     }
