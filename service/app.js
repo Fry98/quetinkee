@@ -58,6 +58,8 @@ const redis = require('redis');
         res.status(404).send(`No results for ID ${req.query.id}`);
         return;
       }
+
+      res.set('Content-Type', 'application/json');
       res.send(cache);
     });
   });
