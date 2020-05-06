@@ -34,20 +34,23 @@ public class SystemInitializer {
 
   @PostConstruct
   public void inicialize () {
+    String mailAdmin = "admin@admin.cz";
+    if (this.userService.isRegistred(mailAdmin)) return;
+
     System.out.println("------ Install script ------");
 
     // insert admin
     User admin = new User();
     admin.setFirstName("Name");
     admin.setLastName("Surname");
-    admin.setMail("admin@admin.cz");
+    admin.setMail(mailAdmin);
     admin.setPassword("heslo");
     admin.setPhone("123456");
     admin.setRole(Role.ADMIN);
     admin.setAddressDelivery(new Address("Street", "City", "12345"));
     this.userService.persist(admin);
 
-
+    // create categories
     Category catNew = new Category("Nové", 1, true);
     categoryService.persist(catNew);
     Category catAction = new Category("V akci", 2, true);
@@ -61,7 +64,7 @@ public class SystemInitializer {
     Category catHide = new Category("Překvapení", 1, false);
     categoryService.persist(catHide);
 
-
+    // flowers
     Flower flower1 = new Flower("Růže", "", "10");
     flowerService.persist(flower1);
     Flower flower2 = new Flower("Fialka", "Note", "20");
@@ -69,7 +72,7 @@ public class SystemInitializer {
     Flower flower3 = new Flower("Slunečnice", "žlutá", "30");
     flowerService.persist(flower3);
 
-
+    // boquets
     Boquet boqA = new Boquet("Nejhezčí kytice", "<p>popis A s <strong>HTML</strong></p>", "", "100.10", Size.SMALL, true);
     boqA.addColor(Color.YELLOW);
     boqA.addCategory(catAction);
