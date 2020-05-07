@@ -289,6 +289,7 @@
 
             if(!this.termsAndConditions){
               this.$store.dispatch('openModal', 'Musíte souhlasit s obchodními podmínkami');
+              return;
             }
 
             this.step = 3;
