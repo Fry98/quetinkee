@@ -82,11 +82,11 @@
         <div class='flower' v-for='flower in selectedFlowers'>
             <span class='flower-name'>
               {{ flower.name }}
-              <font-awesome-icomn
+              <font-awesome-icon
                   class='icon'
                   :icon="['far', 'trash-alt']"
                   @click='removeFlower(flower.name)'
-              ></font-awesome-icomn>
+              ></font-awesome-icon>
             </span>
           <input type='number' v-model='flower.count' min='1' @focus='$event.target.select()'>
         </div>
@@ -208,6 +208,7 @@
     }
 
     input {
+      outline: none;
       border: 0;
       min-width: 0;
       font-size: 1em;
