@@ -17,6 +17,18 @@ const redis = require('redis');
   await channel.assertQueue('items');  
   channel.consume('items', message => {
     const data = JSON.parse(message.content.toString());
+    channel.ack(message);
+    if (data.id === undefined || (!data.remove && data.name === undefined)) return;
+
+    if (data.remove) {
+      client.delete({
+        index: 'items',
+        type: 'item',
+        id: data.id
+      }).catch(_ => {});
+      return;
+    }
+
     client.index({
       index: 'items',
       type: 'item',
@@ -25,14 +37,14 @@ const redis = require('redis');
         name: fold.foldMaintaining(data.name)
       }
     });
-    channel.ack(message);
   });
   
   await channel.assertQueue('cache');
   channel.consume('cache', message => {
     const data = JSON.parse(message.content.toString());
-    redisClient.set(`req(${data.id})`, JSON.stringify(data.data), 'EX', data.ttl);
     channel.ack(message);
+    if (data.id === undefined || data.data === undefined || data.ttl === undefined) return;
+    redisClient.set(`req(${data.id})`, JSON.stringify(data.data), 'EX', data.ttl);
   });
 
   app.get('/api/cache', (req, res) => {
@@ -46,6 +58,8 @@ const redis = require('redis');
         res.status(404).send(`No results for ID ${req.query.id}`);
         return;
       }
+
+      res.set('Content-Type', 'application/json');
       res.send(cache);
     });
   });

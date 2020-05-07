@@ -51,18 +51,50 @@
 
         <div class="personal-info">
           <h3>Osobní informace</h3>
-          <GeneralInput v-model="firstName" title="Jméno"/>
-          <GeneralInput v-model="lastName" title="Příjmení"/>
-          <GeneralInput v-model="mail" title="E-mail"/>
-          <GeneralInput v-model="phone" title="Telefon"/>
+          <generalInput v-model="firstName" title="Jméno"/>
+          <generalInput v-model="lastName" title="Příjmení"/>
+          <generalInput v-model="mail" title="E-mail"/>
+          <generalInput v-model="phone" title="Telefon"/>
           <label class="checkbox-container">
-            <span class="checkmark" :class="{checked: billingIsSame}"><font-awesome-icon icon='check'
-                                                                                         v-show="billingIsSame"/></span>
+            <span class="checkmark" :class="{checked: billingIsSame}">
+              <font-awesome-icon icon='check' v-show="billingIsSame"/>
+            </span>
             Doručovací adresa je shodná s fakturační adresou
             <input type="checkbox" v-model="billingIsSame">
           </label>
+
+          <h3>Doručovací informace</h3>
+          <general-input v-model="city" title="Město"/>
+          <general-input v-model="street" title="Ulice a č.p."/>
+          <general-input v-model="zip" title="PSČ"/>
+
+          <div v-if="!billingIsSame">
+            <h3>Fakturační informace</h3>
+            <general-input v-model="billingCity" title="Město"/>
+            <general-input v-model="billingStreet" title="Ulice a č.p."/>
+            <general-input v-model="billingZip" title="PSČ"/>
+          </div>
+
+          <label class="checkbox-container">
+            <span class="checkmark" :class="{checked: termsAndConditions}">
+              <font-awesome-icon icon='check' v-show="termsAndConditions"/>
+            </span>
+            Souhlasím s&nbsp;<a href="#" target="_blank">obchodními podmínkami</a> &nbsp;společnosti quetinkee
+            <input type="checkbox" v-model="termsAndConditions">
+          </label>
         </div>
       </div>
+      <div class="submit">
+        <button class="button" :class="{disabled: Object.keys(items).length === 0}" @click="nextStep(step)">
+          Objednat
+        </button>
+      </div>
+    </div>
+    <div class="ending" v-if="step === 3">
+      <h2 class="text-center">3. Děkujeme</h2>
+      <p class="text-center">
+        Na Vaši emailovou adresu {{mail}} bylo zasláno shrnutí Vaší objednávky. Děkujeme za Váš nákup.
+      </p>
     </div>
   </div>
 </template>
@@ -111,7 +143,7 @@
             oldCount: 1
           }
         },
-        step: 2,
+        step: 1,
         calendarData: {},
         calendarConfigs: {
           sundayStart: false,
@@ -136,7 +168,8 @@
         billingCity: user ? (user.addressBilling ? user.addressBilling.city : '') : '',
         billingStreet: user ? (user.addressBilling ? user.addressBilling.street : '') : '',
         billingZip: user ? (user.addressBilling ? user.addressBilling.zip : '') : '',
-        billingIsSame: user ? user.addressBilling === null : true
+        billingIsSame: user ? user.addressBilling === null : true,
+        termsAndConditions: false
       }
     },
     watch: {
@@ -190,9 +223,74 @@
       nextStep(step) {
         switch (step) {
           case 1:
+            if (Object.keys(this.items).length < 1) {
+              this.$store.dispatch('openModal', 'Košík je prázdný');
+              return;
+            }
             this.step = 2;
             break;
           case 2:
+            if (!this.calendarData.selectedDateTime) {
+              this.$store.dispatch('openModal', 'Zadejte datum a čas');
+              return;
+            }
+
+            if (this.firstName.trim().length === 0) {
+              this.$store.dispatch('openModal', 'Zadejte křestní jméno');
+              return;
+            }
+
+            if (this.lastName.trim().length === 0) {
+              this.$store.dispatch('openModal', 'Zadejte příjmení');
+              return;
+            }
+
+            if (this.mail.trim().length === 0) {
+              this.$store.dispatch('openModal', 'Zadejte e-mail');
+              return;
+            }
+
+            if (!this.phone.match(/^(.+)@(.+).(.){2,6}$/)) {
+              this.$store.dispatch('openModal', 'Nesprávně zadaný telefon');
+              return;
+            }
+
+            if (this.city.trim().length === 0) {
+              this.$store.dispatch('openModal', 'Zadejte město');
+              return;
+            }
+
+            if (this.street.trim().length === 0) {
+              this.$store.dispatch('openModal', 'Zadejte ulici a č.p.');
+              return;
+            }
+
+            if (this.zip.trim().length === 0) {
+              this.$store.dispatch('openModal', 'Zadejte PSČ');
+              return;
+            }
+
+            if (!this.billingIsSame) {
+              if (this.billingCity.trim().length === 0) {
+                this.$store.dispatch('openModal', 'Zadejte město pro fakturaci');
+                return;
+              }
+
+              if(this.billingStreet.trim().length === 0){
+                this.$store.dispatch('openModal', 'Zadejte ulici a č.p. pro fakturaci');
+                return;
+              }
+
+              if(this.billingZip.trim().length === 0){
+                this.$store.dispatch('openModal', 'Zadejte PSČ pro fakturaci');
+                return;
+              }
+            }
+
+            if(!this.termsAndConditions){
+              this.$store.dispatch('openModal', 'Musíte souhlasit s obchodními podmínkami');
+            }
+
             this.step = 3;
             break;
           default:
@@ -313,34 +411,14 @@
         width: 250px;
       }
     }
-
-    .button {
-      border: none;
-      border-radius: 7px;
-      background: $mainBlue;
-      color: white;
-      padding: .5rem 1rem;
-      font-size: 1.1em;
-      cursor: pointer;
-      transition-duration: .2s;
-      margin: 8px 0;
-
-      &:hover {
-        background: $darkBlue;
-      }
-
-      &.disabled {
-        cursor: default;
-        background: $darkGrey;
-
-        &:hover {
-          background: $darkGrey;
-        }
-      }
-    }
   }
 
   .delivery {
+
+    .submit {
+      display: flex;
+      justify-content: flex-end;
+    }
 
     .row {
       align-items: center;
@@ -459,10 +537,34 @@
         }
 
         &.checked {
-          background: $mainBlue ;
+          background: $mainBlue;
         }
       }
     }
   }
 
+  .button {
+    border: none;
+    border-radius: 7px;
+    background: $mainBlue;
+    color: white;
+    padding: .5rem 1rem;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition-duration: .2s;
+    margin: 8px 0;
+
+    &:hover {
+      background: $darkBlue;
+    }
+
+    &.disabled {
+      cursor: default;
+      background: $darkGrey;
+
+      &:hover {
+        background: $darkGrey;
+      }
+    }
+  }
 </style>
