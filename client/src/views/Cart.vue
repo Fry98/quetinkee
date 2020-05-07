@@ -250,7 +250,7 @@
               return;
             }
 
-            if (!this.phone.match(/^(.+)@(.+).(.){2,6}$/)) {
+            if (!this.phone.replace(/ /g, '').match(/^[0-9]{9}$/)) {
               this.$store.dispatch('openModal', 'Nesprávně zadaný telefon');
               return;
             }
