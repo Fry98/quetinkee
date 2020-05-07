@@ -1,6 +1,11 @@
 <template>
   <div id='delivery'>
-    <order-details :open='open' @close='closeDetails'></order-details>
+    <order-details
+      :open='open'
+      :orders='ordersComp'
+      :index='index'
+      @close='closeDetails'
+    ></order-details>
     <delivery-sidebar
       @pending='loadPending'
       @ongoing='loadOngoing'
@@ -9,7 +14,8 @@
     <delivery-table
     :title='title'
     :selected='selected'
-    v-model='orders'
+    :orders='ordersComp'
+    @remove='removeItem'
     @details='openDetails'
     ></delivery-table>
   </div>
@@ -32,10 +38,12 @@ export default {
       title: 'Čekající objednávky',
       selected: 0,
       open: false,
+      index: 0,
       orders: [
         {
           id: 5,
-          name: 'Roman Toman',
+          firstName: 'Roman',
+          lastName: 'Toman',
           street: 'Ulicova 234/7',
           city: 'Praha 7',
           zip: 13412,
@@ -47,38 +55,48 @@ export default {
         },
         {
           id: 7,
-          name: 'Roman Toman',
+          firstName: 'Alex',
+          lastName: 'Nguyen',
           street: 'Ulicova 234/7',
           city: 'Praha 7',
           zip: 13412,
           time: '13:30',
           contents: [
             '2 x První kytice',
-            '1 x Jiná kytice'
+            '2 x Jiná kytice',
+            '4 x Item',
+            '2 x První kytice',
+            '2 x Jiná kytice',
+            '4 x Item',
+            '2 x První kytice',
+            '2 x Jiná kytice',
+            '4 x Item',
           ]
         },
         {
           id: 12,
-          name: 'Roman Toman',
+          firstName: 'Vítek',
+          lastName: 'Cheatek',
           street: 'Ulicova 234/7',
           city: 'Praha 7',
           zip: 13412,
           time: '13:30',
           contents: [
-            '2 x První kytice',
-            '1 x Jiná kytice'
+            '7 x První kytice',
+            '2 x Jiná kytice'
           ]
         },
         {
           id: 24,
-          name: 'Roman Toman',
+          firstName: 'Honza',
+          lastName: 'Rykl',
           street: 'Ulicova 234/7',
           city: 'Praha 7',
           zip: 13412,
           time: '13:30',
           contents: [
-            '2 x První kytice',
-            '1 x Jiná kytice'
+            '3 x První kytice',
+            '4 x Jiná kytice'
           ]
         },
       ]
@@ -108,9 +126,29 @@ export default {
     },
     openDetails(i) {
       this.open = true;
+      this.index = i;
     },
     closeDetails() {
       this.open = false;
+    },
+    removeItem(i) {
+      this.orders.splice(i, 1);
+    }
+  },
+  computed: {
+    ordersComp() {
+      return this.orders.map(x => {
+        const zipStr = x.zip.toString();
+        const zip = zipStr.substr(0, 3) + " " + zipStr.substr(3, 2);
+        const street = x.street;
+        const city = x.city;
+
+        return {
+          address: `${street}, ${zip} ${city}`,
+          fullName: `${x.firstName} ${x.lastName}`,
+          ...x
+        };
+      });
     }
   }
 }

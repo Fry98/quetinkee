@@ -10,14 +10,14 @@
         <td>Detaily</td>
         <td>Stav</td>
       </thead>
-      <tr v-for='(item, i) in value' :key='item.id'>
+      <tr v-for='(item, i) in orders' :key='item.id'>
         <td class='id'>{{ item.id }}</td>
-        <td class='name'>{{ item.name }}</td>
-        <td class='street'>{{ getAddress(i) }}</td>
+        <td class='name'>{{ item.fullName }}</td>
+        <td class='street'>{{ item.address }}</td>
         <td class='time'>{{ item.time }}</td>
         <td class='details'><button @click='$emit("details", i)'>Zobrazit detaily</button></td>
         <td class='state-col'>
-          <select class='state' @change='removeItem(i)'>
+          <select class='state' @change='$emit("remove", i)'>
             <option :selected='selected === 0'>Čekající</option>
             <option :selected='selected === 1'>Probíhající</option>
             <option :selected='selected === 2'>Dokončená</option>
@@ -35,27 +35,13 @@ export default {
       type: String,
       default: 'Objednávky'
     },
-    value: {
+    orders: {
       type: Array,
       default: []
     },
     selected: {
       type: Number,
       default: 0
-    }
-  },
-  methods: {
-    getAddress(i) {
-      const zipStr = this.value[i].zip.toString();
-      const zip = zipStr.substr(0, 3) + " " + zipStr.substr(3, 2);
-      const street = this.value[i].street;
-      const city = this.value[i].city;
-
-      return `${street}, ${zip} ${city}`;
-    },
-    removeItem(i) {
-      this.value.splice(i, 1);
-      this.$emit('input', this.value);
     }
   }
 }
