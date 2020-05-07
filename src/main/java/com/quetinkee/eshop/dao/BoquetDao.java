@@ -15,7 +15,7 @@ public interface BoquetDao extends JpaRepository<Boquet, Integer> {
 
   Boquet findByIdAndActiveTrue(Integer id);
 
-  Slice<Boquet> findAllBy(Pageable pageable);
+  Slice<BoquetList> findAllBy(Pageable pageable);
 
   List<BoquetList> findAllBy(Sort sort);
 

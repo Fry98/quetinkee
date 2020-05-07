@@ -8,6 +8,8 @@ public interface BoquetList {
 
   public String getName();
 
+  public String getImage();
+
   public Size getSize();
 
   public String getPrice();

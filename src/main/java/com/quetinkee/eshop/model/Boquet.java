@@ -9,10 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Objects;
+import java.util.Optional;
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -25,14 +27,15 @@ public class Boquet extends AbstractEntity {
 
   @NotBlank(message = "Zadejte popis kytice")
   @Basic(optional = false)
-  @Column(nullable = false)
-  @Lob
+  @Column(columnDefinition="TEXT", nullable = false)
   private String perex;
 
-  @Column(nullable = true)
-  @Lob
+  @Column(columnDefinition="TEXT", nullable = true)
   private String description;
 
+  private String image;
+
+  @NotNull(message = "Zadejte cenu kytice")
   @Digits(integer = 11, fraction = 2, message = "Cena je ve špatném formátu")
   @Min(value = 1, message = "Zadejte cenu kytice")
   @Basic(optional = false)
@@ -40,11 +43,12 @@ public class Boquet extends AbstractEntity {
   private BigDecimal price;
 
   @Enumerated(EnumType.STRING)
-  @Basic(optional = false)
-  @Column(nullable = false)
+  @Basic(optional = true)
+  @Column(nullable = true)
   private Size size;
 
-  private boolean active;
+  @Column(columnDefinition = "boolean default false")
+  private Boolean active;
 
   @JsonIgnore
   @ElementCollection
@@ -63,7 +67,7 @@ public class Boquet extends AbstractEntity {
   public Boquet() {
   }
 
-  public Boquet(String name, String perex, String description, String price, Size size, boolean active) {
+  public Boquet(String name, String perex, String description, String price, Size size, Boolean active) {
     this.name = name;
     this.perex = perex;
     this.description = description;
@@ -96,6 +100,14 @@ public class Boquet extends AbstractEntity {
     this.description = description;
   }
 
+  public String getImage() {
+    return this.image;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
+  }
+
   public String getPrice() {
     return this.price.toString();
   }
@@ -116,11 +128,11 @@ public class Boquet extends AbstractEntity {
     this.size = size;
   }
 
-  public boolean isActive() {
+  public Boolean isActive() {
     return this.active;
   }
 
-  public void setActive(boolean active) {
+  public void setActive(Boolean active) {
     this.active = active;
   }
 
@@ -133,7 +145,9 @@ public class Boquet extends AbstractEntity {
     if (this.categories == null) {
       this.categories = new HashSet<>();
     }
-    this.categories.add(category);
+    if (!this.categories.contains(category)) {
+      this.categories.add(category);
+    }
   }
 
   public void removeCategory(Category category) {
@@ -156,8 +170,15 @@ public class Boquet extends AbstractEntity {
     if (this.boquetflowerCount == null) {
       this.boquetflowerCount = new ArrayList<>();
     }
-    count.setBoquet(this);
-    this.boquetflowerCount.add(count);
+    Optional<BoquetFlowerCount> exists = this.boquetflowerCount.stream().filter(
+            it -> it.getFlower().getId().equals(count.getFlower().getId())).findAny();
+    if (exists.isPresent()) {
+      exists.get().setCount(count.getCount());
+    }
+    else {
+      count.setBoquet(this);
+      this.boquetflowerCount.add(count);
+    }
   }
 
   public void removeBoquetFlowerCount(BoquetFlowerCount count) {
@@ -168,9 +189,9 @@ public class Boquet extends AbstractEntity {
   }
 
   public void setBoquetFlowerCount(List<BoquetFlowerCount> flowerCount) {
-    for (BoquetFlowerCount count : flowerCount) {
+    flowerCount.forEach((count) -> {
       count.setBoquet(this);
-    }
+    });
     this.boquetflowerCount = flowerCount;
   }
 
@@ -183,7 +204,16 @@ public class Boquet extends AbstractEntity {
     if (this.colors == null) {
       this.colors = new ArrayList<>();
     }
-    this.colors.add(color);
+    if (!this.colors.contains(color)) {
+      this.colors.add(color);
+    }
+  }
+
+  public void removeColor(Color color) {
+    Objects.requireNonNull(color);
+    if (this.colors != null) {
+      this.colors.remove(color);
+    }
   }
 
   public List<Color> getColors() {

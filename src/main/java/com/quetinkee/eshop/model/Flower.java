@@ -22,8 +22,7 @@ public class Flower extends AbstractEntity {
   private String name;
 
   @Basic(optional = true)
-  @Column(nullable = true)
-  @Lob
+  @Column(columnDefinition="TEXT", nullable = true)
   private String description;
 
   @Digits(integer=11, fraction=2, message = "Cena je ve špatném formátu")

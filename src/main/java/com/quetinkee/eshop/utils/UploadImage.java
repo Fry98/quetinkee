@@ -26,11 +26,11 @@ public class UploadImage {
       Files.createDirectories(this.uploadLocation);
     }
     catch (IOException ex) {
-      throw new FileStorageException("Nelze založit upload directory", ex);
+      throw new UploadException("Nelze založit upload directory", ex);
     }
   }
 
-  public String store(Integer id, MultipartFile file) throws FileStorageException {
+  public String store(Integer id, MultipartFile file) throws UploadException {
     String fileName = StringUtils.cleanPath(id + "_" + file.getOriginalFilename());
     try {
       Path target = this.uploadLocation.resolve(fileName);
@@ -40,12 +40,12 @@ public class UploadImage {
       ImageIO.write(img, "jpg", outputfile);
     }
     catch (IOException ex) {
-      throw new FileStorageException("Nelze nahrát sobor: " + fileName, ex);
+      throw new UploadException("Nelze nahrát sobor: " + fileName, ex);
     }
     return fileName;
   }
 
-  public boolean remove (String fileName) throws FileStorageException {
+  public boolean remove (String fileName) throws UploadException {
     try {
       Path targetLocation = this.uploadLocation.resolve(fileName);
       if (Files.exists(targetLocation)) {
@@ -54,7 +54,7 @@ public class UploadImage {
       }
     }
     catch (IOException ex) {
-      throw new FileStorageException("Nelze smazat sobor: " + fileName, ex);
+      throw new UploadException("Nelze smazat sobor: " + fileName, ex);
     }
     return false;
   }

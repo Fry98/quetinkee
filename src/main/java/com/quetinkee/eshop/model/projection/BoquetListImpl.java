@@ -8,6 +8,7 @@ public class BoquetListImpl implements BoquetList, Serializable {
 
   private Integer Id;
   private String name;
+  private String image;
   private BigDecimal price;
   private Size size;
   private boolean active;
@@ -15,7 +16,7 @@ public class BoquetListImpl implements BoquetList, Serializable {
   public BoquetListImpl() {
   }
 
-  public BoquetListImpl(Integer Id, String name, BigDecimal price, Size size, boolean active) {
+  public BoquetListImpl(Integer Id, String name, String image, BigDecimal price, Size size, boolean active) {
     this.Id = Id;
     this.name = name;
     this.price = price;
@@ -31,6 +32,11 @@ public class BoquetListImpl implements BoquetList, Serializable {
   @Override
   public String getName() {
     return this.name;
+  }
+
+  @Override
+  public String getImage() {
+    return this.image;
   }
 
   @Override
@@ -54,6 +60,10 @@ public class BoquetListImpl implements BoquetList, Serializable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
   }
 
   public void setPrice(BigDecimal price) {
