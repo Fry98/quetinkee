@@ -82,6 +82,7 @@ const router = new Router({
     {
       path: '/delivery',
       component: DeliveryLayout
+      // TODO: Add Auth
     },
     {
       path: '/login',
