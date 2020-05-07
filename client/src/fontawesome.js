@@ -10,6 +10,8 @@ import {
   faShoppingCart,
   faChevronRight,
   faChevronLeft,
+  faChevronUp,
+  faChevronDown,
   faCartPlus,
   faSignOutAlt,
   faAddressCard,
@@ -28,6 +30,8 @@ library.add(faUser);
 library.add(faShoppingCart);
 library.add(faChevronRight);
 library.add(faChevronLeft);
+library.add(faChevronUp);
+library.add(faChevronDown);
 library.add(faCartPlus);
 library.add(faSignOutAlt);
 library.add(faAddressCard);

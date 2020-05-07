@@ -12,7 +12,7 @@
     </ul>
     <h2>Kategorie</h2>
     <ul>
-      <li>Spravovat kategorie</li>
+      <li @click='$router.push("/admin/manage-categories")'>Spravovat kategorie</li>
     </ul>
   </div>
 </template>

@@ -1,22 +1,22 @@
 <template>
-  <div id='manage-flowers'>
+  <div id='manage-categories'>
     <confirm :msg='popup' @cancel='cancel' @confirm='confirm'></confirm>
-    <div class='mf-wrap'>
-      <h1>Správa květin</h1>
-      <div class='new-flower'>
+    <div class='mc-wrap'>
+      <h1>Správa kategorií</h1>
+      <div class='new-cat'>
         <label>
-          <span>Nová květina: </span>
-          <input type='text' placeholder='Název květiny' v-model='newFlower'>
+          <span>Nová kategorie: </span>
+          <input type='text' placeholder='Název kategorie' v-model='newCategory'>
         </label>
         <div class='btn'>+</div>
       </div>
-      <div class='existing-flowers'>
-        <div v-for='flower in flowers' :key='flower.id' class='flower'>
-          <span>{{ flower.name }}</span>
+      <div class='existing-ctgs'>
+        <div v-for='ctg in categories' :key='ctg.id' class='ctg'>
+          <span>{{ ctg.name }}</span>
           <font-awesome-icon
               class='icon'
               :icon="['far', 'trash-alt']"
-              @click='removeFlower(flower)'
+              @click='removeFlower(ctg)'
           ></font-awesome-icon>
         </div>
       </div>
@@ -28,30 +28,26 @@
   import Confirm from '../components/Confirm';
 
   export default {
-    name: "ManageFlowers",
+    name: "ManageCategories",
     components: {
       Confirm
     },
     data() {
       return {
         popup: null,
-        newFlower: '',
-        flowers: [
+        newCategory: '',
+        categories: [
           {
             id: 0,
-            name: 'Bílá růže'
+            name: 'Sezonní nabídka'
           },
           {
             id: 1,
-            name: 'Červená růže'
+            name: 'Narozeniny'
           },
           {
             id: 2,
-            name: 'Gerbera'
-          },
-          {
-            id: 3,
-            name: 'Modrá růže'
+            name: 'Pohřeb'
           }
         ]
       }
@@ -76,12 +72,12 @@
   @import "../scss/_vars.scss";
   @import "../scss/_button.scss";
 
-  #manage-flowers {
+  #manage-categories {
     display: flex;
     justify-content: center;
   }
 
-  .mf-wrap {
+  .mc-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -91,16 +87,16 @@
     padding: 30px 80px;
   }
 
-  .new-flower {
+  .new-cat {
     display: flex;
   }
 
-  .existing-flowers {
+  .existing-ctgs {
     margin-top: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    .flower {
+    .ctg {
       width: 100%;
       margin-bottom: 5px;
       background-color: #fff;

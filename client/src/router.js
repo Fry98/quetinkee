@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Cart from './views/Cart';
 import Router from 'vue-router';
 import Home from './views/Home';
 import Login from './views/Login';
@@ -11,7 +12,7 @@ import ProductDetail from './views/ProductDetail';
 import ManageFlowers from "./views/ManageFlowers";
 import ManageStorage from "./views/ManageStorage";
 import DeliveryLayout from './views/DeliveryLayout';
-import Cart from './views/Cart';
+import ManageCategories from "./views/ManageCategories";
 import store from './store';
 
 Vue.use(Router);
@@ -48,6 +49,13 @@ const router = new Router({
       path: '/admin',
       component: AdminLayout,
       children: [
+        {
+          path: 'manage-categories',
+          component: ManageCategories,
+          meta: {
+            auth: AuthLevel.ADMIN
+          },
+        },
         {
           path: 'manage-flowers',
           component: ManageFlowers,

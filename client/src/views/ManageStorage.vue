@@ -3,7 +3,7 @@
     <form class='content-wrap'>
       <h1>Správa skladu</h1>
       <button class='btn'>Uložit stav</button>
-        <input type='text' class='search' v-model='query' placeholder='Vyhledávat v květinách' @keydown='cancelSubmit($event)'>
+      <input type='text' class='search' v-model='query' placeholder='Vyhledávat v květinách' @keydown='cancelSubmit($event)'>
       <table>
         <thead>
         <tr>
@@ -26,6 +26,7 @@
         </tr>
         </tbody>
       </table>
+      <button class='btn'>Uložit stav</button>
     </form>
   </div>
 </template>
@@ -52,7 +53,6 @@
 
     methods: {
       handleFlowerCountBlur(flower) {
-        console.log(flower.newCount);
         this.flowers.find(el => el.name === flower.name).newCount = Number(flower.newCount);
       },
       changeCount(flower, by) {
@@ -113,6 +113,7 @@
 
   table {
     margin-top: 5px;
+    margin-bottom: 10px;
     border-collapse: collapse;
   }
 
