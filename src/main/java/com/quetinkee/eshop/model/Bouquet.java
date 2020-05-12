@@ -2,6 +2,7 @@ package com.quetinkee.eshop.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -106,6 +107,7 @@ public class Bouquet extends AbstractEntity {
     this.description = description;
   }
 
+  @JsonProperty
   public String getPath() {
     return this.path;
   }
@@ -115,6 +117,7 @@ public class Bouquet extends AbstractEntity {
     this.path = path;
   }
 
+  @JsonProperty
   public String getImage() {
     return this.image;
   }
