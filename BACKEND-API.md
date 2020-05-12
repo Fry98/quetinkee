@@ -29,10 +29,10 @@ size : int  (optional def. 10) počet záznamů na stránku
 ```javascript
 {
     "content":[
-        {"price":"200.00","image":null,"name":"Kytice hezká","id":13,"size":"MEDIUM","active":true},
-        {"price":"10000000.00","image":null,"name":"Kyticke hezčí","id":14,"size":"LARGE","active":true},
-        {"price":"100.10","image":null,"name":"Nejhezčí kytice","id":12,"size":"SMALL","active":true},
-        {"price":"10000000.00","image":null,"name":"the EGG","id":15,"size":"LARGE","active":false}
+        {"price":"200.00","path":"uploads/img","image":"11_img.jpg","name":"Kytice hezká","id":13,"size":"MEDIUM","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"Kyticke hezčí","id":14,"size":"LARGE","active":true},
+        {"price":"100.10","path":"uploads/img","image":"11_img.jpg","name":"Nejhezčí kytice","id":12,"size":"SMALL","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"the EGG","id":15,"size":"LARGE","active":false}
     ],
     "pageable":{
         "sort":{"unsorted":false,"sorted":true,"empty":false},
@@ -98,7 +98,8 @@ id   : int        id kytice
         "name":"Nejhezčí kytice",
         "perex":"<p>popis A s <strong>HTML</strong></p>",
         "description":"",
-        "image":null,
+        "path":"uploads/img",
+        "image":"11_img.jpg",
         "price":"100.10",
         "size":"SMALL",
         "active":true
@@ -210,7 +211,8 @@ id   : int        id kytice
         "name":"Nejhezčí kytice",
         "perex":"<p>popis A s <strong>HTML</strong></p>",
         "description":"",
-        "image":null,
+        "path":"uploads/img",
+        "image":"11_img.jpg",
         "price":"100.10",
         "size":"SMALL",
         "active":true
@@ -796,7 +798,7 @@ size : int  (optional def. 10) počet záznamů na stránku
 ```javascript
 {
     "content":[
-        {"name":"Nejhezčí kytice","image":null,"price":"100.10","size":"SMALL","active":true,"id":12}
+        {"name":"Nejhezčí kytice","path":"uploads/img","image":"11_img.jpg","price":"100.10","size":"SMALL","active":true,"id":12}
     ],
     "pageable":{
         "sort":{"unsorted":false,"sorted":true,"empty":false},
@@ -836,10 +838,10 @@ id   : int        id kategorie
 ```javascript
 {
     "content":[
-        {"price":"200.00","image":null,"name":"Kytice hezká","id":13,"size":"MEDIUM","active":true},
-        {"price":"10000000.00","image":null,"name":"Kyticke hezčí","id":14,"size":"LARGE","active":true},
-        {"price":"100.10","image":null,"name":"Nejhezčí kytice","id":12,"size":"SMALL","active":true},
-        {"price":"10000000.00","image":null,"name":"the EGG","id":15,"size":"LARGE","active":false}
+        {"price":"200.00","path":"uploads/img","image":"11_img.jpg","name":"Kytice hezká","id":13,"size":"MEDIUM","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"Kyticke hezčí","id":14,"size":"LARGE","active":true},
+        {"price":"100.10","path":"uploads/img","image":"11_img.jpg","name":"Nejhezčí kytice","id":12,"size":"SMALL","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"the EGG","id":15,"size":"LARGE","active":false}
     ],
     "pageable":{
         "sort":{"unsorted":false,"sorted":true,"empty":false},
@@ -882,7 +884,8 @@ id   : int        id kytice
         "name":"Nejhezčí kytice",
         "perex":"<p>popis A s <strong>HTML</strong></p>",
         "description":"",
-        "image":null,
+        "path":"uploads/img",
+        "image":"11_img.jpg",
         "price":"100.10",
         "size":"SMALL",
         "active":true
