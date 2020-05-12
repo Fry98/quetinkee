@@ -34,6 +34,9 @@ public class Bouquet extends AbstractEntity {
   private String description;
 
   @Column(nullable = true)
+  private String path;
+
+  @Column(nullable = true)
   private String image;
 
   @NotNull(message = "Zadejte cenu kytice")
@@ -47,8 +50,8 @@ public class Bouquet extends AbstractEntity {
   @Column(nullable = true)
   private Size size;
 
-  @Column(columnDefinition = "boolean default false")
-  private Boolean active;
+  @Column(nullable = false, columnDefinition = "boolean default false")
+  private Boolean active = false;
 
   @JsonIgnore
   @ElementCollection
@@ -101,6 +104,15 @@ public class Bouquet extends AbstractEntity {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getPath() {
+    return this.path;
+  }
+
+  @JsonIgnore
+  public void setPath(String path) {
+    this.path = path;
   }
 
   public String getImage() {

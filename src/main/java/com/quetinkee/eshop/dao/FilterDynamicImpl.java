@@ -40,7 +40,7 @@ public class FilterDynamicImpl implements FilterDynamic {
     CriteriaBuilder builder = this.em.getCriteriaBuilder();
     CriteriaQuery<BouquetListImpl> query = builder.createQuery(BouquetListImpl.class);
     Root<Bouquet> root = query.from(Bouquet.class);
-    CompoundSelection<BouquetListImpl> projection = builder.construct(BouquetListImpl.class, root.get(Bouquet_.id), root.get(Bouquet_.name), root.get(Bouquet_.image), root.get(Bouquet_.price), root.get(Bouquet_.size), root.get(Bouquet_.active));
+    CompoundSelection<BouquetListImpl> projection = builder.construct(BouquetListImpl.class, root.get(Bouquet_.id), root.get(Bouquet_.name), root.get(Bouquet_.path), root.get(Bouquet_.image), root.get(Bouquet_.price), root.get(Bouquet_.size), root.get(Bouquet_.active));
 
     // set predicates
     Set<Predicate> predicates = this.getPredicates(builder, root, showAll, id, request);

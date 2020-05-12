@@ -30,6 +30,10 @@ public class UploadImage {
     }
   }
 
+  public String getPath() {
+    return this.settings.getPath();
+  }
+
   public String store(Integer id, MultipartFile file) throws UploadException {
     String fileName = StringUtils.cleanPath(id + "_" + file.getOriginalFilename());
     try {
@@ -45,9 +49,9 @@ public class UploadImage {
     return fileName;
   }
 
-  public boolean remove (String fileName) throws UploadException {
+  public boolean remove (String path, String fileName) throws UploadException {
     try {
-      Path targetLocation = this.uploadLocation.resolve(fileName);
+      Path targetLocation = Paths.get(this.settings.getRoot() + path).toAbsolutePath().normalize().resolve(fileName);
       if (Files.exists(targetLocation)) {
         Files.delete(targetLocation);
         return true;

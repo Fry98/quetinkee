@@ -16,10 +16,13 @@ public class BouquetEdit implements Serializable {
   @Valid
   private Bouquet bouquet;
 
+  @Valid
   private List<Integer> keyCategories;
 
+  @Valid
   private List<Integer> keyColors;
 
+  @Valid
   private Map<Integer,Integer> keyFlowerCount;
 
   public BouquetEdit() {

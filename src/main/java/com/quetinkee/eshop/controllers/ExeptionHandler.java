@@ -1,5 +1,6 @@
 package com.quetinkee.eshop.controllers;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.quetinkee.eshop.utils.ErrorMessage;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,12 @@ public class ExeptionHandler {
     resp.setStatus(ex.getStatus().value());
     if (ex.getReason() != null) return new ErrorMessage(ex.getReason());
     return null;
+  }
+
+  @ExceptionHandler(JsonMappingException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ErrorMessage handleJsonException(JsonMappingException ce) {
+     return new ErrorMessage(ce.getMessage());
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

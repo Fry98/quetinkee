@@ -85,14 +85,22 @@ public class BouquetService extends GenericAdminService<BouquetDao, Bouquet, Bou
     return this.dao.save(bouquet);
   }
 
+  @Transactional
+  @Override
+  public void delete (Bouquet record) {
+    super.delete(record);
+    if (record.getImage() != null) this.uploader.remove(record.getPath(), record.getImage());
+  }
+
   private void updateFile (Bouquet bouquet, MultipartFile file) {
     Objects.requireNonNull(bouquet);
     Objects.requireNonNull(file);
 
     if (!file.isEmpty()) {
-      if (bouquet.getImage() != null) this.uploader.remove(bouquet.getImage());
+      if (bouquet.getImage() != null) this.uploader.remove(bouquet.getPath(), bouquet.getImage());
       if (bouquet.getId() == null) this.dao.save(bouquet);    // only on create
       bouquet.setImage(this.uploader.store(bouquet.getId(), file));
+      bouquet.setPath(this.uploader.getPath());
     }
   }
 

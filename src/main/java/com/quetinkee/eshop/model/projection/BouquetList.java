@@ -6,6 +6,8 @@ public interface BouquetList extends InterfaceList {
 
   public String getName();
 
+  public String getPath();
+
   public String getImage();
 
   public Size getSize();

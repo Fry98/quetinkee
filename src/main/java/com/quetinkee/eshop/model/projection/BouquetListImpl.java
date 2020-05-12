@@ -11,6 +11,7 @@ public class BouquetListImpl implements BouquetList, Serializable {
 
   private Integer Id;
   private String name;
+  private String path;
   private String image;
   private BigDecimal price;
   private Size size;
@@ -19,9 +20,11 @@ public class BouquetListImpl implements BouquetList, Serializable {
   public BouquetListImpl() {
   }
 
-  public BouquetListImpl(Integer Id, String name, String image, BigDecimal price, Size size, boolean active) {
+  public BouquetListImpl(Integer Id, String name, String path, String image, BigDecimal price, Size size, boolean active) {
     this.Id = Id;
     this.name = name;
+    this.path = path;
+    this.image = image;
     this.price = price;
     this.size = size;
     this.active = active;
@@ -40,6 +43,11 @@ public class BouquetListImpl implements BouquetList, Serializable {
   @Override
   public String getImage() {
     return this.image;
+  }
+
+  @Override
+  public String getPath() {
+    return this.path;
   }
 
   @Override
@@ -63,6 +71,10 @@ public class BouquetListImpl implements BouquetList, Serializable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void setPath(String path) {
+    this.path = path;
   }
 
   public void setImage(String image) {

@@ -22,8 +22,8 @@ public class Category extends AbstractEntity {
   @Column(nullable = false)
   private Integer priority;
 
-  @Column(columnDefinition = "boolean default false")
-  private Boolean active;
+  @Column(nullable = false, columnDefinition = "boolean default false")
+  private Boolean active = false;
 
   @JsonIgnore
   @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

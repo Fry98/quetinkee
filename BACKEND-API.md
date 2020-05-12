@@ -2,7 +2,8 @@
 
 - nepovinné parametry jsou označeny (optional) jen u vytváření
 - u User a Profile jsou nyní nezdokumentované enpointy pro editaci adresy
-- 100% nefunguje mazání a profile - forget password
+- všechny DELETE jsou "smaž vše"
+- jediné co v tuto chvíli nefunguje je profile - forget password
 - PATCH podporuje update jen změněných parametrů, ale seznamy klíčů u kytice se berou jako celek!
 
 ## Bouquet (admin only)
