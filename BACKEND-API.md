@@ -1,6 +1,9 @@
 # Backend API
 
 - nepovinné parametry jsou označeny (optional) jen u vytváření
+- u User a Profile jsou nyní nezdokumentované enpointy pro editaci adresy
+- 100% nefunguje mazání a profile - forget password
+- PATCH podporuje update jen změněných parametrů, ale seznamy klíčů u kytice se berou jako celek!
 
 ## Bouquet (admin only)
 
@@ -554,9 +557,140 @@ none
 
 ## Profile
 
+### 1. Registrace zákazníka
 
+`POST /api/profile`
 
+#### Request body
+`class User`
 
+```javascript
+{
+    "firstName":"Name",
+    "lastName":"Surname",
+    "mail":"admin@admin.cz",
+    "phone":"123456",
+    "password": "heslo",    // povinné při vytváření jinak optinal
+    "addressDelivery":{
+        "street":"Street",
+        "city":"City",
+        "zip":"12345"
+    },
+    "addressBilling":{      // optinal
+        "street":"Street",
+        "city":"City",
+        "zip":"12345"
+    }
+}
+```
+
+#### Request params
+none
+
+#### Response body
+id uživatele
+
+### 2. Detail zákazníka (signed user only)
+
+`GET /api/profile`
+
+#### Request body
+none
+
+#### Request params
+none
+
+#### Response body
+`class User`
+
+```javascript
+{
+    "id":1,
+    "firstName":"Name",
+    "lastName":"Surname",
+    "phone":"123456",
+    "password": "heslo",
+    "addressDelivery":{
+        "id":2,
+        "street":"Street",
+        "city":"City",
+        "zip":"12345"
+    },
+    "addressBilling":{
+        "id":3,
+        "street":"Street",
+        "city":"City",
+        "zip":"12345"
+    }
+}
+```
+
+### 3. Aktualizace zákazníka (signed user only)
+
+`PATCH /api/profile`
+
+#### Request body
+`class User`
+
+```javascript
+{
+    "firstName":"Name",
+    "lastName":"Surname",
+    "phone":"123456",
+    "password": "heslo",
+    "addressDelivery":{
+        "street":"Street",
+        "city":"City",
+        "zip":"12345"
+    },
+    "addressBilling":{
+        "street":"Street",
+        "city":"City",
+        "zip":"12345"
+    }
+}
+```
+
+#### Request params
+none
+
+#### Response body
+`class User`
+
+```javascript
+{
+    "id":1,
+    "firstName":"Name",
+    "lastName":"Surname",
+    "phone":"123456",
+    "password": "heslo",
+    "addressDelivery":{
+        "id":2,
+        "street":"Street",
+        "city":"City",
+        "zip":"12345"
+    },
+    "addressBilling":{
+        "id":3,
+        "street":"Street",
+        "city":"City",
+        "zip":"12345"
+    }
+}
+```
+
+### 4. Zapomenuté heslo
+
+`POST /api/profile/forgot`
+
+#### Request body
+TODO mail
+
+#### Request params
+none
+
+#### Response body
+TODO asi jen status OK / fail
 
 
 ## Shop
@@ -953,13 +1087,14 @@ Data uživatele jsou ve stejném formátu jako u GET
     "lastName":"Surname",
     "mail":"admin@admin.cz",
     "phone":"123456",
+    "password": "heslo",    // povinné při vytváření jinak optinal
     "role":"ADMIN",
     "addressDelivery":{
         "street":"Street",
         "city":"City",
         "zip":"12345"
     },
-    "addressBilling":{  // optinal
+    "addressBilling":{      // optinal
         "street":"Street",
         "city":"City",
         "zip":"12345"
@@ -988,6 +1123,7 @@ Data uživatele jsou ve stejném formátu jako u GET
     "mail":"admin@admin.cz",
     "phone":"123456",
     "role":"ADMIN",
+    "password": "heslo",
     "addressDelivery":{
         "street":"Street",
         "city":"City",
