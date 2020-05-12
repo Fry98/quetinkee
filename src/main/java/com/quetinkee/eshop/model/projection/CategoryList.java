@@ -1,8 +1,6 @@
 package com.quetinkee.eshop.model.projection;
 
-public interface CategoryList {
-
-  public Integer getId();
+public interface CategoryList extends InterfaceList {
 
   public String getName();
 

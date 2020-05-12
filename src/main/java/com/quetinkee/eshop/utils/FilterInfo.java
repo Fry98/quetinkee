@@ -2,7 +2,7 @@ package com.quetinkee.eshop.utils;
 
 import com.quetinkee.eshop.model.Size;
 import com.quetinkee.eshop.model.projection.CategoryList;
-import com.quetinkee.eshop.model.projection.FlowerList;
+import com.quetinkee.eshop.model.projection.OptionList;
 import com.quetinkee.eshop.model.projection.MinMaxPrice;
 import java.util.List;
 import java.util.Set;
@@ -10,12 +10,12 @@ import java.util.Set;
 public class FilterInfo {
 
   private final List<CategoryList> categories;
-  private final Set<FlowerList> flowers;
+  private final Set<OptionList> flowers;
   private final Set<Integer> colors;
   private final Set<Size> sizes;
   private final MinMaxPrice prices;
 
-  public FilterInfo(final List<CategoryList> categories, final Set<FlowerList> flowers, final Set<Integer> colors, final Set<Size> sizes, final MinMaxPrice prices) {
+  public FilterInfo(final List<CategoryList> categories, final Set<OptionList> flowers, final Set<Integer> colors, final Set<Size> sizes, final MinMaxPrice prices) {
     this.categories = categories;
     this.flowers = flowers;
     this.colors = colors;
@@ -27,7 +27,7 @@ public class FilterInfo {
     return this.categories;
   }
 
-  public Set<FlowerList> getFlowers() {
+  public Set<OptionList> getFlowers() {
     return this.flowers;
   }
 

@@ -1,8 +1,8 @@
 package com.quetinkee.eshop.model.projection;
 
-public interface FlowerList {
-
-  public String getId();
+public interface FlowerList extends InterfaceList {
 
   public String getName();
+
+  public String getPrice();
 }

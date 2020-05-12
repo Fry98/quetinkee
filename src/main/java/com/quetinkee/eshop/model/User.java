@@ -1,11 +1,14 @@
 package com.quetinkee.eshop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "USERS")
@@ -43,14 +46,19 @@ public class User extends AbstractEntity {
   private Role role;
 
   @Valid
-  @OneToOne(cascade = CascadeType.ALL)
+  @NotNull(message = "Zadejte doručovací adresu")
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(nullable = true)
   private Address addressDelivery = null;
 
   @Valid
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(nullable = true)
   private Address addressBilling = null;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Review> reviews;
 
   public User() {
   }

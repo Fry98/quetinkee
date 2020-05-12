@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Boquet extends AbstractEntity {
+public class Bouquet extends AbstractEntity {
 
   @NotBlank(message = "Zadejte název kytice")
   @Basic(optional = false)
@@ -33,6 +33,7 @@ public class Boquet extends AbstractEntity {
   @Column(columnDefinition="TEXT", nullable = true)
   private String description;
 
+  @Column(nullable = true)
   private String image;
 
   @NotNull(message = "Zadejte cenu kytice")
@@ -42,7 +43,6 @@ public class Boquet extends AbstractEntity {
   @Column(nullable = false, columnDefinition = "DECIMAL(11,2)", precision = 11, scale = 2)
   private BigDecimal price;
 
-  @Enumerated(EnumType.STRING)
   @Basic(optional = true)
   @Column(nullable = true)
   private Size size;
@@ -57,17 +57,20 @@ public class Boquet extends AbstractEntity {
 
   @JsonIgnore
   @ManyToMany(fetch = FetchType.LAZY)
-  @OrderBy("name")
   private Set<Category> categories;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "boquet", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private List<BoquetFlowerCount> boquetflowerCount;
+  @OneToMany(mappedBy = "bouquet", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<BouquetFlowerCount> bouquetFlowerCount;
 
-  public Boquet() {
+  @JsonIgnore
+  @OneToMany(mappedBy = "bouquet", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Review> reviews;
+
+  public Bouquet() {
   }
 
-  public Boquet(String name, String perex, String description, String price, Size size, Boolean active) {
+  public Bouquet(String name, String perex, String description, String price, Size size, Boolean active) {
     this.name = name;
     this.perex = perex;
     this.description = description;
@@ -104,12 +107,13 @@ public class Boquet extends AbstractEntity {
     return this.image;
   }
 
+  @JsonIgnore
   public void setImage(String image) {
     this.image = image;
   }
 
   public String getPrice() {
-    return this.price.toString();
+    return this.price == null ? null : this.price.toString();
   }
 
   public void setPrice(BigDecimal price) {
@@ -161,38 +165,36 @@ public class Boquet extends AbstractEntity {
     this.categories = categories;
   }
 
-  public List<BoquetFlowerCount> getBoquetflowerCount() {
-    return this.boquetflowerCount;
+  public Set<BouquetFlowerCount> getBouquetFlowerCount() {
+    return this.bouquetFlowerCount;
   }
 
-  public void addBoquetFlowerCount(BoquetFlowerCount count) {
+  public void addBouquetFlowerCount(BouquetFlowerCount count) {
     Objects.requireNonNull(count);
-    if (this.boquetflowerCount == null) {
-      this.boquetflowerCount = new ArrayList<>();
+    if (this.bouquetFlowerCount == null) {
+      this.bouquetFlowerCount = new HashSet<>();
     }
-    Optional<BoquetFlowerCount> exists = this.boquetflowerCount.stream().filter(
+    Optional<BouquetFlowerCount> exists = this.bouquetFlowerCount.stream().filter(
             it -> it.getFlower().getId().equals(count.getFlower().getId())).findAny();
     if (exists.isPresent()) {
       exists.get().setCount(count.getCount());
     }
     else {
-      count.setBoquet(this);
-      this.boquetflowerCount.add(count);
+      count.setBouquet(this);
+      this.bouquetFlowerCount.add(count);
     }
   }
 
-  public void removeBoquetFlowerCount(BoquetFlowerCount count) {
+  public void removeBouquetFlowerCount(BouquetFlowerCount count) {
     Objects.requireNonNull(count);
-    if (this.boquetflowerCount != null) {
-      this.boquetflowerCount.remove(count);
+    if (this.bouquetFlowerCount != null) {
+      this.bouquetFlowerCount.removeIf( rec -> Objects.equals(rec.getFlower(), count.getFlower()) );
+      count.setBouquet(null);
     }
   }
 
-  public void setBoquetFlowerCount(List<BoquetFlowerCount> flowerCount) {
-    flowerCount.forEach((count) -> {
-      count.setBoquet(this);
-    });
-    this.boquetflowerCount = flowerCount;
+  public void setBouquetFlowerCount(Set<BouquetFlowerCount> flowerCount) {
+    this.bouquetFlowerCount = flowerCount;
   }
 
   public void setColors(List<Color> colors) {
@@ -220,8 +222,31 @@ public class Boquet extends AbstractEntity {
     return this.colors;
   }
 
-  // TODO
-  public float getRating() {
-    return 3.5f;
+  public Set<Review> getReviews() {
+    return this.reviews;
+  }
+
+  public void addReview(Review review) {
+    Objects.requireNonNull(review);
+    if (this.reviews == null) {
+      this.reviews = new HashSet<>();
+    }
+
+    if (!this.reviews.contains(review)) {
+      this.reviews.add(review);
+      review.setBouquet(this);
+    }
+  }
+
+  public void removeReview(Review review) {
+    Objects.requireNonNull(review);
+    if (this.reviews != null) {
+      this.reviews.removeIf( rec -> Objects.equals(rec.getUser(), review.getUser()) );
+      review.setBouquet(null);
+    }
+  }
+
+  public void setReviews(Set<Review> reviews) {
+    this.reviews = reviews;
   }
 }

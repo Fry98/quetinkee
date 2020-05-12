@@ -16,7 +16,8 @@ public class ExeptionHandler {
   @ExceptionHandler(ResponseStatusException.class)
   public ErrorMessage handleResponseException(ResponseStatusException ex, HttpServletResponse resp) {
     resp.setStatus(ex.getStatus().value());
-    return new ErrorMessage(ex.getReason());
+    if (ex.getReason() != null) return new ErrorMessage(ex.getReason());
+    return null;
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

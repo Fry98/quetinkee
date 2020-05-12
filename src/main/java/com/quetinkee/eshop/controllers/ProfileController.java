@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,9 +35,6 @@ public class ProfileController {
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity create(@Valid @RequestBody User user) {
-    if (user.getId() != null || user.getRole() != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not allowed!");
-    }
     this.service.createRegistred(user);
     return new ResponseEntity(user.getId(), HttpStatus.CREATED);
   }
@@ -64,8 +62,17 @@ public class ProfileController {
   @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public User update(@RequestBody User newUser, Authentication authentication) {
     User original = this.getCurrentUser(authentication);
-    User user = this.service.update(original, newUser);
-    return user;
+    return this.service.update(original, newUser);
+  }
+
+  @PostMapping(value = "/forgot", produces = MediaType.APPLICATION_JSON_VALUE)
+  public void forgotPassword(@RequestBody User newUser) {
+    // TODO
+  }
+
+  @PostMapping(value = "/forgot/{token}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public void forgotPasswordActivate(@PathVariable("id") String token) {
+    // TODO
   }
 
   /**
@@ -133,7 +140,7 @@ public class ProfileController {
     }
     this.service.persistAddress(address);
     user.setAddressBilling(address);
-    this.service.persist(user);
+    this.service.create(user);
     return new ResponseEntity(address.getId(), HttpStatus.CREATED);
   }
 
@@ -146,7 +153,7 @@ public class ProfileController {
     }
     this.service.persistAddress(address);
     user.setAddressDelivery(address);
-    this.service.persist(user);
+    this.service.create(user);
     return new ResponseEntity(address.getId(), HttpStatus.CREATED);
   }
 

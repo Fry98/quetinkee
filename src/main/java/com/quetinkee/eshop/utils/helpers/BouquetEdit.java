@@ -1,8 +1,6 @@
-package com.quetinkee.eshop.utils.edit;
+package com.quetinkee.eshop.utils.helpers;
 
-import com.quetinkee.eshop.model.Boquet;
-import com.quetinkee.eshop.model.BoquetFlowerCount;
-import com.quetinkee.eshop.model.Color;
+import com.quetinkee.eshop.model.Bouquet;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +8,13 @@ import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 
-public class BoquetEdit implements Serializable {
+/**
+ * Support class for bouquet editing
+ */
+public class BouquetEdit implements Serializable {
 
   @Valid
-  private Boquet boquet;
+  private Bouquet bouquet;
 
   private List<Integer> keyCategories;
 
@@ -21,22 +22,27 @@ public class BoquetEdit implements Serializable {
 
   private Map<Integer,Integer> keyFlowerCount;
 
-  public BoquetEdit() {
+  public BouquetEdit() {
   }
 
-  public BoquetEdit(Boquet boquet) {
-    this.setBoquet(boquet);
-    this.updateKeyCategories();
-    this.updateKeyColors();
-    this.updateKeyFlowerCount();
+  public BouquetEdit(Bouquet bouquet) {
+    this.bouquet = bouquet;
+    this.keyCategories = this.updateKeyCategories();
+    this.keyColors = this.updateKeyColors();
+    this.keyFlowerCount = this.updateKeyFlowerCount();
   }
 
-  public Boquet getBoquet() {
-    return this.boquet;
+  public Bouquet getBouquet() {
+    return this.bouquet;
   }
 
-  public void setBoquet(Boquet boquet) {
-    this.boquet = boquet;
+  public void setBouquet(Bouquet bouquet) {
+    this.bouquet = bouquet;
+  }
+
+  public Integer getId() {
+    if (this.bouquet != null) return this.bouquet.getId();
+    return null;
   }
 
   public List<Integer> getKeyCategories() {
@@ -65,24 +71,24 @@ public class BoquetEdit implements Serializable {
 
   private List<Integer> updateKeyCategories() {
     List<Integer> list = new ArrayList<>();
-    if (this.boquet.getCategories() != null) {
-      this.boquet.getCategories().forEach(category -> { list.add(category.getId()); });
+    if (this.bouquet.getCategories() != null) {
+      this.bouquet.getCategories().forEach(category -> { list.add(category.getId()); });
     }
     return list;
   }
 
   private List<Integer> updateKeyColors() {
     List<Integer> list = new ArrayList<>();
-    if (this.boquet.getColors() != null) {
-      this.boquet.getColors().forEach(color -> { list.add(color.getValue()); });
+    if (this.bouquet.getColors() != null) {
+      this.bouquet.getColors().forEach(color -> { list.add(color.getValue()); });
     }
     return list;
   }
 
   private Map<Integer,Integer> updateKeyFlowerCount() {
     HashMap<Integer,Integer> map = new HashMap<>();
-    if (this.boquet.getBoquetflowerCount() != null) {
-      this.boquet.getBoquetflowerCount().forEach(item -> { map.put(item.getFlower().getId(), item.getCount()); });
+    if (this.bouquet.getBouquetFlowerCount() != null) {
+      this.bouquet.getBouquetFlowerCount().forEach(item -> { map.put(item.getFlower().getId(), item.getCount()); });
     }
     return map;
   }

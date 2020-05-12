@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
@@ -32,8 +33,8 @@ public class Flower extends AbstractEntity {
   private BigDecimal price;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "flower", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private Set<BoquetFlowerCount> boquetflowerCount;
+  @OneToMany(mappedBy = "flower", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<BouquetFlowerCount> bouquetFlowerCount;
 
   public Flower() {
   }
@@ -61,7 +62,7 @@ public class Flower extends AbstractEntity {
   }
 
   public String getPrice() {
-    return this.price.toString();
+    return this.price == null ? null : this.price.toString();
   }
 
   public void setPrice(BigDecimal price) {
@@ -72,30 +73,35 @@ public class Flower extends AbstractEntity {
     this.price = (new BigDecimal(price)).setScale(2, BigDecimal.ROUND_CEILING);
   }
 
-  public Set<BoquetFlowerCount> getBoquetFlowerCount() {
-    return this.boquetflowerCount;
+  public Set<BouquetFlowerCount> getBouquetFlowerCount() {
+    return this.bouquetFlowerCount;
   }
 
-  public void addBoquetFlowerCount(BoquetFlowerCount count) {
+  public void addBouquetFlowerCount(BouquetFlowerCount count) {
     Objects.requireNonNull(count);
-    if (this.boquetflowerCount == null) {
-      this.boquetflowerCount = new HashSet<>();
+    if (this.bouquetFlowerCount == null) {
+      this.bouquetFlowerCount = new HashSet<>();
     }
-    count.setFlower(this);
-    this.boquetflowerCount.add(count);
-  }
-
-  public void removeBoquetFlowerCount(BoquetFlowerCount count) {
-    Objects.requireNonNull(count);
-    if (this.boquetflowerCount != null) {
-      this.boquetflowerCount.remove(count);
+    Optional<BouquetFlowerCount> exists = this.bouquetFlowerCount.stream().filter(
+            it -> it.getBouquet().getId().equals(count.getBouquet().getId())).findAny();
+    if (exists.isPresent()) {
+      exists.get().setCount(count.getCount());
     }
-  }
-
-  public void setBoquetFlowerCount(Set<BoquetFlowerCount> flowerCount) {
-    for (BoquetFlowerCount count : flowerCount) {
+    else {
       count.setFlower(this);
+      this.bouquetFlowerCount.add(count);
     }
-    this.boquetflowerCount = flowerCount;
+  }
+
+  public void removeBouquetFlowerCount(BouquetFlowerCount count) {
+    Objects.requireNonNull(count);
+    if (this.bouquetFlowerCount != null) {
+       this.bouquetFlowerCount.removeIf( rec -> Objects.equals(rec.getBouquet(), count.getBouquet()) );
+      count.setFlower(null);
+    }
+  }
+
+  public void setBouquetFlowerCount(Set<BouquetFlowerCount> flowerCount) {
+    this.bouquetFlowerCount = flowerCount;
   }
 }

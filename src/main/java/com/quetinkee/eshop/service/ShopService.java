@@ -1,16 +1,13 @@
 package com.quetinkee.eshop.service;
 
-import com.quetinkee.eshop.dao.BoquetDao;
 import com.quetinkee.eshop.dao.CategoryDao;
 import com.quetinkee.eshop.dao.FilterDao;
-import com.quetinkee.eshop.model.Boquet;
-import com.quetinkee.eshop.model.Boquet_;
+import com.quetinkee.eshop.model.Bouquet;
+import com.quetinkee.eshop.model.Bouquet_;
 import com.quetinkee.eshop.model.Category_;
 import com.quetinkee.eshop.model.Flower_;
 import com.quetinkee.eshop.model.Size;
-import com.quetinkee.eshop.model.projection.BoquetList;
 import com.quetinkee.eshop.model.projection.CategoryList;
-import com.quetinkee.eshop.model.projection.FlowerList;
 import com.quetinkee.eshop.model.projection.MinMaxPrice;
 import com.quetinkee.eshop.utils.FilterInfo;
 import com.quetinkee.eshop.utils.FilterRequest;
@@ -24,25 +21,38 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.quetinkee.eshop.model.projection.BouquetList;
+import com.quetinkee.eshop.dao.BouquetDao;
+import com.quetinkee.eshop.dao.ReviewDao;
+import com.quetinkee.eshop.model.Review;
+import com.quetinkee.eshop.model.Review_;
+import com.quetinkee.eshop.model.User;
+import com.quetinkee.eshop.model.projection.OptionList;
+import com.quetinkee.eshop.utils.helpers.BouquetDetail;
+import com.quetinkee.eshop.model.projection.ReviewList;
+import com.quetinkee.eshop.utils.ValidationError;
+import com.quetinkee.eshop.utils.helpers.ReviewSubmit;
 
 @Service
 public class ShopService {
 
-  private final BoquetDao boquetDao;
+  private final BouquetDao bouquetDao;
   private final CategoryDao categoryDao;
   private final FilterDao filterDao;
+  private final ReviewDao reviewDao;
 
   @Autowired
-  public ShopService(BoquetDao boquetDao, CategoryDao categoryDao, FilterDao shopDao) {
-    this.boquetDao = boquetDao;
+  public ShopService(BouquetDao bouquetDao, CategoryDao categoryDao, FilterDao shopDao, ReviewDao reviewDao) {
+    this.bouquetDao = bouquetDao;
     this.categoryDao = categoryDao;
     this.filterDao = shopDao;
+    this.reviewDao = reviewDao;
   }
 
   @Transactional(readOnly = true)
   public List<CategoryList> findCategories(boolean showAll) {
-    if (showAll) return this.categoryDao.findAllBy(Sort.by(Category_.NAME));
-    return this.categoryDao.findAllByActiveTrue();
+    if (showAll) return this.categoryDao.findShopBy(Sort.by(Category_.NAME));
+    return this.categoryDao.findShopByActiveTrue();
   }
 
   @Transactional(readOnly = true)
@@ -57,19 +67,28 @@ public class ShopService {
   }
 
   @Transactional(readOnly = true)
-  public Boquet findBoquet(Integer id, boolean showAll) {
+  public Bouquet findBouquet(Integer id, boolean showAll) {
     if (showAll) {
-      Optional<Boquet> boquet = this.boquetDao.findById(id);
-      return boquet.isPresent() ? boquet.get() : null;
+      Optional<Bouquet> bouquet = this.bouquetDao.findById(id);
+      return bouquet.isPresent() ? bouquet.get() : null;
     }
-    return this.boquetDao.findByIdAndActiveTrue(id);
+    return this.bouquetDao.findByIdAndActiveTrue(id);
   }
 
   @Transactional(readOnly = true)
-  public Slice<BoquetList> findBoquetsInCategory(Integer id, Integer pageNum, Integer pageSize, boolean showAll) {
-    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Boquet_.NAME));
-    if (showAll) return this.boquetDao.findAllByCategoriesId(id, paging);
-    return this.boquetDao.findAllByCategoriesIdAndActiveTrue(id, paging);
+  public BouquetDetail findBouquetDetail(Integer id, boolean showAll) {
+    Bouquet bouquet = this.findBouquet(id, showAll);
+    if (bouquet != null) {
+      return new BouquetDetail(bouquet, this.reviewDao.findAvgRating(bouquet), -1);
+    }
+    return null;
+  }
+
+  @Transactional(readOnly = true)
+  public Slice<BouquetList> findBouquetsInCategory(Integer id, Integer pageNum, Integer pageSize, boolean showAll) {
+    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Bouquet_.NAME));
+    if (showAll) return this.bouquetDao.findAllByCategoriesId(id, paging);
+    return this.bouquetDao.findAllByCategoriesIdAndActiveTrue(id, paging);
   }
 
   private Set<Integer> findColors(Integer id, boolean showAll) {
@@ -77,7 +96,7 @@ public class ShopService {
     return this.filterDao.searchColorsByCategoriesId(showAll, id);
   }
 
-  private Set<FlowerList> findFlowers(Integer id, boolean showAll) {
+  private Set<OptionList> findFlowers(Integer id, boolean showAll) {
     if (id == null) return this.filterDao.searchFlowers(showAll, Sort.by(Flower_.NAME));
     return this.filterDao.searchFlowersByCategoriesId(showAll, id, Sort.by(Flower_.NAME));
   }
@@ -92,9 +111,29 @@ public class ShopService {
     return this.filterDao.findFirstPricesByCategoriesId(showAll, id);
   }
 
-  public Slice<BoquetList> getFilteredProducts(Integer id, FilterRequest request, Integer pageNum, Integer pageSize, boolean showAll) {
-    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Boquet_.NAME));
+  @Transactional(readOnly = true)
+  public Slice<BouquetList> getFilteredProducts(Integer id, FilterRequest request, Integer pageNum, Integer pageSize, boolean showAll) {
+    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Bouquet_.NAME));
     return this.filterDao.findResults(showAll, id, request, paging);
+  }
 
+  public boolean isBouquetReview(Bouquet bouquet, User user) {
+    return this.reviewDao.findByBouquetIdAndUserId(bouquet.getId(), user.getId()) != null;
+  }
+
+  @Transactional
+  public void addBouquetReview(Bouquet bouquet, User user, ReviewSubmit rs) {
+    if (this.isBouquetReview(bouquet, user)) throw new ValidationError("Recenze je již uložená, děkujeme.");
+
+    bouquet.addReview(new Review(user, rs.getMessage(),  rs.getRating()));
+    this.bouquetDao.save(bouquet);
+//    Review review = new Review(bouquet, user, rs.getMessage(),  rs.getRating());
+//    this.reviewDao.save(review);
+  }
+
+  @Transactional(readOnly = true)
+  public Slice<ReviewList> getBouquetReviews(Bouquet bouquet, Integer pageNum, Integer pageSize) {
+    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Review_.CREATED));
+    return this.reviewDao.findAllByBouquet(bouquet, paging);
   }
 }

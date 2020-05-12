@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 
 @Configuration
 public class BeanConfig  {
-  
+
   @Bean
   public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> containerCustomizer() {
     return container -> {

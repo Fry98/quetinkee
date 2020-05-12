@@ -22,16 +22,17 @@ public class Category extends AbstractEntity {
   @Column(nullable = false)
   private Integer priority;
 
-  private boolean active;
+  @Column(columnDefinition = "boolean default false")
+  private Boolean active;
 
   @JsonIgnore
-  @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
-  public Set<Boquet> boquets;
+  @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  public Set<Bouquet> bouquets;
 
   public Category() {
   }
 
-  public Category(String name, Integer priority, boolean active) {
+  public Category(String name, Integer priority, Boolean active) {
     this.name = name;
     this.priority = priority;
     this.active = active;
@@ -53,34 +54,34 @@ public class Category extends AbstractEntity {
     this.priority = priority;
   }
 
-  public boolean isActive() {
+  public Boolean isActive() {
     return this.active;
   }
 
-  public void setActive(boolean active) {
+  public void setActive(Boolean active) {
     this.active = active;
   }
 
-  public Set<Boquet> getBoquets() {
-    return this.boquets;
+  public Set<Bouquet> getBouquets() {
+    return this.bouquets;
   }
 
-  public void addBoquet(Boquet boquet) {
-    Objects.requireNonNull(boquet);
-    if (this.boquets == null) {
-      this.boquets = new HashSet<>();
+  public void addBouquet(Bouquet bouquet) {
+    Objects.requireNonNull(bouquet);
+    if (this.bouquets == null) {
+      this.bouquets = new HashSet<>();
     }
-    this.boquets.add(boquet);
+    this.bouquets.add(bouquet);
   }
 
-  public void removeBoquet(Boquet boquet) {
-    Objects.requireNonNull(boquet);
-    if (this.boquets != null) {
-      this.boquets.remove(boquet);
+  public void removeBouquet(Bouquet bouquet) {
+    Objects.requireNonNull(bouquet);
+    if (this.bouquets != null) {
+      this.bouquets.remove(bouquet);
     }
   }
 
-  public void setBoquets(Set<Boquet> boquets) {
-    this.boquets = boquets;
+  public void setBouquets(Set<Bouquet> bouquets) {
+    this.bouquets = bouquets;
   }
 }
