@@ -91,7 +91,6 @@
         priceFrom: null,
         priceTo: null,
         selectedFlowers: [],
-        flowerOptions: this.$store.getters.flowers,
         selectedSizes: [false, false, false],
         selectedColors: [false, false, false, false, false, false, false, false, false, false],
         numberToColor: ['white', 'yellow', 'orange', 'red', 'pink', 'purple', 'blue', 'turquoise', 'seafoam', 'green']
@@ -103,6 +102,11 @@
       },
       handleColorClick(color) {
         this.$set(this.selectedColors, color, !this.selectedColors[color]);
+      }
+    },
+    computed: {
+      flowerOptions() {
+        return this.$store.getters.flowers;
       }
     }
   }
