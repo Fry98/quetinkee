@@ -31,7 +31,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
 
   @Autowired
-  protected UserService service;
+  private UserService service;
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public Slice<UserList> getSlice(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
@@ -143,7 +143,7 @@ public class UserController {
     return new ResponseEntity(address.getId(), HttpStatus.CREATED);
   }
 
-  protected User getRecord(Integer id) throws ResponseStatusException {
+  private User getRecord(Integer id) throws ResponseStatusException {
     User record = this.service.find(id);
     if (record == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Záznam nenalezen");

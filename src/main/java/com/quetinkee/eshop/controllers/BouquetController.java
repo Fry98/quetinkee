@@ -31,7 +31,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class BouquetController {
 
   @Autowired
-  protected BouquetService service;
+  private BouquetService service;
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public Slice<BouquetList> getSlice(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
@@ -68,7 +68,7 @@ public class BouquetController {
     return new ResponseEntity(HttpStatus.OK);
   }
 
-  protected Bouquet getRecord(Integer id) throws ResponseStatusException {
+  private Bouquet getRecord(Integer id) throws ResponseStatusException {
     Bouquet record = this.service.find(id);
     if (record == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Záznam nenalezen");

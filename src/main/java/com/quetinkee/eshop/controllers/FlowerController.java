@@ -29,7 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class FlowerController {
 
   @Autowired
-  protected FlowerService service;
+  private FlowerService service;
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public Slice<FlowerList> getSlice(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
@@ -66,7 +66,7 @@ public class FlowerController {
     return new ResponseEntity(HttpStatus.OK);
   }
 
-  protected Flower getRecord(Integer id) throws ResponseStatusException {
+  private Flower getRecord(Integer id) throws ResponseStatusException {
     Flower record = this.service.find(id);
     if (record == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Záznam nenalezen");
