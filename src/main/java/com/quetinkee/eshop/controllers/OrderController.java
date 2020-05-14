@@ -1,6 +1,6 @@
 package com.quetinkee.eshop.controllers;
 
-import com.quetinkee.eshop.model.Boquet;
+import com.quetinkee.eshop.model.Bouquet;
 import com.quetinkee.eshop.model.Category;
 import com.quetinkee.eshop.model.Order;
 import com.quetinkee.eshop.model.User;

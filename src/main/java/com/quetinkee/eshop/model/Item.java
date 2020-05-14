@@ -14,7 +14,7 @@ public class Item extends AbstractEntity {
     @JsonIgnore
     @NotBlank(message = "Prazdná položka")
     @OneToOne(fetch = FetchType.LAZY)
-    public Boquet boquet;
+    public Bouquet bouquet;
 
     @NotBlank(message = "Prazdný počet")
     @Basic(optional = false)
@@ -25,8 +25,8 @@ public class Item extends AbstractEntity {
 
     };
 
-    public Item(Boquet boquet, Integer Quantity){
-        this.boquet = boquet;
+    public Item(Bouquet bouquet, Integer Quantity){
+        this.bouquet = bouquet;
         this.Quantity = Quantity;
     };
 
@@ -34,8 +34,8 @@ public class Item extends AbstractEntity {
         this.Quantity = Quantity;
     };
 
-    public Boquet getBoquet(){
-        return this.boquet;
+    public Bouquet getBouquet(){
+        return this.bouquet;
     }
 
     public Integer getQuantity(){

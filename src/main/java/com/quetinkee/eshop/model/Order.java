@@ -74,17 +74,17 @@ public class Order extends AbstractEntity{
         return this.contains;
     }
 
-    public void addPosition(Boquet boquet, Integer quantity){
-        Item pos = new Item(boquet, quantity);
+    public void addPosition(Bouquet bouquet, Integer quantity){
+        Item pos = new Item(bouquet, quantity);
         if (this.contains == null) {
             this.contains = new HashSet<>();
         }
         this.contains.add(pos);
     }
 
-    public void removePosition(Boquet boquet){
+    public void removePosition(Bouquet bouquet){
         for(Item pos : contains){
-            if (boquet == pos.getBoquet()) {
+            if (bouquet == pos.getBouquet()) {
                 contains.remove(pos);
             }
         }
@@ -94,9 +94,9 @@ public class Order extends AbstractEntity{
         contains.remove(pos);
     }
 
-    public void adjustQuantity(Boquet boquet, Integer quantity){
+    public void adjustQuantity(Bouquet bouquet, Integer quantity){
         for(Item pos : contains){
-            if (boquet == pos.getBoquet()) {
+            if (bouquet == pos.getBouquet()) {
                 pos.setQuantity(quantity);
             }
         }
@@ -113,7 +113,7 @@ public class Order extends AbstractEntity{
     public void calculateTotalPrice(){
         this.totalPrice = new BigDecimal(0);
         for(Item pos : contains){
-            this.totalPrice.add(pos.getBoquet().getPricee()) ;
+            this.totalPrice.add(pos.getBouquet().getPriceDec()) ;
         }
     }
 

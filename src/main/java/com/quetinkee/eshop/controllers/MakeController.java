@@ -1,14 +1,14 @@
 package com.quetinkee.eshop.controllers;
 
 import com.quetinkee.eshop.model.Address;
-import com.quetinkee.eshop.model.Boquet;
-import com.quetinkee.eshop.model.BoquetFlowerCount;
+import com.quetinkee.eshop.model.Bouquet;
+import com.quetinkee.eshop.model.BouquetFlowerCount;
 import com.quetinkee.eshop.model.Category;
 import com.quetinkee.eshop.model.Color;
 import com.quetinkee.eshop.model.Flower;
 import com.quetinkee.eshop.model.Size;
 import com.quetinkee.eshop.model.User;
-import com.quetinkee.eshop.service.BoquetService;
+import com.quetinkee.eshop.service.BouquetService;
 import com.quetinkee.eshop.service.CategoryService;
 import com.quetinkee.eshop.service.FlowerService;
 import com.quetinkee.eshop.service.UserService;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MakeController {
 
   @Autowired
-  private BoquetService boquetService;
+  private BouquetService bouquetService;
 
   @Autowired
   private CategoryService categoryService;
@@ -37,42 +37,42 @@ public class MakeController {
 
   // TODO: remove it
   @GetMapping("/item")
-  public Boquet addItems() {
+  public Bouquet addItems() {
     Flower flower1 = new Flower("kytka 1", "", "10");
-    flowerService.persist(flower1);
+    flowerService.create(flower1);
     Flower flower2 = new Flower("kytka 2", "", "20");
-    flowerService.persist(flower2);
+    flowerService.create(flower2);
 
     Category catA = new Category("skup A", 1, true);
-    categoryService.persist(catA);
+    categoryService.create(catA);
 
     Category catB = new Category("skup Be", 2, true);
-    categoryService.persist(catB);
+    categoryService.create(catB);
 
-    Boquet boqA = new Boquet("Kvetina A", "<p>popis A s <strong>HTML</strong></p>", "", "100.10", Size.SMALL, true);
+    Bouquet boqA = new Bouquet("Kvetina A", "<p>popis A s <strong>HTML</strong></p>", "", "100.10", Size.SMALL, true);
     boqA.addColor(Color.YELLOW);
     boqA.addCategory(catA);
-    BoquetFlowerCount bqfc1 = new BoquetFlowerCount(flower1, 1);
-    boqA.addBoquetFlowerCount(bqfc1);
-    boquetService.persist(boqA);
+    BouquetFlowerCount bqfc1 = new BouquetFlowerCount(flower1, 1);
+    boqA.addBouquetFlowerCount(bqfc1);
+    bouquetService.create(boqA);
 
-    Boquet boqB = new Boquet("Kvetina B", "<p>popis B s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "200", Size.MEDIUM, true);
+    Bouquet boqB = new Bouquet("Kvetina B", "<p>popis B s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "200", Size.MEDIUM, true);
     boqB.addColor(Color.RED);
-    BoquetFlowerCount bqfc2 = new BoquetFlowerCount(flower2, 2);
-    boqB.addBoquetFlowerCount(bqfc2);
+    BouquetFlowerCount bqfc2 = new BouquetFlowerCount(flower2, 2);
+    boqB.addBouquetFlowerCount(bqfc2);
     boqB.addCategory(catB);
-    boquetService.persist(boqB);
+    bouquetService.create(boqB);
 
-    Boquet boqC = new Boquet("Kvetina C", "<p>popis C s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "9999999.9999", Size.LARGE, true);
+    Bouquet boqC = new Bouquet("Kvetina C", "<p>popis C s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "9999999.9999", Size.LARGE, true);
     boqC.addColor(Color.PINK);
     boqC.addColor(Color.BLUE);
     boqC.addCategory(catA);
     boqC.addCategory(catB);
-    BoquetFlowerCount bqfc3 = new BoquetFlowerCount(flower1, 3);
-    BoquetFlowerCount bqfc4 = new BoquetFlowerCount(flower2, 4);
-    boqC.addBoquetFlowerCount(bqfc3);
-    boqC.addBoquetFlowerCount(bqfc4);
-    boquetService.persist(boqC);
+    BouquetFlowerCount bqfc3 = new BouquetFlowerCount(flower1, 3);
+    BouquetFlowerCount bqfc4 = new BouquetFlowerCount(flower2, 4);
+    boqC.addBouquetFlowerCount(bqfc3);
+    boqC.addBouquetFlowerCount(bqfc4);
+    bouquetService.create(boqC);
 
     return boqA;
   }
