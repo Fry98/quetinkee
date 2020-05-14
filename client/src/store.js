@@ -8,7 +8,8 @@ const store = new Vuex.Store({
     error: null,
     user: null,
     categories: [],
-    flowers: []
+    flowers: [],
+    sidebar: 0
   },
   getters: {
     error: state => state.error,
@@ -17,7 +18,8 @@ const store = new Vuex.Store({
     isAdmin: state => state.user !== null && state.user.role === 'ADMIN',
     isDelivery: state => true,
     categories: state => state.categories,
-    flowers: state => state.flowers
+    flowers: state => state.flowers,
+    sidebar: state => state.sidebar
   },
   mutations: {
     setError(state, payload) {
@@ -31,6 +33,9 @@ const store = new Vuex.Store({
     },
     setFlowers(state, payload) {
       state.flowers = payload;
+    },
+    reloadSidebar(state) {
+      state.sidebar++;
     }
   },
   actions: {

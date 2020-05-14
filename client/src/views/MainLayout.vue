@@ -1,5 +1,5 @@
 <template>
-  <div id='layout-wrap'>
+  <div id='layout-wrap' :key='$store.getters.sidebar'>
     <div id='layout'>
       <sidebar></sidebar>
       <main>

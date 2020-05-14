@@ -3,23 +3,28 @@
     <h1>Akce</h1>
     <h2>Kytice</h2>
     <ul>
-      <li @click='$router.push("/admin/new-bouquet")'>Vytvořit novou kytici</li>
-      <li @click='$router.push("/admin/manage-flowers")'>Spravovat květiny</li>
+      <li @click='navigate("/admin/new-bouquet")'>Vytvořit novou kytici</li>
+      <li @click='navigate("/admin/manage-flowers")'>Spravovat květiny</li>
     </ul>
     <h2>Sklad</h2>
     <ul>
-      <li @click='$router.push("/admin/manage-storage")'>Spravovat sklad</li>
+      <li @click='navigate("/admin/manage-storage")'>Spravovat sklad</li>
     </ul>
     <h2>Kategorie</h2>
     <ul>
-      <li @click='$router.push("/admin/manage-categories")'>Spravovat kategorie</li>
+      <li @click='navigate("/admin/manage-categories")'>Spravovat kategorie</li>
     </ul>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'Sidebar'
+    name: 'Sidebar',
+    methods: {
+      navigate(path) {
+        if (this.$route.path !== path) this.$router.push(path);
+      }
+    }
   }
 </script>
 

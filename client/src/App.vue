@@ -9,17 +9,11 @@
 <script>
 import Navbar from './components/Navbar';
 import Modal from './components/Modal';
-import axios from 'axios';
 
 export default {
   components: {
     Navbar,
     Modal
-  },
-  async created() {
-    const res = await axios.get('/api/shop/filter');
-    this.$store.commit('setCategories', res.data.categories);
-    this.$store.commit('setFlowers', res.data.flowers);
   }
 }
 </script>

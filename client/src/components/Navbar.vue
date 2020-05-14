@@ -62,7 +62,8 @@
           method: 'get'
         }).then(() => {
           this.$store.dispatch('logout');
-          this.$router.push('/');
+          this.navigate('/');
+          this.$store.commit('reloadSidebar');
         }).catch(() => {
           this.$store.dispatch('openModal', "Chyba při odhlášení");
         });

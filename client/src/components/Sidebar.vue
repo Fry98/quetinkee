@@ -82,6 +82,7 @@
 
 <script>
   import Multiselect from 'vue-multiselect';
+  import axios from 'axios';
 
   export default {
     name: 'Sidebar',
@@ -95,6 +96,11 @@
         selectedColors: [false, false, false, false, false, false, false, false, false, false],
         numberToColor: ['white', 'yellow', 'orange', 'red', 'pink', 'purple', 'blue', 'turquoise', 'seafoam', 'green']
       };
+    },
+    async created() {
+      const res = await axios.get('/api/shop/filter');
+      this.$store.commit('setCategories', res.data.categories);
+      this.$store.commit('setFlowers', res.data.flowers);
     },
     methods: {
       handleSizeClick(size) {

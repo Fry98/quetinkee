@@ -1,23 +1,20 @@
 <template>
   <div id="content">
-    <h1>Nové</h1>
-    <carousel>
-      <product-tile v-for='flower in newFlowers' :key='flower.id' :name='flower.name' :price='flower.price'></product-tile>
-    </carousel>
-    <h1>V Akci</h1>
-    <carousel>
-      <product-tile v-for='flower in discountedFlowers' :key='flower.id' :name='flower.name' :price='flower.price'></product-tile>
-    </carousel>
-    <h1>Doporučené</h1>
-    <carousel>
-      <product-tile v-for='flower in recommendedFlowers' :key='flower.id' :name='flower.name' :price='flower.price'></product-tile>
-    </carousel>
+    <div v-for='(ctg, i) in $store.getters.categories' :key='ctg.id' class='ctg-list'>
+      <div v-if='list[i] !== undefined && list[i].length !== 0'>
+        <h1>{{ ctg.name }}</h1>
+        <carousel>
+          <product-tile v-for='flower in list[i]' :key='flower.id' :name='flower.name' :price='Number(flower.price)'></product-tile>
+        </carousel>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
   import ProductTile from '../components/ProductTile';
   import Carousel from '../components/Carousel';
+  import axios from 'axios';
 
   export default {
     name: 'home',
@@ -25,38 +22,35 @@
       ProductTile,
       Carousel
     },
-    async created() {
-      for (const ctg in this.$store.getters.categories) {
-        
+    created() {
+      this.loadData();
+    },
+    watch: {
+      categories() {
+        this.loadData();
+      }
+    },
+    computed: {
+      categories() {
+        return this.$store.getters.categories;
+      }
+    },
+    methods: {
+      async loadData() {
+        if (this.categories.length === 0) return;
+        const promises = [];
+        for (const ctg of this.categories) {
+          promises.push(axios(`/api/shop/category/${ctg.id}`));
+        }
+
+        const res = await Promise.all(promises);
+        res.forEach(x => this.list.push(x.data.content));
       }
     },
     data() {
       return {
-        newFlowers: [
-          {id: 0, name:'Nazev kytice', price:899},
-          {id: 1, name:'Velmi dlouhy nazev kytice', price:899},
-          {id: 2, name:'Nazev kytice', price:899},
-          {id: 3, name:'Nazev kytice', price:899},
-          {id: 4, name:'Nazev kytice', price:899},
-          {id: 5, name:'Nazev kytice', price:899}
-        ],
-        discountedFlowers: [
-          {name:'Nazev kytice', price:899},
-          {name:'Velmi dlouhy nazev kytice', price:899},
-          {name:'Nazev kytice', price:899},
-          {name:'Nazev kytice', price:899},
-          {name:'Nazev kytice', price:899},
-          {name:'Nazev kytice', price:899}
-        ],
-        recommendedFlowers: [
-          {name:'Nazev kytice', price:899},
-          {name:'Velmi dlouhy nazev kytice', price:899},
-          {name:'Nazev kytice', price:899},
-          {name:'Nazev kytice', price:899},
-          {name:'Nazev kytice', price:899},
-          {name:'Nazev kytice', price:899}
-        ]
-      }
+        list: []
+      };
     }
   };
 </script>
@@ -72,5 +66,9 @@
     &:first-child {
       margin: 0;
     }
+  }
+
+  .ctg-list {
+    margin-bottom: 30px;
   }
 </style>
