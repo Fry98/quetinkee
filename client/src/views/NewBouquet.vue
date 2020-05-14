@@ -1,7 +1,7 @@
 <template>
   <div id='new-bouquet'>
     <div class='nb-wrap'>
-      <form>
+      <form @submit="handleSubmit">
         <h1>Nová kytice</h1>
         <label>
           <span>Název </span>
@@ -10,7 +10,12 @@
         <label>
           <span>Kategorie </span>
           <select ref='sel' name='category' v-model='selectedCategories' multiple>
-            <option v-for='category in categories' @mousedown='handleOptionMousedown(category, $event)'>{{ category }}</option>
+            <option
+                v-for='category in categories'
+                @mousedown='handleOptionMousedown(category, $event)'
+                :value='category.id'>
+              {{ category.name }}
+            </option>
           </select>
         </label>
         <label>
@@ -72,10 +77,14 @@
           <div class='photo-uploader'>+</div>
         </label>
         <label>
+          <span>Popis </span>
+          <textarea v-model='description'></textarea>
+        </label>
+        <label>
           <span>Květiny </span>
           <select name='flowers' v-model='selectedFlower' @change='handleFlowerSelect'>
             <option value='' selected disabled hidden>Vyberte květiny...</option>
-            <option v-for='option in flowers'>{{ option }}</option>
+            <option v-for='option in flowers'>{{ option.name }}</option>
           </select>
         </label>
         <div class='warning' v-if='selectedFlowers.length === 0'>Vyberte alespoň jednu květinu.</div>
@@ -98,36 +107,92 @@
 </template>
 
 <script>
+  import axios from "axios";
+
   export default {
     name: "NewBouquet",
     data() {
       return {
         bouquetName: '',
         price: null,
-        categories: ['Nové', 'V akci', 'Sezonní nabídka', 'Narozeniny', 'Pohřeb'],
-        selectedCategories: ['Nové'],
-        flowers: ['Bílá růže', 'Červená růže', 'Modrá růže', 'Gerbera'],
+        categories: [],
+        selectedCategories: [],
+        description: '',
+        flowers: [],
         selectedFlowers: [],
         selectedFlower: '',
         selectedColors: [false, false, false, false, false, false, false, false, false, false],
         selectedSize: null,
       }
     },
+    created() {
+      this.loadData();
+    },
     computed: {
       saveIsDisabled() {
         return this.selectedFlowers.length < 1 ||
             this.selectedCategories.length < 1 ||
-            this.bouquetName === '' ||
-            this.price === '' ||
+            !this.bouquetName ||
+            !this.price ||
+            !this.description ||
             this.selectedSize === null ||
             !this.selectedColors.find(value => value === true);
       }
     },
     methods: {
-      handleFlowerSelect() {
-        if (!this.selectedFlowers.find(flower => flower.name === this.selectedFlower)) {
-          this.selectedFlowers.push({name: this.selectedFlower, count: 1});
+      async loadData() {
+        try {
+          const promises = [];
+          promises.push(axios({
+            method: 'GET',
+            url: '/api/categories/list'
+          }));
+          promises.push(axios({
+            method: 'GET',
+            url: '/api/flowers/list'
+          }));
+          const res = await Promise.all(promises);
+          if (res[0].data) {
+            this.categories = res[0].data;
+            console.log(this.categories);
+          }
+          if (res[1].data) {
+            this.flowers = res[1].data;
+          }
+        } catch(err) {
+          this.$store.dispatch('openModal', err.response.data.message);
         }
+      },
+      async handleSubmit() {
+        try {
+          const res = await axios({
+            method: 'POST',
+            url: '/api/bouquets',
+            data: {
+              bouquet: {
+                name: this.bouquetName,
+                perex: this.description,
+                price: this.price,
+                size: this.size.toUpperCase(),
+                active: true
+              },
+              keyCategories: this.selectedCategories,
+              keyColors: this.selectedColors.reduce((out, bool, index) => bool ? out.concat(index) : out, []),
+              keyFlowerCount: null // TODO
+            }
+          });
+          if (res.data) {
+            this.flowers.push({id: res.data, name: this.newFlower})
+          }
+        } catch(err) {
+          this.$store.dispatch('openModal', err.response.data.message);
+        }
+      },
+      handleFlowerSelect() {
+        if (!this.selectedFlowers.find(flower => flower.id === this.selectedFlower.id)) {
+          this.selectedFlowers.push({name: this.selectedFlower.name, id: this.selectedFlower.id, count: 1});
+        }
+        console.log(this.selectedFlowers);
         this.selectedFlower = ''
       },
       removeFlower(flowerName) {
@@ -146,11 +211,11 @@
         this.toggleCategory(category);
       },
       toggleCategory(category) {
-        const i = this.selectedCategories.indexOf(category);
+        const i = this.selectedCategories.indexOf(category.id);
         if (i > -1) {
           this.selectedCategories.splice(i, 1);
         } else {
-          this.selectedCategories.push(category);
+          this.selectedCategories.push(category.id);
         }
       }
     }
@@ -263,7 +328,7 @@
         font-weight: bold;
       }
 
-      input, select {
+      input, select, textarea {
         box-sizing: border-box;
         width: 220px;
         font-size: 1.2em;
@@ -277,6 +342,10 @@
           outline: none;
           border: solid 1px $mainOrange;
         }
+      }
+
+      textarea {
+        font-size: 1em;
       }
 
       #sizes {
