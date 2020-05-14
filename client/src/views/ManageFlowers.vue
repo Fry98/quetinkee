@@ -8,7 +8,7 @@
           <span>Nová květina: </span>
           <input type='text' placeholder='Název květiny' v-model='newFlower'>
         </label>
-        <div class='btn'>+</div>
+        <div class='btn' @click='createFlower'>+</div>
       </div>
       <div class='existing-flowers'>
         <div v-for='flower in flowers' :key='flower.id' class='flower'>
@@ -16,7 +16,7 @@
           <font-awesome-icon
               class='icon'
               :icon="['far', 'trash-alt']"
-              @click='removeFlower(flower)'
+              @click='handleRemoveClick(flower)'
           ></font-awesome-icon>
         </div>
       </div>
@@ -26,39 +26,73 @@
 
 <script>
   import Confirm from '../components/Confirm';
+  import axios from "axios";
 
   export default {
     name: "ManageFlowers",
     components: {
       Confirm
     },
+    created() {
+      this.loadData();
+    },
     data() {
       return {
         popup: null,
         newFlower: '',
-        flowers: [
-          {
-            id: 0,
-            name: 'Bílá růže'
-          },
-          {
-            id: 1,
-            name: 'Červená růže'
-          },
-          {
-            id: 2,
-            name: 'Gerbera'
-          },
-          {
-            id: 3,
-            name: 'Modrá růže'
-          }
-        ]
+        flowers: [],
+        toRemove: null
       }
     },
     methods: {
-      removeFlower(flower) {
+      async loadData() {
+        try {
+          const res = await axios({
+            method: 'get',
+            url: '/api/flowers/list'
+          });
+          this.flowers = res.data;
+        } catch(err) {
+          this.$store.dispatch('openModal', err.response.data.message);
+        }
+      },
+      async createFlower() {
+        if (this.newFlower) {
+          try {
+            const res = await axios({
+              method: 'POST',
+              url: '/api/flowers',
+              data: {
+                name: this.newFlower,
+                price: 50
+              }
+            });
+            if (res.data) {
+              this.flowers.push({id: res.data, name: this.newFlower})
+            }
+          } catch(err) {
+            this.$store.dispatch('openModal', err.response.data.message);
+          }
+        }
+      },
+      handleRemoveClick(flower) {
+        this.toRemove = flower.id;
         this.popup = `Opravdu chcete smazat květinu <strong>${flower.name}</strong>?`;
+      },
+      async removeFlower() {
+        try {
+          const res = await axios({
+            method: 'DELETE',
+            url: `/api/flowers/${this.toRemove}`
+          });
+          if (res.status === 200) {
+            const removeIndex = this.flowers.findIndex(flower => flower.id === this.toRemove);
+            this.flowers.splice(removeIndex, 1);
+            alert("Smazáno");
+          }
+        } catch(err) {
+          this.$store.dispatch('openModal', err.response.data.message);
+        }
       },
       cancel() {
         this.popup = null;
@@ -66,7 +100,7 @@
       },
       confirm() {
         this.popup = null;
-        alert("Smazáno");
+        this.removeFlower();
       }
     }
   }
