@@ -127,6 +127,11 @@ public class Bouquet extends AbstractEntity {
     this.image = image;
   }
 
+  @JsonIgnore
+  public BigDecimal getPriceDec() {
+    return this.price;
+  }
+
   public String getPrice() {
     return this.price == null ? null : this.price.toString();
   }

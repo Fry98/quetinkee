@@ -29,7 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class CategoryController {
 
   @Autowired
-  protected CategoryService service;
+  private CategoryService service;
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public Slice<CategoryList> getSlice(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
@@ -65,7 +65,7 @@ public class CategoryController {
     return new ResponseEntity(HttpStatus.OK);
   }
 
-  protected Category getRecord(Integer id) throws ResponseStatusException {
+  private Category getRecord(Integer id) throws ResponseStatusException {
     Category record = this.service.find(id);
     if (record == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Záznam nenalezen");
