@@ -4,20 +4,27 @@ import com.quetinkee.eshop.model.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class BoquetListImpl implements BoquetList, Serializable {
+/**
+ * Projection implementation for shop filter select
+ */
+public class BouquetListImpl implements BouquetList, Serializable {
 
   private Integer Id;
   private String name;
+  private String path;
+  private String image;
   private BigDecimal price;
   private Size size;
   private boolean active;
 
-  public BoquetListImpl() {
+  public BouquetListImpl() {
   }
 
-  public BoquetListImpl(Integer Id, String name, BigDecimal price, Size size, boolean active) {
+  public BouquetListImpl(Integer Id, String name, String path, String image, BigDecimal price, Size size, boolean active) {
     this.Id = Id;
     this.name = name;
+    this.path = path;
+    this.image = image;
     this.price = price;
     this.size = size;
     this.active = active;
@@ -31,6 +38,16 @@ public class BoquetListImpl implements BoquetList, Serializable {
   @Override
   public String getName() {
     return this.name;
+  }
+
+  @Override
+  public String getImage() {
+    return this.image;
+  }
+
+  @Override
+  public String getPath() {
+    return this.path;
   }
 
   @Override
@@ -54,6 +71,14 @@ public class BoquetListImpl implements BoquetList, Serializable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void setPath(String path) {
+    this.path = path;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
   }
 
   public void setPrice(BigDecimal price) {

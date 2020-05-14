@@ -2,6 +2,9 @@ package com.quetinkee.eshop.model.projection;
 
 import java.math.BigDecimal;
 
+/**
+ * Projection implementation for filter
+ */
 public class MinMaxPriceImpl implements MinMaxPrice {
 
   private BigDecimal min;

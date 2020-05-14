@@ -9,3 +9,4 @@ eshop.iml
 **/node_modules
 **/dist
 **/static
+.factorypath

@@ -6,8 +6,10 @@
   "scripts": {
     "build": "vue-cli-service build && mvn clean package",
     "server": "mvn spring-boot:run",
+    "service": "cd service && npm start",
     "client": "vue-cli-service serve",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run service\"",
+    "postinstall": "cd service && npm i"
   },
   "keywords": [],
   "author": "quetnikee",
@@ -22,7 +24,8 @@
     "vue": "^2.6.10",
     "vue-multiselect": "^2.1.6",
     "vue-router": "^3.0.3",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vue-functional-calendar": "^2.8.79"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.8.0",

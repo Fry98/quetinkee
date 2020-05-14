@@ -11,7 +11,9 @@ const store = new Vuex.Store({
   getters: {
     error: state => state.error,
     user: state => state.user,
-    isLogged: state => state.user !== null
+    isLogged: state => state.user !== null,
+    isAdmin: state => state.user !== null && state.user.role === 'ADMIN',
+    isDelivery: state => true
   },
   mutations: {
     setError(state, payload) {

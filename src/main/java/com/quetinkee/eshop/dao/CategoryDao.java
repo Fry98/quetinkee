@@ -6,19 +6,16 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoryDao extends JpaRepository<Category, Integer> {
+public interface CategoryDao extends GenericDao<Category, CategoryList> {
 
   Category findByIdAndActiveTrue(Integer id);
 
-  Slice<Category> findAllBy(Pageable pageable);
+  List<CategoryList> findShopBy(Sort sort);
 
-  Slice<Category> findAllByActiveTrue(Pageable pageable);
+  List<CategoryList> findShopByActiveTrue();
 
-  List<CategoryList> findAllBy(Sort sort);
-
-  List<CategoryList> findAllByActiveTrue();
+  Slice<CategoryList> findAllByActiveTrue(Pageable pageable);
 }

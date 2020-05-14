@@ -9,13 +9,13 @@
         </label>
         <label>
           <span>Kategorie </span>
-          <select name='category' v-model='selectedCategories' multiple>
-            <option v-for='option in categories'>{{ option }}</option>
+          <select ref='sel' name='category' v-model='selectedCategories' multiple>
+            <option v-for='category in categories' @mousedown='handleOptionMousedown(category, $event)'>{{ category }}</option>
           </select>
         </label>
         <label>
           <span>Cena </span>
-          <input v-model='price' type='number' step='.01'>
+          <input class='price' v-model='price' type='number' step='.01'>
         </label>
         <label>
           <span>Barvy </span>
@@ -88,7 +88,7 @@
                   @click='removeFlower(flower.name)'
               ></font-awesome-icon>
             </span>
-          <input type='number' v-model='flower.count' min='1'>
+          <input type='number' v-model='flower.count' min='1' @focus='$event.target.select()'>
         </div>
         <button class='btn' :class='{ "disabled": saveIsDisabled }' :disabled='saveIsDisabled' type='submit'>Uložit
         </button>
@@ -138,6 +138,20 @@
       },
       handleColorClick(color) {
         this.$set(this.selectedColors, color, !this.selectedColors[color]);
+      },
+      handleOptionMousedown(category, event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.$refs.sel.focus();
+        this.toggleCategory(category);
+      },
+      toggleCategory(category) {
+        const i = this.selectedCategories.indexOf(category);
+        if (i > -1) {
+          this.selectedCategories.splice(i, 1);
+        } else {
+          this.selectedCategories.push(category);
+        }
       }
     }
   }
@@ -194,14 +208,17 @@
     }
 
     input {
+      outline: none;
+      border: 0;
+      min-width: 0;
       font-size: 1em;
       width: 1px;
       font-weight: bold;
       flex: 3;
       background-color: transparent;
-      border: transparent;
       margin-right: 5px;
       text-align: center;
+      -moz-appearance: textfield;
     }
 
     input[type=number]::-webkit-inner-spin-button,
@@ -247,16 +264,19 @@
       }
 
       input, select {
-        width: 200px;
-        border: transparent;
+        box-sizing: border-box;
+        width: 220px;
         font-size: 1.2em;
         box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
         border-radius: 7px;
         padding: 3px 10px 3px 10px;
-      }
+        border: solid 1px white;
+        -moz-appearance: textfield;
 
-      select {
-        width: 220px;
+        &:focus {
+          outline: none;
+          border: solid 1px $mainOrange;
+        }
       }
 
       #sizes {

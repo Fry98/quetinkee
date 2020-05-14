@@ -5,7 +5,7 @@
         <img src="../assets/logotype.png" alt="Logo">
       </div>
       <div id='filler'></div>
-      <div class='nav-button'>
+      <div class='nav-button' @click='navigate("/cart")'>
         <div id='cart-amount'>0</div>
         <font-awesome-icon class='nav-icon' icon='shopping-cart'></font-awesome-icon>
       </div>
@@ -13,6 +13,20 @@
         <font-awesome-icon id='nav-profile-icon' class='nav-icon' icon='user'></font-awesome-icon>
         <div class='profile-opts'>
           <div class='opt-box'>
+            <div v-if='$store.getters.isAdmin'>
+              <div class='opt-item' @click='navigate("/admin")'>
+                <font-awesome-icon icon='users-cog'></font-awesome-icon>
+                <span>Admin</span>
+              </div>
+              <div class='opt-spacer'></div>
+            </div>
+            <div v-if='$store.getters.isDelivery'>
+              <div class='opt-item' @click='navigate("/delivery")'>
+                <font-awesome-icon icon='truck'></font-awesome-icon>
+                <span>Objednávky</span>
+              </div>
+              <div class='opt-spacer'></div>
+            </div>
             <div class='opt-item' @click='navigate("/profile")'>
               <font-awesome-icon icon='address-card'></font-awesome-icon>
               <span>Profil</span>
@@ -150,7 +164,7 @@
 
   .profile-opts {
     // display: none;
-    width: 150px;
+    width: 160px;
     position: absolute;
     right: 0px;
     padding-top: 3px;

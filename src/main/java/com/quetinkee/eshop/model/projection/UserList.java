@@ -1,8 +1,6 @@
 package com.quetinkee.eshop.model.projection;
 
-public interface UserList {
-
-  public Integer getId();
+public interface UserList extends InterfaceList {
 
   public String getFirstName();
 

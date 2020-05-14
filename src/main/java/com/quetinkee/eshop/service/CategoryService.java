@@ -4,66 +4,32 @@ import com.quetinkee.eshop.dao.CategoryDao;
 import com.quetinkee.eshop.model.Category;
 import com.quetinkee.eshop.model.Category_;
 import com.quetinkee.eshop.model.projection.CategoryList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import javax.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CategoryService {
-
-  private final CategoryDao dao;
+public class CategoryService extends GenericAdminService<CategoryDao, Category, CategoryList> {
 
   @Autowired
-  public CategoryService(CategoryDao dao) {
-    this.dao = dao;
-  }
-
-  @Transactional(readOnly = true)
-  public Category find(Integer id) {
-    Optional<Category> category = this.dao.findById(id);
-    return category.isPresent() ? category.get() : null;
-  }
-
-  @Transactional(readOnly = true)
-  public Category find(Integer id, boolean showAll) {
-    if (showAll) return this.find(id);
-    return this.dao.findByIdAndActiveTrue(id);
-  }
-
-  @Transactional(readOnly = true)
-  public Slice<Category> findAll(Integer pageNum, Integer pageSize, boolean showAll) {
-    Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Category_.PRIORITY, Category_.NAME));
-    if (showAll) return this.dao.findAllBy(paging);
-    return this.dao.findAllByActiveTrue(paging);
-  }
-
-  @Transactional(readOnly = true)
-  public List<CategoryList> getList() {
-    return this.dao.findAllBy(Sort.by(Category_.PRIORITY, Category_.NAME));
+  public CategoryService(Validator validator, CategoryDao dao) {
+    super(validator, dao,Sort.by(Category_.PRIORITY, Category_.NAME));
   }
 
   @Transactional
-  public void update(Category category) {
-    Objects.requireNonNull(category);
-    this.dao.save(category);
-  }
+  @Override
+  public Category update(Category original, Category newData) {
+    Objects.requireNonNull(original);
+    Objects.requireNonNull(newData);
 
-  @Transactional
-  public void delete (Category category) {
-    Objects.requireNonNull(category);
-    this.dao.delete(category);
-  }
+    if (newData.getName() != null) original.setName(newData.getName());
+    if (newData.getPriority() != null) original.setPriority(newData.getPriority());
+    if (newData.isActive() != null) original.setActive(newData.isActive());
 
-  @Transactional
-  public void persist(Category category) {
-    Objects.requireNonNull(category);
-    this.dao.save(category);
+    if (this.validate(original)) return this.dao.save(original);
+    return null;
   }
 }

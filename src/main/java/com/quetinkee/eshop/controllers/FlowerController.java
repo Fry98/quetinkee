@@ -2,6 +2,7 @@ package com.quetinkee.eshop.controllers;
 
 import com.quetinkee.eshop.model.Flower;
 import com.quetinkee.eshop.model.projection.FlowerList;
+import com.quetinkee.eshop.model.projection.OptionList;
 import com.quetinkee.eshop.service.FlowerService;
 import java.util.List;
 import javax.validation.Valid;
@@ -13,9 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,48 +29,48 @@ import org.springframework.web.server.ResponseStatusException;
 public class FlowerController {
 
   @Autowired
-  private FlowerService service;
+  protected FlowerService service;
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public Slice<Flower> getPage(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
-    return this.service.findAll(page, size);
-  }
-
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity create(@Valid @RequestBody Flower flower) {
-    this.service.persist(flower);
-    return new ResponseEntity(flower.getId(), HttpStatus.CREATED);
+  public Slice<FlowerList> getSlice(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
+    return this.service.getSlice(page, size);
   }
 
   @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<FlowerList> getList() {
+  public List<OptionList> getList() {
     return this.service.getList();
+  }
+
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity create(@Valid @RequestBody Flower record) {
+    this.service.create(record);
+    return new ResponseEntity(record.getId(), HttpStatus.CREATED);
   }
 
   @GetMapping(value = "/{id:[\\d]+}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Flower getId(@PathVariable("id") Integer id) {
-    return this.getFlower(id);
+    return this.getRecord(id);
   }
 
-  @PutMapping(value = "/{id:[\\d]+}", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity updateId(@PathVariable("id") Integer id, @RequestBody Flower flower) {
-    Flower original = this.getFlower(id);
-    // TODO
+  @PatchMapping(value = "/{id:[\\d]+}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity updateId(@PathVariable("id") Integer id, @RequestBody Flower record) {
+    Flower original = this.getRecord(id);
+    this.service.update(original, record);
     return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @DeleteMapping(value = "/{id:[\\d]+}")
   public ResponseEntity deleteId(@PathVariable("id") Integer id) {
-    Flower flower = this.getFlower(id);
-    service.delete(flower);
+    Flower record = this.getRecord(id);
+    this.service.delete(record);
     return new ResponseEntity(HttpStatus.OK);
   }
 
-  private Flower getFlower(Integer id) throws ResponseStatusException {
-    Flower flower = this.service.find(id);
-    if (flower == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Flower dont exists");
+  protected Flower getRecord(Integer id) throws ResponseStatusException {
+    Flower record = this.service.find(id);
+    if (record == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Záznam nenalezen");
     }
-    return flower;
+    return record;
   }
 }

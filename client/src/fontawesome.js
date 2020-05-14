@@ -10,6 +10,8 @@ import {
   faShoppingCart,
   faChevronRight,
   faChevronLeft,
+  faChevronUp,
+  faChevronDown,
   faCartPlus,
   faSignOutAlt,
   faAddressCard,
@@ -17,13 +19,19 @@ import {
   faCheck,
   faStar,
   faPlus,
-  faMinus
+  faMinus,
+  faTimes,
+  faUsersCog,
+  faCalendarAlt,
+  faTruck
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faUser);
 library.add(faShoppingCart);
 library.add(faChevronRight);
 library.add(faChevronLeft);
+library.add(faChevronUp);
+library.add(faChevronDown);
 library.add(faCartPlus);
 library.add(faSignOutAlt);
 library.add(faAddressCard);
@@ -34,5 +42,9 @@ library.add(faStarRegular);
 library.add(faPlus);
 library.add(faMinus);
 library.add(faTrashAlt);
+library.add(faTimes);
+library.add(faUsersCog);
+library.add(faCalendarAlt);
+library.add(faTruck);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);

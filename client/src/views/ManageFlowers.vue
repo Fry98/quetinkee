@@ -1,5 +1,6 @@
 <template>
   <div id='manage-flowers'>
+    <confirm :msg='popup' @cancel='cancel' @confirm='confirm'></confirm>
     <div class='mf-wrap'>
       <h1>Správa květin</h1>
       <div class='new-flower'>
@@ -10,8 +11,8 @@
         <div class='btn'>+</div>
       </div>
       <div class='existing-flowers'>
-        <div v-for='flower in flowers' class='flower'>
-          <span>{{ flower }}</span>
+        <div v-for='flower in flowers' :key='flower.id' class='flower'>
+          <span>{{ flower.name }}</span>
           <font-awesome-icon
               class='icon'
               :icon="['far', 'trash-alt']"
@@ -24,17 +25,48 @@
 </template>
 
 <script>
+  import Confirm from '../components/Confirm';
+
   export default {
     name: "ManageFlowers",
+    components: {
+      Confirm
+    },
     data() {
       return {
+        popup: null,
         newFlower: '',
-        flowers: ['Bílá růže', 'Červená růže', 'Gerbera', 'Modrá růže']
+        flowers: [
+          {
+            id: 0,
+            name: 'Bílá růže'
+          },
+          {
+            id: 1,
+            name: 'Červená růže'
+          },
+          {
+            id: 2,
+            name: 'Gerbera'
+          },
+          {
+            id: 3,
+            name: 'Modrá růže'
+          }
+        ]
       }
     },
     methods: {
-      removeFlower() {
-        // todo call api to remove flower
+      removeFlower(flower) {
+        this.popup = `Opravdu chcete smazat květinu <strong>${flower.name}</strong>?`;
+      },
+      cancel() {
+        this.popup = null;
+        alert("Zrušeno");
+      },
+      confirm() {
+        this.popup = null;
+        alert("Smazáno");
       }
     }
   }
@@ -70,10 +102,13 @@
     align-items: center;
     .flower {
       width: 100%;
-      padding: 3px;
+      margin-bottom: 5px;
+      background-color: #fff;
+      padding: 3px 7px;
       border-radius: 7px;
       transition: .2s;
       display: flex;
+      align-items: center;
       justify-content: space-between;
       &:hover {
         background-color: $lightGrey;
@@ -81,6 +116,10 @@
       .icon {
         margin-left: 15px;
         cursor: pointer;
+        transition: .2s;
+        &:hover {
+          color: red;
+        }
       }
     }
   }
@@ -99,11 +138,16 @@
 
   input {
     margin-left: 5px;
-    border: transparent;
     font-size: 1.2em;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
     border-radius: 7px;
     padding: 3px 10px 3px 10px;
+    border: solid 1px white;
+
+    &:focus {
+      outline: none;
+      border: solid 1px $mainOrange;
+    }
   }
 
   .btn {
