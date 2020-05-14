@@ -26,7 +26,7 @@ size : int  (optional def. 10) počet záznamů na stránku
 #### Response body
 `class Slice<BouquetList>`
 
-```javascript
+```json
 {
     "content":[
         {"price":"200.00","path":"uploads/img","image":"11_img.jpg","name":"Kytice hezká","id":13,"size":"MEDIUM","active":true},
@@ -65,7 +65,7 @@ none
 #### Response body
 `class List<OptionList>`
 
-```javascript
+```json
 [
     {"name":"Kytice hezká","id":"13"},
     {"name":"Kyticke hezčí","id":"14"},
@@ -91,7 +91,7 @@ id   : int        id kytice
 #### Response body
 `class BouquetEdit`
 
-```javascript
+```json5
 {
     "bouquet":{
         "id":12,
@@ -132,7 +132,7 @@ Data kytice jsou ve stejném formátu jako u GET, nutné odeslat jako Content-Ty
 #### Request body
 `class BouquetEdit`
 
-```javascript
+```json5
 {
     "bouquet":{
         "name":"Nejhezčí kytice",
@@ -173,7 +173,7 @@ Data kytice jsou ve stejném formátu jako u GET, nutné odeslat jako Content-Ty
 #### Request body
 `class BouquetEdit`
 
-```javascript
+```json5
 {
     "bouquet":{
         "name":"Nejhezčí kytice",
@@ -204,7 +204,7 @@ id   : int        id kytice
 #### Response body
 `class BouquetEdit`
 
-```javascript
+```json5
 {
     "bouquet":{
         "id": 12,
@@ -271,7 +271,7 @@ size : int  (optional def. 10) počet záznamů na stránku
 #### Response body
 `class Slice<CategoriesList>`
 
-```javascript
+```json5
 {
     "content":[
         {"active":true,"name":"Nové","id":3},
@@ -298,7 +298,7 @@ none
 #### Response body
 `class List<OptionList>`
 
-```javascript
+```json5
 [
     {"name":"Nové","id":"3"},
     {"name":"Překvapení","id":"8"},
@@ -324,7 +324,7 @@ id   : int        id kategorie
 #### Response body
 `class Category`
 
-```javascript
+```json5
 {
     "id":3,
     "name":"Nové",
@@ -341,7 +341,7 @@ Data kategorie jsou ve stejném formátu jako u GET
 #### Request body
 `class Category`
 
-```javascript
+```json5
 {
     "name":"Nové",
     "priority":1,
@@ -363,7 +363,7 @@ Data kategorie jsou ve stejném formátu jako u GET
 #### Request body
 `class Category`
 
-```javascript
+```json5
 {
     "name":"Nové",
     "priority":1,
@@ -379,7 +379,7 @@ id   : int        id kategorie
 #### Response body
 `class Category`
 
-```javascript
+```json5
 {
     "id":3,
     "name":"Nové",
@@ -427,7 +427,7 @@ size : int  (optional def. 10) počet záznamů na stránku
 #### Response body
 `class Slice<FlowerList>`
 
-```javascript
+```json5
 {
     "content":[
         {"price":"20.00","name":"Fialka","id":10},
@@ -451,7 +451,7 @@ none
 #### Response body
 `class List<OptionList>`
 
-```javascript
+```json5
 [
     {"name":"Fialka","id":"10"},
     {"name":"Růže","id":"9"},
@@ -474,7 +474,7 @@ id   : int        id květiny
 #### Response body
 `class Flower`
 
-```javascript
+```json5
 {
     "id":10,
     "name":"Fialka",
@@ -491,7 +491,7 @@ Data květiny jsou ve stejném formátu jako u GET
 #### Request body
 `class Flower`
 
-```javascript
+```json5
 {
     "name":"Fialka",
     "description":"Note",   // optional
@@ -513,7 +513,7 @@ Data květiny jsou ve stejném formátu jako u GET
 #### Request body
 `class Flower`
 
-```javascript
+```json5
 {
     "name":"Fialka",
     "description":"Note",
@@ -529,7 +529,7 @@ id   : int        id květiny
 #### Response body
 `class Flower`
 
-```javascript
+```json5
 {
     "id":10,
     "name":"Fialka",
@@ -567,7 +567,7 @@ none
 #### Request body
 `class User`
 
-```javascript
+```json5
 {
     "firstName":"Name",
     "lastName":"Surname",
@@ -606,7 +606,7 @@ none
 #### Response body
 `class User`
 
-```javascript
+```json5
 {
     "id":1,
     "firstName":"Name",
@@ -635,7 +635,7 @@ none
 #### Request body
 `class User`
 
-```javascript
+```json5
 {
     "firstName":"Name",
     "lastName":"Surname",
@@ -660,7 +660,7 @@ none
 #### Response body
 `class User`
 
-```javascript
+```json5
 {
     "id":1,
     "firstName":"Name",
@@ -714,7 +714,7 @@ none
 
 `class List<CategoryList>`
 
-```javascript
+```json5
 [
     {"name":"Narozeniny","id":6,"active":true},
     {"name":"Nové","id":3,"active":true},
@@ -742,7 +742,7 @@ id : int  (optional)  id kategorie
 #### Response body
 `class FilterInfo`
 
-```javascript
+```json5
 {
 "categories":[
         {"name":"Narozeniny","id":6,"active":true},
@@ -752,7 +752,7 @@ id : int  (optional)  id kategorie
         {"name":"Sezonní nabídka","id":5,"active":true},
         {"name":"V akci","id":4,"active":true}
     ],
-    ,"flowers":[
+    "flowers":[
         {"name":"Fialka","id":"10"},
         {"name":"Růže","id":"9"},
         {"name":"Slunečnice","id":"11"}
@@ -772,13 +772,13 @@ Stránkovací seznam výsledků - všechny parametry jsou nepovinné
 #### Request body
 `class FilterRequest`
 
-```javascript
+```json5
 {
     "flowers": [1,2,3],         // optional - id kytky
     "colors": [1,2,3],          // optional - id barvy
     "sizes":[false,true,true],  // optional
     "prices": {                 // optional
-        "min": 0
+        "min": 0,
         "max": 100
     }
 }
@@ -795,7 +795,7 @@ size : int  (optional def. 10) počet záznamů na stránku
 #### Response body
 `class Slice<BouquetList>`
 
-```javascript
+```json5
 {
     "content":[
         {"name":"Nejhezčí kytice","path":"uploads/img","image":"11_img.jpg","price":"100.10","size":"SMALL","active":true,"id":12}
@@ -835,7 +835,7 @@ id   : int        id kategorie
 #### Response body
 `class Slice<BouquetList>`
 
-```javascript
+```json5
 {
     "content":[
         {"price":"200.00","path":"uploads/img","image":"11_img.jpg","name":"Kytice hezká","id":13,"size":"MEDIUM","active":true},
@@ -877,7 +877,7 @@ id   : int        id kytice
 #### Response body
 `class BouquetDetail`
 
-```javascript
+```json5
 {
     "bouquet":{
         "id":12,
@@ -934,7 +934,7 @@ size : int  (optional def. 10) počet záznamů na stránku
 #### Response body
 `class Slice<ReviewList>`
 
-```javascript
+```json5
 {
     "content":[
         {"rating":5,"created":"2020-05-12T09:25:22.854+0000","userName":"Surname","message":"Recenze nejleší květiny"}
@@ -966,7 +966,7 @@ Seznam všech kategorií seřazených podle priority - vrací http status 201 CR
 #### Request body
 `class ReviewSubmit`
 
-```javascript
+```json5
 {
     "message": "komentář",
     "rating": 5 // int(0 - 5)
@@ -1006,7 +1006,7 @@ size : int  (optional def. 10) počet záznamů na stránku
 #### Response body
 `class Slice<UserList>`
 
-```javascript
+```json5
 {
     "content":[
         {
@@ -1033,7 +1033,7 @@ none
 #### Response body
 `class List<OptionList>`
 
-```javascript
+```json5
 [
     {"name":"admin@admin.cz","id":"1"}
 ]
@@ -1054,7 +1054,7 @@ id   : int        id uživatele
 #### Response body
 `class User`
 
-```javascript
+```json5
 {
     "id":1,
     "firstName":"Name",
@@ -1085,7 +1085,7 @@ Data uživatele jsou ve stejném formátu jako u GET
 #### Request body
 `class User`
 
-```javascript
+```json5
 {
     "firstName":"Name",
     "lastName":"Surname",
@@ -1120,7 +1120,7 @@ Data uživatele jsou ve stejném formátu jako u GET
 #### Request body
 `class User`
 
-```javascript
+```json5
 {
     "firstName":"Name",
     "lastName":"Surname",
@@ -1149,7 +1149,7 @@ id   : int        id uživatele
 #### Response body
 `class User`
 
-```javascript
+```json5
 {
     "id":1,
     "firstName":"Name",
