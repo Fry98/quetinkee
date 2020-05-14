@@ -8,11 +8,7 @@
     </div>
     <h1>Kategorie</h1>
     <ul>
-      <li>Nové</li>
-      <li>V Akci</li>
-      <li>Sezonní nabídka</li>
-      <li>Narozeniny</li>
-      <li>Pohřeb</li>
+      <li v-for='ctg in $store.getters.categories' :key='ctg.id'>{{ ctg.name }}</li>
     </ul>
     <h1>Vyhledávání</h1>
     <h2>Cena</h2>
@@ -74,6 +70,8 @@
                    :options='flowerOptions'
                    :multiple='true'
                    :close-on-select='false'
+                   label='name'
+                   track-by='name'
       >
         <span slot="noResult">Květina nebyla nalezena...</span>
       </multiselect>
@@ -93,7 +91,7 @@
         priceFrom: null,
         priceTo: null,
         selectedFlowers: [],
-        flowerOptions: ['Růže', 'Kopretiny', 'Tulipány', 'Orchideje', 'Gerbery', 'Chryzantémy'],
+        flowerOptions: this.$store.getters.flowers,
         selectedSizes: [false, false, false],
         selectedColors: [false, false, false, false, false, false, false, false, false, false],
         numberToColor: ['white', 'yellow', 'orange', 'red', 'pink', 'purple', 'blue', 'turquoise', 'seafoam', 'green']

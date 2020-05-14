@@ -25,6 +25,11 @@
       ProductTile,
       Carousel
     },
+    async created() {
+      for (const ctg in this.$store.getters.categories) {
+        
+      }
+    },
     data() {
       return {
         newFlowers: [

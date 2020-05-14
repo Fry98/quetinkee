@@ -6,14 +6,18 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     error: null,
-    user: null
+    user: null,
+    categories: [],
+    flowers: []
   },
   getters: {
     error: state => state.error,
     user: state => state.user,
     isLogged: state => state.user !== null,
     isAdmin: state => state.user !== null && state.user.role === 'ADMIN',
-    isDelivery: state => true
+    isDelivery: state => true,
+    categories: state => state.categories,
+    flowers: state => state.flowers
   },
   mutations: {
     setError(state, payload) {
@@ -21,6 +25,12 @@ const store = new Vuex.Store({
     },
     setUser(state, payload) {
       state.user = payload;
+    },
+    setCategories(state, payload) {
+      state.categories = payload;
+    },
+    setFlowers(state, payload) {
+      state.flowers = payload;
     }
   },
   actions: {
