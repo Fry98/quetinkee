@@ -68,7 +68,8 @@
               }
             });
             if (res.data) {
-              this.flowers.push({id: res.data, name: this.newFlower})
+              this.flowers.push({id: res.data, name: this.newFlower});
+              this.newFlower = ''
             }
           } catch(err) {
             this.$store.dispatch('openModal', err.response.data.message);
