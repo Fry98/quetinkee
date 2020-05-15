@@ -26,6 +26,15 @@ public class Order extends AbstractEntity{
     private User user;
 
     @Column(nullable = false)
+    private String recipientFirstName;
+
+    @Column(nullable = false)
+    private String recipientLastName;
+
+    @Column(nullable = false)
+    private String recipientPhone;
+
+    @Column(nullable = false)
     @OneToOne
     private OrderAddress address;
 
@@ -33,17 +42,19 @@ public class Order extends AbstractEntity{
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Item> contains;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "orders", fetch = FetchType.LAZY)
-    private Set<Order> orders;
 
 
 
 
 
-    public Order() {
+    public Order(User user, OrderAddress address, String recipientFirstName, String recipientLastName, String recipientPhone) {
         this.user = user;
         this.address = address;
+        this.recipientFirstName = recipientFirstName;
+        this.recipientLastName = recipientLastName;
+        this.recipientPhone = recipientPhone;
+        this.contains = getContains();
+        this.active = true;
     }
 
     public boolean isActive() {
@@ -52,18 +63,6 @@ public class Order extends AbstractEntity{
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public Set<Order> getOrders() {
-        return this.orders;
-    }
-
-    public void addOrder(Order order) {
-        Objects.requireNonNull(order);
-        if (this.orders == null) {
-            this.orders = new HashSet<>();
-        }
-        this.orders.add(order);
     }
 
     public BigDecimal getTotalPrice(){
@@ -115,6 +114,22 @@ public class Order extends AbstractEntity{
         for(Item pos : contains){
             this.totalPrice.add(pos.getBouquet().getPriceDec()) ;
         }
+    }
+
+    public String getRecipientFirstName() {
+        return recipientFirstName;
+    }
+
+    public String getRecipientLastName() {
+        return recipientLastName;
+    }
+
+    public String getRecipientPhone() {
+        return recipientPhone;
+    }
+
+    public OrderAddress getAddress() {
+        return address;
     }
 
 }
