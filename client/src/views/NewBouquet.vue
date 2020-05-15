@@ -1,7 +1,7 @@
 <template>
   <div id='new-bouquet'>
     <div class='nb-wrap'>
-      <form @submit="handleSubmit">
+      <form @submit='handleSubmit($event)'>
         <h1>Nová kytice</h1>
         <label>
           <span>Název </span>
@@ -60,21 +60,20 @@
         <label>
           <span>Velikost </span>
           <div id='sizes'>
-            <span :class='{"checkbox-input": true, selected: selectedSize === 0}' @click='handleSizeClick(0)'>
+            <span :class='{"checkbox-input": true, selected: selectedSize === "SMALL"}' @click='handleSizeClick("SMALL")'>
               Malá
             </span>
-            <span :class='{"checkbox-input": true, selected: selectedSize === 1}' @click='handleSizeClick(1)'>
+            <span :class='{"checkbox-input": true, selected: selectedSize === "MEDIUM"}' @click='handleSizeClick("MEDIUM")'>
               Střední
             </span>
-            <span :class='{"checkbox-input": true, selected: selectedSize === 2}' @click='handleSizeClick(2)'>
+            <span :class='{"checkbox-input": true, selected: selectedSize === "LARGE"}' @click='handleSizeClick("LARGE")'>
               Velká
             </span>
           </div>
         </label>
         <label>
           <span>Foto </span>
-          <!-- TODO add image uploader -->
-          <div class='photo-uploader'>+</div>
+          <input type='file' accept='image/*' @change='handleImageUpload($event)'>
         </label>
         <label>
           <span>Popis </span>
@@ -84,7 +83,7 @@
           <span>Květiny </span>
           <select name='flowers' v-model='selectedFlower' @change='handleFlowerSelect'>
             <option value='' selected disabled hidden>Vyberte květiny...</option>
-            <option v-for='option in flowers'>{{ option.name }}</option>
+            <option v-for='option in flowers' :value='option.id'>{{ option.name }}</option>
           </select>
         </label>
         <div class='warning' v-if='selectedFlowers.length === 0'>Vyberte alespoň jednu květinu.</div>
@@ -118,6 +117,7 @@
         categories: [],
         selectedCategories: [],
         description: '',
+        image: null,
         flowers: [],
         selectedFlowers: [],
         selectedFlower: '',
@@ -135,6 +135,7 @@
             !this.bouquetName ||
             !this.price ||
             !this.description ||
+            !this.image ||
             this.selectedSize === null ||
             !this.selectedColors.find(value => value === true);
       }
@@ -154,7 +155,6 @@
           const res = await Promise.all(promises);
           if (res[0].data) {
             this.categories = res[0].data;
-            console.log(this.categories);
           }
           if (res[1].data) {
             this.flowers = res[1].data;
@@ -163,37 +163,58 @@
           this.$store.dispatch('openModal', err.response.data.message);
         }
       },
-      async handleSubmit() {
+      async handleSubmit(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        const bouquetJSON = JSON.stringify({
+          bouquet: {
+            name: this.bouquetName,
+            perex: this.description,
+            price: this.price,
+            size: this.selectedSize,
+            active: true
+          },
+          keyCategories: this.selectedCategories,
+          keyColors: this.selectedColors.reduce((out, bool, index) => bool ? out.concat(index) : out, []),
+          keyFlowerCount: this.selectedFlowers.reduce((map, flower) => {
+            map[flower.id] = flower.count;
+            return map;
+          }, {})
+        });
+        console.log(bouquetJSON);
+        const formData = new FormData();
+        formData.append('bouquet', bouquetJSON);
+        formData.append('blob', this.image);
         try {
           const res = await axios({
-            method: 'POST',
-            url: '/api/bouquets',
-            data: {
-              bouquet: {
-                name: this.bouquetName,
-                perex: this.description,
-                price: this.price,
-                size: this.size.toUpperCase(),
-                active: true
-              },
-              keyCategories: this.selectedCategories,
-              keyColors: this.selectedColors.reduce((out, bool, index) => bool ? out.concat(index) : out, []),
-              keyFlowerCount: null // TODO
-            }
+          method: 'POST',
+          url: '/api/bouquets',
+          headers: {'Content-Type': 'multipart/form-data'},
+          data: formData
           });
           if (res.data) {
-            this.flowers.push({id: res.data, name: this.newFlower})
+            alert('Květina byla vytvořena');
+            this.$router.go();
           }
         } catch(err) {
           this.$store.dispatch('openModal', err.response.data.message);
         }
       },
-      handleFlowerSelect() {
-        if (!this.selectedFlowers.find(flower => flower.id === this.selectedFlower.id)) {
-          this.selectedFlowers.push({name: this.selectedFlower.name, id: this.selectedFlower.id, count: 1});
+      handleImageUpload(e) {
+        this.image = e.target.files[0];
+        if (!this.image instanceof Blob) {  // TODO remove these...
+          this.$store.dispatch('openModal', 'This ain\'t a blob bro!');
+        } else {
+          this.$store.dispatch('openModal', 'Good job, this is a blob!');
         }
-        console.log(this.selectedFlowers);
-        this.selectedFlower = ''
+      },
+      handleFlowerSelect() {
+        const selectedFlower = this.flowers.find(flower => flower.id === this.selectedFlower);
+        selectedFlower.count = 1;
+        if (!this.selectedFlowers.find(flower => flower.id === this.selectedFlower)) {
+          this.selectedFlowers.push(selectedFlower);
+        }
+        this.selectedFlower = '';
       },
       removeFlower(flowerName) {
         this.selectedFlowers = this.selectedFlowers.filter((value => value.name !== flowerName));
@@ -337,6 +358,10 @@
         padding: 3px 10px 3px 10px;
         border: solid 1px white;
         -moz-appearance: textfield;
+
+        &[type='file'] {
+          font-size: 1em;
+        }
 
         &:focus {
           outline: none;
