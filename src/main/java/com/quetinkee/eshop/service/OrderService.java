@@ -1,8 +1,11 @@
 package com.quetinkee.eshop.service;
 
+import com.quetinkee.eshop.dao.FlowerDao;
 import com.quetinkee.eshop.dao.OrderDao;
-import com.quetinkee.eshop.model.Category;
-import com.quetinkee.eshop.model.Order;
+import com.quetinkee.eshop.model.*;
+import com.quetinkee.eshop.model.projection.FlowerList;
+import com.quetinkee.eshop.model.projection.OrderList;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,60 +14,28 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Validator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class OrderService {
-
-    private final OrderDao dao;
+public class OrderService extends GenericAdminService<OrderDao, Order, OrderList>{
 
     @Autowired
-    public OrderService(OrderDao dao) {
-        this.dao = dao;
-    }
-
-    @Transactional(readOnly = true)
-    public Order find(Integer id) {
-        Optional<Order> order = this.dao.findById(id);
-        return order.isPresent() ? order.get() : null;
-    }
-
-    @Transactional(readOnly = true)
-    public Order find(Integer id, boolean activeOnly) {
-        if (activeOnly) return this.dao.findByIdAndActiveTrue(id);
-        return this.find(id);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Order> findAll(boolean active) {
-        if (active) return this.dao.findAllByActiveTrue();
-        return this.dao.findAll();
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<Order> findAll(Integer pageNum, Integer pageSize, boolean active) {
-        Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("name"));
-        if (active) return this.dao.findAllByActiveTrue(paging);
-        return this.dao.findAllBy(paging);
+    public OrderService(Validator validator, OrderDao dao) {
+        super(validator, dao, Sort.by(Order_.ID));
     }
 
     @Transactional
-    public void update(Order order) {
-        Objects.requireNonNull(order);
-        this.dao.save(order);
-    }
+    @Override
+    public Order update(Order original, Order newData) {
+        Objects.requireNonNull(original);
+        Objects.requireNonNull(newData);
 
-    @Transactional
-    public void delete (Order order) {
-        Objects.requireNonNull(order);
-        this.dao.delete(order);
-    }
+        if (newData.getUser() != null) original.setUser(newData.getUser());
 
-    @Transactional
-    public void persist(Order order) {
-        Objects.requireNonNull(order);
-        this.dao.save(order);
+        if (this.validate(original)) return this.dao.save(original);
+        return null;
     }
 }

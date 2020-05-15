@@ -26,17 +26,28 @@ public class Order extends AbstractEntity{
     private User user;
 
     @Column(nullable = false)
-    private String recipientFirstName;
+    private String userFirstName = user.getFirstName();
 
     @Column(nullable = false)
-    private String recipientLastName;
+    private String userLastName = user.getLastName();
 
     @Column(nullable = false)
-    private String recipientPhone;
+    private String userPhone = user.getPhone();
+
+    @Column(nullable = false)
+    private String userMail = user.getMail();
 
     @Column(nullable = false)
     @OneToOne
-    private OrderAddress address;
+    private Address userAddressBilling = user.getAddressBilling();
+
+    @Column(nullable = false)
+    @OneToOne
+    private Address userAddressDelivery = user.getAddressDelivery();
+
+    @Column(nullable = false)
+    @OneToOne
+    private OrderAddress address = (OrderAddress) userAddressDelivery;
 
     @NotBlank(message = "Objednavka je prazdna")
     @ManyToMany(fetch = FetchType.LAZY)
@@ -47,14 +58,8 @@ public class Order extends AbstractEntity{
 
 
 
-    public Order(User user, OrderAddress address, String recipientFirstName, String recipientLastName, String recipientPhone) {
-        this.user = user;
-        this.address = address;
-        this.recipientFirstName = recipientFirstName;
-        this.recipientLastName = recipientLastName;
-        this.recipientPhone = recipientPhone;
-        this.contains = getContains();
-        this.active = true;
+    public Order() {
+
     }
 
     public boolean isActive() {
@@ -82,11 +87,7 @@ public class Order extends AbstractEntity{
     }
 
     public void removePosition(Bouquet bouquet){
-        for(Item pos : contains){
-            if (bouquet == pos.getBouquet()) {
-                contains.remove(pos);
-            }
-        }
+        contains.removeIf(pos -> bouquet == pos.getBouquet());
     }
 
     public void removePosition(Item pos){
@@ -116,20 +117,39 @@ public class Order extends AbstractEntity{
         }
     }
 
-    public String getRecipientFirstName() {
-        return recipientFirstName;
+    public String getUserFirstName() {
+        return userFirstName;
     }
 
-    public String getRecipientLastName() {
-        return recipientLastName;
+    public String getUserLastName() {
+        return userLastName;
     }
 
-    public String getRecipientPhone() {
-        return recipientPhone;
+    public String getUserPhone() {
+        return userPhone;
+    }
+
+    public String getUserMail() {
+        return userMail;
+    }
+
+    public Address getUserAddressBilling() {
+        return userAddressBilling;
+    }
+
+    public Address getUserAddressDelivery() {
+        return userAddressDelivery;
     }
 
     public OrderAddress getAddress() {
         return address;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }
