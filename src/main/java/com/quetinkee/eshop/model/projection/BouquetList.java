@@ -14,5 +14,5 @@ public interface BouquetList extends InterfaceList {
 
   public String getPrice();
 
-  public boolean isActive();
+  public Boolean getActive();
 }

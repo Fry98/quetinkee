@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.quetinkee.eshop.model.projection.BouquetList;
 import com.quetinkee.eshop.dao.BouquetDao;
+import com.quetinkee.eshop.rabbit.CacheRabbit;
+import com.quetinkee.eshop.rabbit.SearchRabbit;
 import javax.validation.Validator;
 
 @Service
@@ -31,13 +33,19 @@ public class BouquetService extends GenericAdminService<BouquetDao, Bouquet, Bou
   private final CategoryDao categoryDao;
   private final UploadImage uploader;
 
+  private final SearchRabbit searchRabbit;
+  private final CacheRabbit cacheRabbit;
+
   @Autowired
-  public BouquetService(Validator validator, BouquetDao dao, FlowerDao flowerDao, CategoryDao categoryDao, UploadImage uploader) {
+  public BouquetService(Validator validator, BouquetDao dao, FlowerDao flowerDao, CategoryDao categoryDao, UploadImage uploader, SearchRabbit searchRabbit, CacheRabbit cacheRabbit) {
     super(validator, dao, Sort.by(Bouquet_.NAME));
 
     this.flowerDao = flowerDao;
     this.categoryDao = categoryDao;
     this.uploader = uploader;
+
+    this.searchRabbit = searchRabbit;
+    this.cacheRabbit = cacheRabbit;
   }
 
   @Transactional
@@ -53,8 +61,14 @@ public class BouquetService extends GenericAdminService<BouquetDao, Bouquet, Bou
     if (newData.getSize() != null) original.setSize(newData.getSize());
     if (newData.isActive() != null) original.setActive(newData.isActive());
 
-    if (this.validate(original)) return this.dao.save(original);
+    if (this.validate(original)) return this.save(original);
     return null;
+  }
+
+  @Transactional
+  @Override
+  public Bouquet create(Bouquet record) {
+    return this.save(record);
   }
 
   @Transactional
@@ -82,14 +96,22 @@ public class BouquetService extends GenericAdminService<BouquetDao, Bouquet, Bou
 
     if (file != null) this.updateFile(bouquet, file);
 
-    return this.dao.save(bouquet);
+    return this.save(bouquet);
   }
 
   @Transactional
   @Override
   public void delete (Bouquet record) {
+    this.searchRabbit.delete(record.getId());
+    this.cacheRabbit.delete(record.getId());
     super.delete(record);
     if (record.getImage() != null) this.uploader.remove(record.getPath(), record.getImage());
+  }
+
+  private Bouquet save(Bouquet bouquet) {
+    bouquet = this.dao.save(bouquet);
+    this.searchRabbit.save(bouquet);
+    return bouquet;
   }
 
   private void updateFile (Bouquet bouquet, MultipartFile file) {

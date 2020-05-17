@@ -30,8 +30,12 @@ import com.quetinkee.eshop.model.User;
 import com.quetinkee.eshop.model.projection.OptionList;
 import com.quetinkee.eshop.utils.helpers.BouquetDetail;
 import com.quetinkee.eshop.model.projection.ReviewList;
+import com.quetinkee.eshop.rabbit.CacheRabbit;
+import com.quetinkee.eshop.rabbit.SearchRabbit;
 import com.quetinkee.eshop.utils.ValidationError;
 import com.quetinkee.eshop.utils.helpers.ReviewSubmit;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ShopService {
@@ -41,12 +45,18 @@ public class ShopService {
   private final FilterDao filterDao;
   private final ReviewDao reviewDao;
 
+  private final SearchRabbit searchRabbit;
+  private final CacheRabbit cacheRabbit;
+
   @Autowired
-  public ShopService(BouquetDao bouquetDao, CategoryDao categoryDao, FilterDao shopDao, ReviewDao reviewDao) {
+  public ShopService(BouquetDao bouquetDao, CategoryDao categoryDao, FilterDao shopDao, ReviewDao reviewDao, SearchRabbit searchRabbit, CacheRabbit cacheRabbit) {
     this.bouquetDao = bouquetDao;
     this.categoryDao = categoryDao;
     this.filterDao = shopDao;
     this.reviewDao = reviewDao;
+
+    this.searchRabbit = searchRabbit;
+    this.cacheRabbit = cacheRabbit;
   }
 
   @Transactional(readOnly = true)
@@ -56,7 +66,7 @@ public class ShopService {
   }
 
   @Transactional(readOnly = true)
-  public FilterInfo getSearchInfo (Integer id, boolean showAll) {
+  public FilterInfo getFilterInfo (Integer id, boolean showAll) {
     return new FilterInfo(
         this.findCategories(showAll),
         this.findFlowers(id, showAll),
@@ -117,12 +127,18 @@ public class ShopService {
     return this.filterDao.findResults(showAll, id, request, paging);
   }
 
+  @Transactional(readOnly = true)
+  public List<BouquetList> getSimilarProducts(Integer id, Integer pageSize, boolean showAll) {
+    Pageable paging = PageRequest.of(0, pageSize, Sort.by(Bouquet_.ID));
+    return this.filterDao.searchAllSimilar(showAll, id, paging);
+  }
+
   public boolean isBouquetReview(Bouquet bouquet, User user) {
     return this.reviewDao.findByBouquetIdAndUserId(bouquet.getId(), user.getId()) != null;
   }
 
   @Transactional
-  public void addBouquetReview(Bouquet bouquet, User user, ReviewSubmit rs) {
+  public void addBouquetReview(Bouquet bouquet, User user, ReviewSubmit rs) throws ValidationError {
     if (this.isBouquetReview(bouquet, user)) throw new ValidationError("Recenze je již uložená, děkujeme.");
 
     bouquet.addReview(new Review(user, rs.getMessage(),  rs.getRating()));
@@ -135,5 +151,18 @@ public class ShopService {
   public Slice<ReviewList> getBouquetReviews(Bouquet bouquet, Integer pageNum, Integer pageSize) {
     Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Review_.CREATED));
     return this.reviewDao.findAllByBouquet(bouquet, paging);
+  }
+
+  public Slice<BouquetList> getSeachResults(String find, Integer pageNum, Integer pageSize, boolean showAll) throws ResponseStatusException {
+    List<Integer> keys = this.searchRabbit.find(find);
+    if (keys == null) throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Služba dočasně nedostupná");
+
+    if (keys.size() > 0) {
+      String order = keys.toString();
+      order = ',' + order.substring(1, order.length()-1) + ',';
+      Pageable paging = PageRequest.of(0, pageSize);
+      return this.bouquetDao.findAllByActiveAndIdInAndCategoriesNotNull(showAll, keys, order, paging);
+    }
+    return null;
   }
 }

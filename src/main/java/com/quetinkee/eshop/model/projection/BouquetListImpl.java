@@ -61,7 +61,7 @@ public class BouquetListImpl implements BouquetList, Serializable {
   }
 
   @Override
-  public boolean isActive() {
+  public Boolean getActive() {
     return this.active;
   }
 

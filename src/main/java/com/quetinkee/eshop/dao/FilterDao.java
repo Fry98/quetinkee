@@ -2,9 +2,12 @@ package com.quetinkee.eshop.dao;
 
 import com.quetinkee.eshop.model.Bouquet;
 import com.quetinkee.eshop.model.Size;
+import com.quetinkee.eshop.model.projection.BouquetList;
 import com.quetinkee.eshop.model.projection.MinMaxPrice;
 import com.quetinkee.eshop.model.projection.OptionList;
+import java.util.List;
 import java.util.Set;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -39,4 +42,10 @@ public interface FilterDao extends JpaRepository<Bouquet, Integer>,FilterDynamic
 
   @Query(value = "SELECT f FROM Flower f JOIN f.bouquetFlowerCount fc JOIN fc.bouquet b " + ACTIVE + " AND c.id = ?2 GROUP BY f")
   Set<OptionList> searchFlowersByCategoriesId(Boolean showAll, Integer id, Sort sort);
+
+  @Query(value = "SELECT DISTINCT b FROM Bouquet b JOIN b.categories c LEFT JOIN b.bouquetFlowerCount bof LEFT JOIN b.colors boc" +
+                  " LEFT JOIN Bouquet oo ON (b.id != oo.id) LEFT JOIN oo.bouquetFlowerCount oof LEFT JOIN oo.colors ooc" +
+                  " WHERE ((bof.flower = oof.flower AND bof.flower != NULL) OR (boc = ooc AND boc != NULL)) AND oo.id =?2 AND b.id != ?2" +
+                  " AND (?1 = true OR b.active = true) AND (?1 = true OR c.active = true)")
+  List<BouquetList> searchAllSimilar(Boolean showAll, Integer id, Pageable pageable);
 }

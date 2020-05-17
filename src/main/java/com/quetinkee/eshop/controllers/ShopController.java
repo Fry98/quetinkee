@@ -35,6 +35,8 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/api/shop")
 public class ShopController {
 
+  private final int similars = 8;
+
   @Autowired
   private ShopService shopService;
 
@@ -43,9 +45,14 @@ public class ShopController {
     return this.shopService.findCategories(this.isAdmin(authentication));
   }
 
+  @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Slice<BouquetList> getSearchResults(@RequestParam(required = true, name = "q") String find, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size, Authentication authentication) {
+    return this.shopService.getSeachResults(find, page, size, this.isAdmin(authentication));
+  }
+
   @GetMapping(value = {"/filter","/filter/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
   public FilterInfo getFilterInfo(@PathVariable(name = "id", required = false) Integer id, Authentication authentication) {
-    return this.shopService.getSearchInfo(id, this.isAdmin(authentication));
+    return this.shopService.getFilterInfo(id, this.isAdmin(authentication));
   }
 
   @PostMapping(value = {"/filter","/filter/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -77,6 +84,12 @@ public class ShopController {
     if (this.shopService.isBouquetReview(bouquet, user)) {
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
     }
+  }
+
+  @GetMapping(value = "/bouquet/{id}/similar", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<BouquetList> getBouquetSimilar(@PathVariable("id") Integer id, Authentication authentication) {
+    Bouquet bouquet = this.getRecord(id, authentication);
+    return this.shopService.getSimilarProducts(bouquet.getId(), this.similars, this.isAdmin(authentication));
   }
 
   @GetMapping(value = "/bouquet/{id}/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
