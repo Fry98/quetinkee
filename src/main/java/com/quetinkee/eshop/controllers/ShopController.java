@@ -60,7 +60,11 @@ public class ShopController {
 
   @GetMapping(value = "/bouquet/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public BouquetDetail getId(@PathVariable("id") Integer id, Authentication authentication) {
-    return this.shopService.findBouquetDetail(id, this.isAdmin(authentication));
+    BouquetDetail record = this.shopService.findBouquetDetail(id, this.isAdmin(authentication));
+    if (record == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Záznam nenalezen");
+    }
+    return record;
   }
 
   @PreAuthorize("isAuthenticated()")
