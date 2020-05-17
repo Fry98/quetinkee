@@ -1,6 +1,5 @@
 package com.quetinkee.eshop.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -9,10 +8,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Table(name = "ORDERS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Order extends AbstractEntity{
 
@@ -21,45 +20,34 @@ public class Order extends AbstractEntity{
     @Column(nullable = false)
     private BigDecimal totalPrice;
 
-    @Column(nullable = false)
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(nullable = true)
     private User user;
 
     @Column(nullable = false)
-    private String userFirstName = user.getFirstName();
+    private String userFirstName;
 
     @Column(nullable = false)
-    private String userLastName = user.getLastName();
+    private String userLastName;
 
     @Column(nullable = false)
-    private String userPhone = user.getPhone();
+    private String userPhone;
 
     @Column(nullable = false)
-    private String userMail = user.getMail();
+    private String userMail;
 
-    @Column(nullable = false)
-    @OneToOne
-    private Address userAddressBilling = user.getAddressBilling();
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private OrderAddress userAddressBilling;
 
-    @Column(nullable = false)
-    @OneToOne
-    private Address userAddressDelivery = user.getAddressDelivery();
-
-    @Column(nullable = false)
-    @OneToOne
-    private OrderAddress address = (OrderAddress) userAddressDelivery;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(nullable = true)
+    private OrderAddress userAddressDelivery;
 
     @NotBlank(message = "Objednavka je prazdna")
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private Set<Item> contains;
 
-
-
-
-
-
     public Order() {
-
     }
 
     public boolean isActive() {
@@ -133,16 +121,12 @@ public class Order extends AbstractEntity{
         return userMail;
     }
 
-    public Address getUserAddressBilling() {
+    public OrderAddress getUserAddressBilling() {
         return userAddressBilling;
     }
 
-    public Address getUserAddressDelivery() {
+    public OrderAddress getUserAddressDelivery() {
         return userAddressDelivery;
-    }
-
-    public OrderAddress getAddress() {
-        return address;
     }
 
     public void setUser(User user) {

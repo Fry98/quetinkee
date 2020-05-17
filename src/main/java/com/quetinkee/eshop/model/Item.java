@@ -11,10 +11,15 @@ import javax.validation.constraints.NotBlank;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Item extends AbstractEntity {
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
+
+
     @JsonIgnore
     @NotBlank(message = "Prazdná položka")
-    @OneToOne(fetch = FetchType.LAZY)
-    public Bouquet bouquet;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Bouquet bouquet;
 
     @NotBlank(message = "Prazdný počet")
     @Basic(optional = false)

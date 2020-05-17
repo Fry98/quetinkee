@@ -19,14 +19,14 @@ public class Inventory extends AbstractEntity {
     private String name;
 
     private boolean active;
-
+/*
     @JsonIgnore
-    @ManyToMany(mappedBy = "flower", fetch = FetchType.LAZY)
-    public Set<FlowersInStock> toRestock;
-
+    @OneToMany(mappedBy = "invetory", fetch = FetchType.LAZY)
+    private Set<FlowersInStock> toRestock;
+*/
     @JsonIgnore
-    @ManyToMany(mappedBy = "flower", fetch = FetchType.LAZY)
-    public Set<FlowersInStock> flowersCounts;
+    @OneToMany(mappedBy = "invetory", fetch = FetchType.LAZY)
+    private Set<FlowersInStock> flowersCounts;
 
     public Inventory(){
 
@@ -58,13 +58,13 @@ public class Inventory extends AbstractEntity {
     }
 
     public void addFlower(Flower flower ,int count) {
-        Objects.requireNonNull(flower);
-        FlowersInStock newCount = new FlowersInStock(flower);
-        newCount.setCount(count);
-        if (this.flowersCounts == null) {
-            this.flowersCounts = new HashSet<FlowersInStock>();
-        }
-        this.flowersCounts.add(newCount);
+//        Objects.requireNonNull(flower);
+//        FlowersInStock newCount = new FlowersInStock(flower);
+//        newCount.setCount(count);
+//        if (this.flowersCounts == null) {
+//            this.flowersCounts = new HashSet<FlowersInStock>();
+//        }
+//        this.flowersCounts.add(newCount);
     }
 
     public void setFlowersCount(FlowersInStock flowerCount, int count) {
@@ -78,53 +78,56 @@ public class Inventory extends AbstractEntity {
         this.flowersCounts = flowers;
     }
 
-    public Set<FlowersInStock> getRestockOrder(){return this.toRestock;}
+    public Set<FlowersInStock> getRestockOrder(){
+      return null;
+//      return this.toRestock;
+    }
 
     public void emptyToRestock(){
-        this.toRestock.clear();
+  //      this.toRestock.clear();
     }
 
     public void addFlowerToRestockOrder(Flower flower){
         Objects.requireNonNull(flower);
-        FlowersInStock newCount = new FlowersInStock(flower);
-        newCount.setCount(0);
-        if (this.toRestock == null) {
-            this.toRestock = new HashSet<FlowersInStock>();
-        }
-        this.toRestock.add(newCount);
+//        FlowersInStock newCount = new FlowersInStock(flower);
+//        newCount.setCount(0);
+//        if (this.toRestock == null) {
+//            this.toRestock = new HashSet<FlowersInStock>();
+//        }
+//        this.toRestock.add(newCount);
     }
 
     public void setFlowerCountInRestockOrder(FlowersInStock flower, int count){
         Objects.requireNonNull(flower);
-        if (this.toRestock != null) {
-            flower.setCount(count);
-        }
+//        if (this.toRestock != null) {
+//            flower.setCount(count);
+//        }
     }
 
     public FlowersInStock findFlowerInStock(Flower flower , Set<FlowersInStock> flowersInStock){
-        for (FlowersInStock position : flowersInStock){
-            if(position.getFlower() == flower){
-                return position;
-            }
-        }
+//        for (FlowersInStock position : flowersInStock){
+//            if(position.getFlower() == flower){
+//                return position;
+//            }
+//        }
         return null;
     }
 
     public void checkIfRestockNeeded(){
-        for (FlowersInStock position : this.flowersCounts) {
-            if(position.getCount() < position.getMinimalCount()){
-                if(!toRestock.contains(position)){
-                    FlowersInStock toOrder = new FlowersInStock(position.getFlower(), position.getMinimalCount() - position.getCount());
-                    toRestock.add(toOrder);
-                }
-                else {
-                    FlowersInStock needed = findFlowerInStock(position.getFlower() , toRestock);
-                    if(needed.getCount() < position.getMinimalCount() - position.getCount() ){
-                    setFlowerCountInRestockOrder(needed,position.getMinimalCount() - position.getCount());
-                    }
-                }
-            }
-        }
+//        for (FlowersInStock position : this.flowersCounts) {
+//            if(position.getCount() < position.getMinimalCount()){
+//                if(!toRestock.contains(position)){
+//                    FlowersInStock toOrder = new FlowersInStock(position.getFlower(), position.getMinimalCount() - position.getCount());
+//                    toRestock.add(toOrder);
+//                }
+//                else {
+//                    FlowersInStock needed = findFlowerInStock(position.getFlower() , toRestock);
+//                    if(needed.getCount() < position.getMinimalCount() - position.getCount() ){
+//                    setFlowerCountInRestockOrder(needed,position.getMinimalCount() - position.getCount());
+//                    }
+//                }
+//            }
+//        }
     }
 
 }

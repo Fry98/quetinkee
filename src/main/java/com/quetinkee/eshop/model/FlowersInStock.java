@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -13,7 +12,12 @@ public class FlowersInStock extends AbstractEntity {
     @Id
     @ManyToOne
     @JoinColumn
-    Flower flower;
+    private Inventory invetory;
+
+    @Id
+    @ManyToOne
+    @JoinColumn
+    private Flower flower;
 
     @Basic(optional = false)
     @Column(nullable = false)
@@ -54,6 +58,7 @@ public class FlowersInStock extends AbstractEntity {
     public Flower getFlower(){
         return this.flower;
     }
+
     public int getCount(){
         return this.count;
     }

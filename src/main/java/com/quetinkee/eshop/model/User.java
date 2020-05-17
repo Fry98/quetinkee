@@ -48,17 +48,20 @@ public class User extends AbstractEntity {
   @Valid
   @NotNull(message = "Zadejte doručovací adresu")
   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(nullable = true)
-  private Address addressDelivery = null;
+  private Address addressDelivery;
 
   @Valid
   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(nullable = true)
-  private Address addressBilling = null;
+  private Address addressBilling;
 
   @JsonIgnore
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Review> reviews;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.DETACH, orphanRemoval = false)
+  private List<Order> orders;
 
   public User() {
   }

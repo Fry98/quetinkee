@@ -36,6 +36,10 @@ public class Flower extends AbstractEntity {
   @OneToMany(mappedBy = "flower", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<BouquetFlowerCount> bouquetFlowerCount;
 
+  @JsonIgnore
+  @OneToMany(mappedBy = "flower", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<FlowersInStock> flowersInStock;
+
   public Flower() {
   }
 
