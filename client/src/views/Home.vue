@@ -4,7 +4,7 @@
       <div v-if='list[i] !== undefined && list[i].length !== 0'>
         <h1>{{ ctg.name }}</h1>
         <carousel>
-          <product-tile v-for='flower in list[i]' :key='flower.id' :name='flower.name' :price='Number(flower.price)'></product-tile>
+          <product-tile v-for='flower in list[i]' :key='flower.id' :name='flower.name' :price='Number(flower.price)' :id='flower.id'></product-tile>
         </carousel>
       </div>
     </div>
@@ -44,6 +44,7 @@
         }
 
         const res = await Promise.all(promises);
+        this.list = [];
         res.forEach(x => this.list.push(x.data.content));
       }
     },

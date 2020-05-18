@@ -1,13 +1,14 @@
 <template>
-  <div class="product-tile">
+  <div class="product-tile" @click='openDetail'>
     <div class='image' :style='style'></div>
     <div class="info-wrap">
       <div class='left-flex'>
         <div class="bouquet-name">{{name}}</div>
         <div class="bouquet-price">{{price}}</div>
       </div>
-      <div class="cart-add">
-        <font-awesome-icon id='cart' icon='cart-plus'></font-awesome-icon>
+      <div class="cart-add" :class='{"in-cart": inCart}' @click='addToCart'>
+        <font-awesome-icon id='cart' icon='check' v-if='inCart'></font-awesome-icon>
+        <font-awesome-icon id='cart' icon='cart-plus' v-else></font-awesome-icon>
       </div>
     </div>
   </div>
@@ -19,6 +20,10 @@
     name: "ProductTile",
     components: { Sidebar },
     props: {
+      id: {
+        type: Number,
+        required: true
+      },
       name: {
         type: String,
         required: true
@@ -29,12 +34,32 @@
       },
       img: {
         type: String,
-        required: true
+        default: 'https://scontent-prg1-1.xx.fbcdn.net/v/t31.0-8/10540718_754751824572827_1827493032372882352_o.jpg?_nc_cat=111&_nc_sid=09cbfe&_nc_ohc=iZJ41I_19K8AX_Pizj_&_nc_ht=scontent-prg1-1.xx&oh=ea1355171c59162a277006623e13b2d2&oe=5EE50E95'
       }
     },
     computed: {
       style() {
         return `background-image: url(${this.img});`;
+      },
+      inCart() {
+        return this.$store.getters.cart[this.id] !== undefined;
+      },
+      
+    },
+    methods: {
+      addToCart(e) {
+        e.stopPropagation();
+        if (this.inCart) return;
+        this.$store.dispatch('addToCart', {
+          id: this.id,
+          name: this.name,
+          price: this.price,
+          img: this.img,
+          count: 1
+        });
+      },
+      openDetail() {
+        this.$router.push(`/product/${this.id}`);
       }
     }
   }
@@ -98,6 +123,8 @@
     padding: .5em;
     font-size: 1.1em;
     transition-duration: .2s;
+    width: 20px;
+    text-align: center;
     &:hover {
       background: $darkBlue;
     }
@@ -107,5 +134,13 @@
     flex: 1;
     position: relative;
     overflow: hidden;
+  }
+
+  .in-cart {
+    background: rgb(28, 167, 58);
+    box-shadow: none;
+    &:hover {
+      background: rgb(28, 167, 58);
+    }
   }
 </style>

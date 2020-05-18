@@ -5,22 +5,16 @@
       <div class="b-right">
         <div class='detail-header'>
           <div class="title">
-            Název květiny
+            {{ title }}
           </div>
-          <star-rating :value='stars'></star-rating>
+          <star-rating :value='stars' v-if='stars !== null'></star-rating>
         </div>
         <div class="price">
-          Cena <span class="small">s DPH</span> <span class='bold'>1 999 Kč</span>
+          Cena <span class="small">s DPH</span> <span class='bold'>{{ price }} Kč</span>
         </div>
-        <div class="description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ullamcorper metus in quam cursus, non rutrum est
-          facilisis. Phasellus euismod sem eu suscipit fermentum. Suspendisse potenti. Nulla lacus massa, eleifend in
-          scelerisque eu, varius gravida enim. Nam quis ex a mauris congue tincidunt. Mauris placerat ligula sem.
-        </div>
+        <div class="description" v-html="desc"></div>
         <div class='filler'></div>
-        <div class="stock bold">
-          Skladem > 5 ks
-        </div>
+        <div class="stock bold">{{ stockText }}</div>
         <div class="cart-add">
           <counter v-model='count'></counter>
           <div class="cart-button">
@@ -92,6 +86,7 @@
   import ProductTile from '../components/ProductTile';
   import StarRating from '../components/StarRating';
   import Counter from '../components/Counter';
+  import axios from 'axios';
 
   export default {
     components: {
@@ -100,12 +95,35 @@
       StarRating,
       Counter
     },
+    props: ['id'],
     data() {
       return {
-        stars: 3,
+        title: '...',
+        desc: '...',
+        price: '...',
+        stars: null,
+        stock: null,
         text: '',
         reviewStars: 3,
         count: 1
+      }
+    },
+    async mounted() {
+      try {
+        const { data } = await axios(`/api/shop/bouquet/${this.id}`);
+        this.title = data.bouquet.name;
+        this.desc = data.bouquet.perex;
+        this.price = data.bouquet.price;
+        this.stars = data.bouquet.rating;
+        this.stars = data.rating !== null ? Math.round(data.rating) : null;
+        this.stock = data.storage;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    computed: {
+      stockText() {
+        return "Fuck me";
       }
     },
     methods: {
@@ -122,6 +140,12 @@
 
 
 </script>
+
+<style lang="scss">
+  .description > p {
+    margin: 0px;
+  }
+</style>
 
 <style lang="scss" scoped>
   @import '../scss/_vars.scss';

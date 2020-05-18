@@ -97,7 +97,7 @@
         numberToColor: ['white', 'yellow', 'orange', 'red', 'pink', 'purple', 'blue', 'turquoise', 'seafoam', 'green']
       };
     },
-    async created() {
+    async mounted() {
       const res = await axios.get('/api/shop/filter');
       this.$store.commit('setCategories', res.data.categories);
       this.$store.commit('setFlowers', res.data.flowers);
@@ -321,6 +321,7 @@
   ul {
     margin-top: 3px;
     list-style: none;
+    cursor: pointer;
     li {
       position: relative;
       padding-bottom: 10px;

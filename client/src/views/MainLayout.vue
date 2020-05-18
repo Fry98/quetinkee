@@ -1,8 +1,8 @@
 <template>
-  <div id='layout-wrap' :key='$store.getters.sidebar'>
+  <div id='layout-wrap'>
     <div id='layout'>
-      <sidebar></sidebar>
-      <main>
+      <sidebar :key='$store.getters.sidebar'></sidebar>
+      <main ref='main'>
         <router-view></router-view>
       </main>
     </div>
@@ -15,6 +15,16 @@ import Sidebar from "../components/Sidebar";
 export default {
   components: {
     Sidebar
+  },
+  computed: {
+    path() {
+      return this.$route.path;
+    }
+  },
+  watch: {
+    path() {
+      this.$refs.main.scrollTop = 0;
+    }
   }
 }
 </script>

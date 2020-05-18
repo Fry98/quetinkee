@@ -11,11 +11,11 @@
           <span>Kategorie </span>
           <select ref='sel' name='category' v-model='selectedCategories' multiple>
             <option
-                v-for='category in categories'
-                @mousedown='handleOptionMousedown(category, $event)'
-                :value='category.id'>
-              {{ category.name }}
-            </option>
+              v-for='category in categories'
+              @mousedown='handleOptionMousedown(category, $event)'
+              :value='category.id'
+              :key='category.id'
+            >{{ category.name }}</option>
           </select>
         </label>
         <label>
@@ -83,19 +83,19 @@
           <span>Květiny </span>
           <select name='flowers' v-model='selectedFlower' @change='handleFlowerSelect'>
             <option value='' selected disabled hidden>Vyberte květiny...</option>
-            <option v-for='option in flowers' :value='option.id'>{{ option.name }}</option>
+            <option v-for='option in flowers' :value='option.id' :key='option.id'>{{ option.name }}</option>
           </select>
         </label>
         <div class='warning' v-if='selectedFlowers.length === 0'>Vyberte alespoň jednu květinu.</div>
-        <div class='flower' v-for='flower in selectedFlowers'>
-            <span class='flower-name'>
-              {{ flower.name }}
-              <font-awesome-icon
-                  class='icon'
-                  :icon="['far', 'trash-alt']"
-                  @click='removeFlower(flower.name)'
-              ></font-awesome-icon>
-            </span>
+        <div class='flower' v-for='flower in selectedFlowers' :key="flower.id">
+          <span class='flower-name'>
+            {{ flower.name }}
+            <font-awesome-icon
+                class='icon'
+                :icon="['far', 'trash-alt']"
+                @click='removeFlower(flower.name)'
+            ></font-awesome-icon>
+          </span>
           <input type='number' v-model='flower.count' min='1' @focus='$event.target.select()'>
         </div>
         <button class='btn' :class='{ "disabled": saveIsDisabled }' :disabled='saveIsDisabled' type='submit'>Uložit
@@ -181,32 +181,22 @@
             return map;
           }, {})
         });
-        console.log(bouquetJSON);
         const formData = new FormData();
-        formData.append('bouquet', bouquetJSON);
+        formData.append('bouquet', `${bouquetJSON};type=application/json`);
         formData.append('blob', this.image);
         try {
-          const res = await axios({
-          method: 'POST',
-          url: '/api/bouquets',
-          headers: {'Content-Type': 'multipart/form-data'},
-          data: formData
+          await axios({
+            method: 'POST',
+            url: '/api/bouquets',
+            headers: {'Content-Type': 'multipart/form-data'},
+            data: formData
           });
-          if (res.data) {
-            alert('Květina byla vytvořena');
-            this.$router.go();
-          }
         } catch(err) {
           this.$store.dispatch('openModal', err.response.data.message);
         }
       },
       handleImageUpload(e) {
         this.image = e.target.files[0];
-        if (!this.image instanceof Blob) {  // TODO remove these...
-          this.$store.dispatch('openModal', 'This ain\'t a blob bro!');
-        } else {
-          this.$store.dispatch('openModal', 'Good job, this is a blob!');
-        }
       },
       handleFlowerSelect() {
         const selectedFlower = this.flowers.find(flower => flower.id === this.selectedFlower);

@@ -9,7 +9,8 @@ const store = new Vuex.Store({
     user: null,
     categories: [],
     flowers: [],
-    sidebar: 0
+    sidebar: 0,
+    cart: {}
   },
   getters: {
     error: state => state.error,
@@ -19,7 +20,8 @@ const store = new Vuex.Store({
     isDelivery: state => true,
     categories: state => state.categories,
     flowers: state => state.flowers,
-    sidebar: state => state.sidebar
+    sidebar: state => state.sidebar,
+    cart: state => state.cart
   },
   mutations: {
     setError(state, payload) {
@@ -36,6 +38,15 @@ const store = new Vuex.Store({
     },
     reloadSidebar(state) {
       state.sidebar++;
+    },
+    addToCart(state, payload) {
+      Vue.set(state.cart, payload.id, payload);
+    },
+    removeFromCart(state, payload) {
+      Vue.delete(state.cart, payload);
+    },
+    setCart(state, payload) {
+      state.cart = payload;
     }
   },
   actions: {
@@ -57,10 +68,28 @@ const store = new Vuex.Store({
     },
     logout(context) {
       context.commit('setUser', null);
+      context.dispatch('clearCart');
       localStorage.removeItem('user');
+    },
+    loadCart(context) {
+      const cart = localStorage.getItem('cart');
+      context.commit('setCart', cart !== null ? JSON.parse(cart) : {});
+    },
+    clearCart(context) {
+      context.commit('setCart', {});
+      localStorage.removeItem('cart');
+    },
+    addToCart(context, payload) {
+      context.commit('addToCart', payload);
+      localStorage.setItem('cart', JSON.stringify(context.getters.cart));
+    },
+    removeFromCart(context, payload) {
+      context.commit('removeFromCart', payload);
+      localStorage.setItem('cart', JSON.stringify(context.getters.cart));
     }
   }
 });
 
 store.dispatch('loadUser');
+store.dispatch('loadCart');
 export default store;

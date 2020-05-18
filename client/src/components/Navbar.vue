@@ -6,7 +6,7 @@
       </div>
       <div id='filler'></div>
       <div class='nav-button' @click='navigate("/cart")'>
-        <div id='cart-amount'>0</div>
+        <div id='cart-amount'>{{ Object.keys($store.getters.cart).length }}</div>
         <font-awesome-icon class='nav-icon' icon='shopping-cart'></font-awesome-icon>
       </div>
       <div id='nav-profile' class='nav-button' v-if='$store.getters.isLogged'>
