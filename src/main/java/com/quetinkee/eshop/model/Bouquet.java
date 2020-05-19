@@ -1,5 +1,7 @@
 package com.quetinkee.eshop.model;
 
+import com.quetinkee.eshop.model.enums.Size;
+import com.quetinkee.eshop.model.enums.Color;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,7 +50,7 @@ public class Bouquet extends AbstractEntity {
   private BigDecimal price;
 
   @Basic(optional = true)
-  @Column(nullable = true)
+  @Column(nullable = true, length = 2)
   private Size size;
 
   @Column(nullable = false, columnDefinition = "boolean default false")

@@ -1,7 +1,7 @@
 package com.quetinkee.eshop.dao;
 
 import com.quetinkee.eshop.model.Bouquet;
-import com.quetinkee.eshop.model.Size;
+import com.quetinkee.eshop.model.enums.Size;
 import com.quetinkee.eshop.model.projection.BouquetList;
 import com.quetinkee.eshop.model.projection.MinMaxPrice;
 import com.quetinkee.eshop.model.projection.OptionList;

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -52,14 +51,14 @@ public class Review implements Serializable {
   private Timestamp created;
 
   public Review() {
+    java.util.Date date = new java.util.Date();
+    this.created = new Timestamp(date.getTime());
   }
 
   public Review(String message, Integer rating) {
+    super();
     this.rating = rating;
     this.message = message;
-
-    Date date = new Date();
-    this.created = new Timestamp(date.getTime());
   }
 
   public Review(User user, String message, Integer rating) {

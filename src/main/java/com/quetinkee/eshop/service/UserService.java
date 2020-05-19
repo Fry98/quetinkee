@@ -5,10 +5,10 @@ import com.quetinkee.eshop.dao.UserDao;
 import com.quetinkee.eshop.model.Address;
 import com.quetinkee.eshop.model.User;
 import java.util.Objects;
-import com.quetinkee.eshop.model.Role;
+import com.quetinkee.eshop.model.enums.Role;
 import com.quetinkee.eshop.model.User_;
 import com.quetinkee.eshop.model.projection.UserList;
-import com.quetinkee.eshop.utils.ValidationError;
+import com.quetinkee.eshop.utils.ValidationException;
 import javax.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -60,7 +60,7 @@ public class UserService extends GenericAdminService<UserDao, User, UserList> {
   public User createRegistred(User user) {
     Objects.requireNonNull(user);
     if (user.getId() != null || user.getRole() != null) {
-      throw new ValidationError("Not allowed!");
+      throw new ValidationException("Not allowed!");
     }
     // TODO: send mail or something
     return this.create(user);
@@ -72,10 +72,10 @@ public class UserService extends GenericAdminService<UserDao, User, UserList> {
     Objects.requireNonNull(user);
     this.encodePassword(user);
     if (!this.checkPassword(user.getPassword())) {
-      throw new ValidationError("Zadejte heslo");
+      throw new ValidationException("Zadejte heslo");
     }
     if (this.isRegistred(user.getMail())) {
-      throw new ValidationError("Uživatel se zadaným e-mailem je již registrován");
+      throw new ValidationException("Uživatel se zadaným e-mailem je již registrován");
     }
     if (user.getRole() == null) {
       user.setRole(Role.USER);
@@ -92,7 +92,7 @@ public class UserService extends GenericAdminService<UserDao, User, UserList> {
     // password
     if (newData.getPassword() != null) {
       if (!this.checkPassword(newData.getPassword())) {
-        throw new ValidationError("Zadejte heslo");
+        throw new ValidationException("Zadejte heslo");
       }
       original.setPassword(newData.getPassword());
       this.encodePassword(original);
@@ -101,11 +101,6 @@ public class UserService extends GenericAdminService<UserDao, User, UserList> {
     if (newData.getFirstName() != null) original.setFirstName(newData.getFirstName());
     if (newData.getLastName() != null) original.setLastName(newData.getLastName());
     if (newData.getPhone() != null) original.setPhone(newData.getPhone());
-
-    // delivery address update - cant be deleted
-    if (newData.getAddressDelivery() != null) {
-      original.setAddressDelivery(newData.getAddressDelivery());
-    }
 
     // delivery address update / create
     if (newData.getAddressDelivery() != null) {

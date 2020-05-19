@@ -1,5 +1,6 @@
 package com.quetinkee.eshop.model;
 
+import com.quetinkee.eshop.model.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;

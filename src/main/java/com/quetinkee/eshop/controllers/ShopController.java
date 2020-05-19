@@ -3,7 +3,7 @@ package com.quetinkee.eshop.controllers;
 import com.quetinkee.eshop.model.Bouquet;
 import com.quetinkee.eshop.model.projection.ReviewList;
 import com.quetinkee.eshop.model.projection.CategoryList;
-import com.quetinkee.eshop.model.Role;
+import com.quetinkee.eshop.model.enums.Role;
 import com.quetinkee.eshop.model.User;
 import com.quetinkee.eshop.utils.helpers.BouquetDetail;
 import com.quetinkee.eshop.service.ShopService;

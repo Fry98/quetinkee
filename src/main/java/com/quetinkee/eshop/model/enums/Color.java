@@ -1,4 +1,4 @@
-package com.quetinkee.eshop.model;
+package com.quetinkee.eshop.model.enums;
 
 import java.util.HashMap;
 
@@ -23,11 +23,11 @@ public enum Color {
 
   static {
     for (Color val : Color.values()) {
-      map.put(val.getValue(), val);
+      map.put(val.toString(), val);
     }
   }
 
-  public static Color valueOf (Integer val) {
+  public static Color typeOf (Integer val) {
     return (Color) map.get(val);
   }
 

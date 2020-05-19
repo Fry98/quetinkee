@@ -6,7 +6,7 @@ import com.quetinkee.eshop.model.Bouquet;
 import com.quetinkee.eshop.model.Bouquet_;
 import com.quetinkee.eshop.model.Category_;
 import com.quetinkee.eshop.model.Flower_;
-import com.quetinkee.eshop.model.Size;
+import com.quetinkee.eshop.model.enums.Size;
 import com.quetinkee.eshop.model.projection.CategoryList;
 import com.quetinkee.eshop.model.projection.MinMaxPrice;
 import com.quetinkee.eshop.utils.FilterInfo;
@@ -32,7 +32,7 @@ import com.quetinkee.eshop.utils.helpers.BouquetDetail;
 import com.quetinkee.eshop.model.projection.ReviewList;
 import com.quetinkee.eshop.rabbit.CacheRabbit;
 import com.quetinkee.eshop.rabbit.SearchRabbit;
-import com.quetinkee.eshop.utils.ValidationError;
+import com.quetinkee.eshop.utils.ValidationException;
 import com.quetinkee.eshop.utils.helpers.ReviewSubmit;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -138,8 +138,8 @@ public class ShopService {
   }
 
   @Transactional
-  public void addBouquetReview(Bouquet bouquet, User user, ReviewSubmit rs) throws ValidationError {
-    if (this.isBouquetReview(bouquet, user)) throw new ValidationError("Recenze je již uložená, děkujeme.");
+  public void addBouquetReview(Bouquet bouquet, User user, ReviewSubmit rs) throws ValidationException {
+    if (this.isBouquetReview(bouquet, user)) throw new ValidationException("Recenze je již uložená, děkujeme.");
 
     bouquet.addReview(new Review(user, rs.getMessage(),  rs.getRating()));
     this.bouquetDao.save(bouquet);

@@ -1,8 +1,9 @@
 package com.quetinkee.eshop.model.projection;
 
-import com.quetinkee.eshop.model.Address;
-
-import java.util.Set;
+import com.quetinkee.eshop.model.enums.OrderStatus;
+import com.quetinkee.eshop.model.enums.PaymentOption;
+import java.sql.Date;
+import java.sql.Time;
 
 public interface OrderList extends InterfaceList{
 
@@ -14,7 +15,11 @@ public interface OrderList extends InterfaceList{
 
     public String getUserPhone();
 
-    public Address getUserDeliveryAddress();
+    public OrderStatus getStatus();
 
-    public Address getUserBillingAddress();
+    public PaymentOption getPayment();
+
+    public Date getDay();
+
+    public Time getTime();
 }

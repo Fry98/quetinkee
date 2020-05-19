@@ -53,10 +53,9 @@ public class FlowerController {
   }
 
   @PatchMapping(value = "/{id:[\\d]+}", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity updateId(@PathVariable("id") Integer id, @RequestBody Flower record) {
+  public Flower updateId(@PathVariable("id") Integer id, @RequestBody Flower record) {
     Flower original = this.getRecord(id);
-    this.service.update(original, record);
-    return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+    return this.service.update(original, record);
   }
 
   @DeleteMapping(value = "/{id:[\\d]+}")

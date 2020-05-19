@@ -9,7 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -29,7 +29,7 @@ public class SearchRabbit {
     try {
       return rest.getForObject("http://localhost:4200/api/search?q={find}", List.class, params);
     }
-    catch (HttpClientErrorException ex) {
+    catch (RestClientException ex) {
       // TODO: convert to log?
       System.out.println("Search offline: " + ex.getMessage());
     }

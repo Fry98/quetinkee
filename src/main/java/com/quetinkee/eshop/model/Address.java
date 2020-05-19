@@ -1,10 +1,12 @@
 package com.quetinkee.eshop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "USERS_ADDRESS")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Address extends AbstractEntity {
 
   @NotBlank(message = "Ulice je povinná položka")
@@ -29,6 +31,18 @@ public class Address extends AbstractEntity {
     this.street = street;
     this.city = city;
     this.zip = zip;
+  }
+
+  @JsonIgnore
+  @Override
+  public Integer getId() {
+    return super.getId();
+  }
+
+  @JsonIgnore
+  @Override
+  public void setId(Integer id) {
+    super.setId(id);
   }
 
   public String getStreet() {

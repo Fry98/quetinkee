@@ -1,6 +1,6 @@
 package com.quetinkee.eshop.model.projection;
 
-import com.quetinkee.eshop.model.Size;
+import com.quetinkee.eshop.model.enums.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 

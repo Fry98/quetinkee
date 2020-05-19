@@ -1,6 +1,6 @@
 package com.quetinkee.eshop.utils;
 
-import com.quetinkee.eshop.model.Size;
+import com.quetinkee.eshop.model.enums.Size;
 import com.quetinkee.eshop.model.projection.CategoryList;
 import com.quetinkee.eshop.model.projection.OptionList;
 import com.quetinkee.eshop.model.projection.MinMaxPrice;

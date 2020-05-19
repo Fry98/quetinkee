@@ -1,6 +1,6 @@
 package com.quetinkee.eshop.model.projection;
 
-import com.quetinkee.eshop.model.Size;
+import com.quetinkee.eshop.model.enums.Size;
 
 public interface BouquetList extends InterfaceList {
 

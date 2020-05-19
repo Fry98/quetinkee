@@ -4,7 +4,7 @@ import com.quetinkee.eshop.dao.GenericDao;
 import com.quetinkee.eshop.model.AbstractEntity;
 import com.quetinkee.eshop.model.projection.InterfaceList;
 import com.quetinkee.eshop.model.projection.OptionList;
-import com.quetinkee.eshop.utils.ValidationError;
+import com.quetinkee.eshop.utils.ValidationException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 abstract public class GenericAdminService<S extends GenericDao, T extends AbstractEntity, K extends InterfaceList> {
 
   protected final S dao;
+  protected final Sort sort;
 
-  private final Sort sort;
   private final Validator validator;
 
   public GenericAdminService(Validator validator, S dao, Sort sort) {
@@ -63,11 +63,11 @@ abstract public class GenericAdminService<S extends GenericDao, T extends Abstra
     return (T) this.dao.save(record);
   }
 
-  protected boolean validate(T record) throws ValidationError{
-    Set<ConstraintViolation<T>> violations = validator.validate(record);
+  protected boolean validate(T record) throws ValidationException{
+    Set<ConstraintViolation<T>> violations = this.validator.validate(record);
     if (!violations.isEmpty()) {
       String msg = violations.stream().map( n -> n.getMessage() ).collect( Collectors.joining("\n") );
-      throw new ValidationError(msg);
+      throw new ValidationException(msg);
     }
     return true;
   }

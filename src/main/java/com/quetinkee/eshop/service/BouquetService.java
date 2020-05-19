@@ -6,7 +6,7 @@ import com.quetinkee.eshop.model.Bouquet;
 import com.quetinkee.eshop.model.BouquetFlowerCount;
 import com.quetinkee.eshop.model.Bouquet_;
 import com.quetinkee.eshop.model.Category;
-import com.quetinkee.eshop.model.Color;
+import com.quetinkee.eshop.model.enums.Color;
 import com.quetinkee.eshop.model.Flower;
 import com.quetinkee.eshop.utils.UploadImage;
 import com.quetinkee.eshop.utils.helpers.BouquetEdit;
@@ -24,6 +24,7 @@ import com.quetinkee.eshop.model.projection.BouquetList;
 import com.quetinkee.eshop.dao.BouquetDao;
 import com.quetinkee.eshop.rabbit.CacheRabbit;
 import com.quetinkee.eshop.rabbit.SearchRabbit;
+import com.quetinkee.eshop.utils.ValidationException;
 import javax.validation.Validator;
 
 @Service
@@ -136,7 +137,9 @@ public class BouquetService extends GenericAdminService<BouquetDao, Bouquet, Bou
     }
     // add
     keyColors.forEach( colorId -> {
-      bouquet.addColor(Color.valueOf(colorId));
+      Color newColor = Color.typeOf(colorId);
+      if (newColor != null) bouquet.addColor(newColor);
+      else throw new ValidationException("Neexistující barva");
     });
   }
 
@@ -152,6 +155,7 @@ public class BouquetService extends GenericAdminService<BouquetDao, Bouquet, Bou
     keyCategories.forEach( categoryId -> {
       Optional<Category> category = this.categoryDao.findById(categoryId);
       if (category.isPresent()) bouquet.addCategory(category.get());
+      else throw new ValidationException("Neexistující kategorie");
     });
   }
 
@@ -167,6 +171,7 @@ public class BouquetService extends GenericAdminService<BouquetDao, Bouquet, Bou
     keyCounts.forEach((flowerId, count) -> {
       Optional<Flower> flower = this.flowerDao.findById(flowerId);
       if (flower.isPresent()) bouquet.addBouquetFlowerCount(new BouquetFlowerCount( flower.get(), count) );
+      else throw new ValidationException("Neexistující květina");
     });
   }
 }

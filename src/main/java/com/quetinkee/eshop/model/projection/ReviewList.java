@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public interface ReviewList {
 
   public String getUserName();
-  
+
   public Integer getRating();
 
   public String getMessage();

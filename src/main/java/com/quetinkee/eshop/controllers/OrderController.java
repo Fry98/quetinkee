@@ -1,49 +1,75 @@
 package com.quetinkee.eshop.controllers;
 
 import com.quetinkee.eshop.model.Order;
+import com.quetinkee.eshop.model.enums.OrderStatus;
 import com.quetinkee.eshop.model.projection.OrderList;
 import com.quetinkee.eshop.service.OrderService;
+import com.quetinkee.eshop.utils.helpers.OrderEdit;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/order")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class OrderController {
+
     @Autowired
-    private OrderService orderService;
-
-
+    private OrderService service;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<OrderList> getPage(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
-        return this.orderService.getSlice(page, size);
+    public Slice<OrderList> getSlice(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
+        return this.service.getSlice(page, size);
     }
 
-    @PutMapping(value = "/{id:[\\d]+}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity updateId(@PathVariable("id") Integer id, @RequestBody Order order) {
-        Order current = this.getOrder(id);
-        // TODO
-        return new ResponseEntity(HttpStatus.OK);
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity create(@Valid @RequestBody OrderEdit record) {
+        this.service.create(record);
+        return new ResponseEntity(record.getId(), HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/{id:[\\d]+}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public OrderEdit getId(@PathVariable("id") Integer id) {
+        return new OrderEdit(this.getRecord(id));
+    }
+
+    @GetMapping(value = "/{id:[\\d]+}/info", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Order getIdInfo(@PathVariable("id") Integer id) {
+        return this.getRecord(id);
+    }
+
+    @PatchMapping(value = "/{id:[\\d]+}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public OrderEdit updateId(@PathVariable("id") Integer id, @RequestBody OrderEdit record) {
+        Order original = this.getRecord(id);
+        original = this.service.update(original, record);
+        return new OrderEdit(original);
+    }
+
+    @PatchMapping(value = "/{id:[\\d]+}/{status}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changeStatus(@PathVariable("id") Integer id, @PathVariable("status") OrderStatus status) {
+        Order order = this.getRecord(id);
+        this.service.changeStatus(order, status);
     }
 
     @DeleteMapping(value = "/{id:[\\d]+}")
     public ResponseEntity deleteId(@PathVariable("id") Integer id) {
-        Order order = this.getOrder(id);
-        orderService.delete(order);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        Order record = this.getRecord(id);
+        this.service.delete(record);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
-    private Order getOrder(Integer id) throws ResponseStatusException {
-        Order order = this.orderService.find(id);
-        if (order == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order nenalezen");
+    private Order getRecord(Integer id) throws ResponseStatusException {
+        Order record = this.service.find(id);
+        if (record == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Záznam nenalezen");
         }
-        return order;
+        return record;
     }
-
 }
