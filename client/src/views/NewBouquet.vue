@@ -172,23 +172,27 @@
             perex: this.description,
             price: this.price,
             size: this.selectedSize,
-            active: true
+            active: true,
+            description: ""
           },
-          keyCategories: this.selectedCategories,
+          keyCategories: this.selectedCategories.map(x => Number(x)),
           keyColors: this.selectedColors.reduce((out, bool, index) => bool ? out.concat(index) : out, []),
           keyFlowerCount: this.selectedFlowers.reduce((map, flower) => {
-            map[flower.id] = flower.count;
+            map[flower.id] = Number(flower.count);
             return map;
           }, {})
         });
+        
         const formData = new FormData();
-        formData.append('bouquet', `${bouquetJSON};type=application/json`);
+        formData.append('bouquet', new Blob([bouquetJSON], { type: 'application/json' }));
         formData.append('blob', this.image);
         try {
           await axios({
             method: 'POST',
             url: '/api/bouquets',
-            headers: {'Content-Type': 'multipart/form-data'},
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
             data: formData
           });
         } catch(err) {
