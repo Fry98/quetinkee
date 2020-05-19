@@ -1,7 +1,7 @@
 <template>
   <div class="bouquet-all">
     <div class="bouquet">
-      <div class="b-left"></div>
+      <div class="b-left" :style="bgImage"></div>
       <div class="b-right">
         <div class='detail-header'>
           <div class="title">
@@ -18,7 +18,7 @@
         <div class="cart-add">
           <counter v-model='count'></counter>
           <div class="cart-button">
-            <button class="button" @click="addToCart()">
+            <button class="button" @click="addToCart">
               <font-awesome-icon icon="cart-plus" />
               Přidat do košíku
             </button>
@@ -32,48 +32,30 @@
         Recenze
       </div>
       <div class="reviews">
-        <div class="review-form">
-          <textarea v-model="text" placeholder="Přidejte svojí recenzi..." />
-          <div class='review-submit'>
-            <star-rating v-model='reviewStars' clickable></star-rating>
-            <button class="button" @click="submitForm">Přidat recenzi</button>
+        <div class="review-form" v-if='$store.getters.isLogged'>
+          <div class='review-exp' v-if='reviewed'>Tuto kytici jste již recenzoval/a</div>
+          <div :class='{reviewed}' >
+            <textarea v-model="text" placeholder="Přidejte svojí recenzi..."/>
+            <div class='review-submit'>
+              <star-rating v-model='reviewStars' clickable></star-rating>
+              <button class="button" @click="submitForm">Přidat recenzi</button>
+            </div>
           </div>
         </div>
-        <div class='review-wrap'>
-          <h2>Recenze</h2>
-          <div class="review">
+        <div class='review-wrap'
+          v-infinite-scroll='fetchReviews'
+          infinite-scroll-disabled='loadStop'
+          infinite-scroll-distance='10'
+        >
+          <div class="review" v-for='review in reviews' :key='review.userName'>
             <div class='review-header'>
-              <div>Roman Toman</div>
-              <star-rating :value='3'></star-rating>
+              <div>{{ review.userName }}</div>
+              <star-rating :value='review.rating'></star-rating>
             </div>
-            <div class="text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ullamcorper metus in quam cursus, non rutrum est
-              facilisis. Phasellus euismod sem eu suscipit fermentum. Suspendisse potenti. Nulla lacus massa, eleifend in
-              scelerisque eu, varius gravida enim. Nam quis ex a mauris congue tincidunt. Mauris placerat ligula sem.
-            </div>
+            <div class="text">{{ review.message }}</div>
           </div>
-          <div class="review">
-            <div class='review-header'>
-              <div>Mike Litoris</div>
-              <star-rating :value='2'></star-rating>
-            </div>
-            <div class="text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ullamcorper metus in quam cursus, non rutrum est
-              facilisis. Phasellus euismod sem eu suscipit fermentum. Suspendisse potenti. Nulla lacus massa, eleifend in
-              scelerisque eu, varius gravida enim. Nam quis ex a mauris congue tincidunt. Mauris placerat ligula sem.
-            </div>
-          </div>
-          <div class="review">
-            <div class='review-header'>
-              <div>Hugh Janus</div>
-              <star-rating :value='5'></star-rating>
-            </div>
-            <div class="text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ullamcorper metus in quam cursus, non rutrum est
-              facilisis. Phasellus euismod sem eu suscipit fermentum. Suspendisse potenti. Nulla lacus massa, eleifend in
-              scelerisque eu, varius gravida enim. Nam quis ex a mauris congue tincidunt. Mauris placerat ligula sem.
-            </div>
-          </div>
+          <div class='loading' v-if='!over'>Loading...</div>
+          <div class='loading' v-if='reviews.length === 0 && over && !reviewed'>Tato kytice nemá žádné recenze</div>
         </div>
       </div>
     </div>
@@ -103,27 +85,54 @@
         price: '...',
         stars: null,
         stock: null,
+        img: null,
         text: '',
         reviewStars: 3,
-        count: 1
+        count: 1,
+        page: 0,
+        reviews: [],
+        loadStop: false,
+        reviewed: false,
+        over: false
       }
     },
     async mounted() {
       try {
-        const { data } = await axios(`/api/shop/bouquet/${this.id}`);
-        this.title = data.bouquet.name;
-        this.desc = data.bouquet.perex;
-        this.price = data.bouquet.price;
-        this.stars = data.bouquet.rating;
-        this.stars = data.rating !== null ? Math.round(data.rating) : null;
-        this.stock = data.storage;
+        const res = await axios(`/api/shop/bouquet/${this.id}`);
+        this.title = res.data.bouquet.name;
+        this.desc = res.data.bouquet.perex;
+        this.price = res.data.bouquet.price;
+        this.stars = res.data.rating !== null ? Math.round(res.data.rating) : null;
+        this.stock = res.data.storage;
       } catch (e) {
-        console.log(e);
+        this.$router.push('/');
+      }
+
+      if (!this.$store.getters.isLogged) return;
+      try {
+        await axios(`/api/shop/bouquet/${this.id}/is-review`);
+      } catch (e) {
+        this.reviewed = true;
       }
     },
     computed: {
       stockText() {
-        return "Fuck me";
+        if (this.stock === 0) {
+          return "Zboží není na skladě";
+        } else if (this.stock > 0 && this.stock < 6) {
+          return `Na skladě ${this.stock} ks`;
+        } else if (this.stock > 5) {
+          return 'Na skladě > 5 ks';
+        } else {
+          return "Množství na skladě nedostupné";
+        }
+      },
+      bgImage() {
+        if (this.img === null) {
+          return {
+            background: '#C4C4C4'
+          };
+        }
       }
     },
     methods: {
@@ -133,7 +142,42 @@
           return;
         }
 
-        alert('added');
+        axios({
+          method: 'post',
+          url: `/api/shop/bouquet/${this.id}/reviews`,
+          data: {
+            message: this.text,
+            rating: this.reviewStars
+          }
+        }).then(() => {
+          this.reviewed = true;
+          this.reviews.unshift({
+            rating: this.reviewStars,
+            message: this.text,
+            userName: this.$store.getters.fullName
+          });
+          this.text = '';
+        }).catch(() => {
+          this.$store.dispatch('openModal', 'Chyba při přidávání recenze');
+        });
+      },
+      addToCart() {
+        this.$store.dispatch('addToCart', {
+          id: this.id,
+          name: this.title,
+          price: this.price,
+          img: this.img,
+          count: this.count
+        });
+        this.$router.push('/');
+      },
+      async fetchReviews() {
+        this.loadStop = true;
+        const res = await axios(`/api/shop/bouquet/${this.id}/reviews?page=${this.page}&size=15`);
+        this.reviews.push(...res.data.content);
+        this.loadStop = res.data.last;
+        this.over = res.data.last;
+        this.page++;
       }
     }
   }
@@ -165,7 +209,7 @@
         width: 370px;
         height: 370px;
         padding-right: 1rem;
-        background: red;
+        flex-shrink: 0;
 
         img {
           width: 100%;
@@ -279,11 +323,13 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 700px;
+        width: 70%;
         margin: auto;
 
         .review-form {
           width: 100%;
+          margin-bottom: 10px;
+          position: relative;
           .rating {
             .star {
               color: $midGrey;
@@ -406,5 +452,27 @@
       margin-right: 10px;
       margin-bottom: 3px;
     }
+  }
+
+  .loading {
+    text-align: center;
+    margin-top: 5px;
+  }
+
+  .reviewed {
+    filter: grayscale(1);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .review-exp {
+    position: absolute;
+    color: black;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+    transform: translate(-50%, -130%);
+    font-size: 1.3em;
+    font-weight: 600;
   }
 </style>

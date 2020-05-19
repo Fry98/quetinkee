@@ -79,7 +79,7 @@
             <span class="checkmark" :class="{checked: termsAndConditions}">
               <font-awesome-icon icon='check' v-show="termsAndConditions"/>
             </span>
-            Souhlasím s&nbsp;<a href="#" target="_blank">obchodními podmínkami</a> &nbsp;společnosti quetinkee
+            Souhlasím s obchodními podmínkami společnosti&nbsp;<strong>quetinkee</strong>
             <input type="checkbox" v-model="termsAndConditions">
           </label>
         </div>

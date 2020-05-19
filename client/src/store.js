@@ -21,7 +21,8 @@ const store = new Vuex.Store({
     categories: state => state.categories,
     flowers: state => state.flowers,
     sidebar: state => state.sidebar,
-    cart: state => state.cart
+    cart: state => state.cart,
+    fullName: state => state.user !== null ? `${state.user.firstName} ${state.user.lastName}` : null
   },
   mutations: {
     setError(state, payload) {
@@ -40,6 +41,10 @@ const store = new Vuex.Store({
       state.sidebar++;
     },
     addToCart(state, payload) {
+      if (state.cart[payload.id] !== undefined) {
+        state.cart[payload.id].count += payload.count;
+        return;
+      }
       Vue.set(state.cart, payload.id, payload);
     },
     removeFromCart(state, payload) {
