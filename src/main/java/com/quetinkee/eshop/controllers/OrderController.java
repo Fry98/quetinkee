@@ -16,16 +16,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/orders")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class OrderController {
 
     @Autowired
     private OrderService service;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<OrderList> getSlice(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
-        return this.service.getSlice(page, size);
+    @GetMapping(value = {"","{status}"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<OrderList> getSlice(@PathVariable(name = "status", required = false) OrderStatus status, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
+        if (status == null) return this.service.getSlice(page, size);
+        return this.service.getSlice(status, page, size);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

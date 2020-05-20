@@ -147,6 +147,15 @@ public class User extends AbstractEntity {
     this.addressDelivery = addressDelivery;
   }
 
+  @PreRemove
+  private void preRemove() {
+    if (this.orders != null) {
+      this.orders.forEach((o) -> {
+        o.setUser(null);
+      });
+    }
+  }
+
   @Override
   public String toString() {
     return "User{" + this.firstName + " " + this.lastName + "(" + this.mail + ")}";

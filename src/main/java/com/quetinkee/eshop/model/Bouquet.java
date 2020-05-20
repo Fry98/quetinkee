@@ -73,6 +73,10 @@ public class Bouquet extends AbstractEntity {
   @OneToMany(mappedBy = "bouquet", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Review> reviews;
 
+  @JsonIgnore
+  @OneToMany(mappedBy = "bouquet", fetch = FetchType.LAZY, cascade = CascadeType.DETACH, orphanRemoval = false)
+  private List<OrderItem> orderItems;
+
   public Bouquet() {
   }
 
@@ -270,5 +274,14 @@ public class Bouquet extends AbstractEntity {
 
   public void setReviews(Set<Review> reviews) {
     this.reviews = reviews;
+  }
+
+  @PreRemove
+  private void preRemove() {
+    if (this.orderItems != null) {
+      this.orderItems.forEach((o) -> {
+        o.setBouquet(null);
+      });
+    }
   }
 }

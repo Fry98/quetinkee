@@ -45,9 +45,9 @@ public class ShopController {
     return this.shopService.findCategories(this.isAdmin(authentication));
   }
 
-  @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Slice<BouquetList> getSearchResults(@RequestParam(required = true, name = "q") String find, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size, Authentication authentication) {
-    return this.shopService.getSeachResults(find, page, size, this.isAdmin(authentication));
+  @GetMapping(value = {"/search","/search/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
+  public Slice<BouquetList> getSearchResults(@PathVariable(name = "id", required = false) Integer id, @RequestParam(required = true, name = "q") String find, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size, Authentication authentication) {
+    return this.shopService.getSeachResults(id, find, page, size, this.isAdmin(authentication));
   }
 
   @GetMapping(value = {"/filter","/filter/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)

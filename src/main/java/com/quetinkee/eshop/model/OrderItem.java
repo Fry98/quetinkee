@@ -16,12 +16,12 @@ import javax.validation.constraints.NotNull;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class OrderItem extends AbstractEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Order order;
 
     @JsonIgnore
-    @NotNull(message = "Prazdná položka")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(nullable = true)
     private Bouquet bouquet;
 
@@ -73,8 +73,10 @@ public class OrderItem extends AbstractEntity {
 
     public void setBouquet(Bouquet bouquet) {
         this.bouquet = bouquet;
-        this.name = this.bouquet.getName();
-        this.price = this.bouquet.getPriceDec();
+        if (bouquet != null) {
+            this.name = this.bouquet.getName();
+            this.price = this.bouquet.getPriceDec();
+        }
     }
 
     public String getName() {

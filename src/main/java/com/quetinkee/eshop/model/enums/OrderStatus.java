@@ -1,9 +1,10 @@
 package com.quetinkee.eshop.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 
 public enum OrderStatus {
-  NEW("new"), READY("rdy"), PENDING("pnd"), FINISH("fin"), STORNO("sto"), DELETE("del");
+  NEW("new"), READY("rdy"), PENDING("pnd"), FINISH("fin"), STORNO("sto");
 
   private final String value;
   private final static HashMap map = new HashMap<String, Size>();
@@ -23,6 +24,7 @@ public enum OrderStatus {
     return (OrderStatus) map.get(val);
   }
 
+  @JsonValue
   public String getValue() {
     return this.value;
   }

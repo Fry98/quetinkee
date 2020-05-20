@@ -15,9 +15,9 @@ public interface BouquetDao extends GenericDao<Bouquet, BouquetList> {
 
   Slice<BouquetList> findAllByCategoriesId(Integer id, Pageable pageable);
 
-  @Query(nativeQuery = true, value = "SELECT DISTINCT b.*,POSITION(CONCAT(',',b.id,',') IN ?3) AS ord_pos FROM Bouquet b JOIN Bouquet_categories bc ON (b.id = bc.bouquets_id) JOIN Category c ON (c.id = bc.categories_id)" +
-          " WHERE (?1 = true OR b.active = true) AND (?1 = true OR c.active = true) AND b.id IN ?2 ORDER BY ord_pos")
-  Slice<BouquetList> findAllByActiveAndIdInAndCategoriesNotNull(Boolean showAll, List<Integer> ids, String order, Pageable pageable);
+  @Query(nativeQuery = true, value = "SELECT DISTINCT b.*,POSITION(CONCAT(',',b.id,',') IN ?4) AS ord_pos FROM Bouquet b JOIN Bouquet_categories bc ON (b.id = bc.bouquets_id) JOIN Category c ON (c.id = bc.categories_id)" +
+          " WHERE (?1 = true OR b.active = true) AND (?1 = true OR c.active = true) AND (?2 = null OR c.id = ?2) AND b.id IN ?3 ORDER BY ord_pos")
+  Slice<BouquetList> findAllByActiveAndIdInAndCategoriesId(Boolean showAll, Integer id, List<Integer> ids, String order, Pageable pageable);
 
   @Query(value = "SELECT b FROM Bouquet b JOIN b.categories c WHERE b.active = true AND c.active = true AND c.id = ?1")
   Slice<BouquetList> findAllByCategoriesIdAndActiveTrue(Integer id, Pageable pageable);

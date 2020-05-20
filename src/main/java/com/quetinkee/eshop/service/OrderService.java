@@ -36,6 +36,12 @@ public class OrderService extends GenericAdminService<OrderDao, Order, OrderList
     }
 
     @Transactional(readOnly = true)
+    public Slice<OrderList> getSlice(OrderStatus status, Integer page, Integer size) {
+        Pageable paging = PageRequest.of(page, size, this.sort);
+        return this.dao.findAllByStatus(status, paging);
+    }
+
+    @Transactional(readOnly = true)
     public Slice<OrderList> getSlice(Integer id, Integer page, Integer size) {
         Pageable paging = PageRequest.of(page, size, this.sort);
         return this.dao.findAllByUserId(id, paging);
@@ -150,7 +156,7 @@ public class OrderService extends GenericAdminService<OrderDao, Order, OrderList
         Order order = newData.getOrder();
         this.updateItemCounts(order, newData.getKeyItemCount());
         if (order.getUser() == null) {
-            Optional<User> exist = this.userDao.findById(newData.getId());
+            Optional<User> exist = this.userDao.findById(newData.getUserId());
             if (exist.isPresent()) order.setUser(exist.get());
             else throw new ValidationException("Neexistující uživatel");
         }

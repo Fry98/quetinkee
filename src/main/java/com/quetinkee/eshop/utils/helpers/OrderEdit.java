@@ -7,7 +7,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.springframework.web.server.ResponseStatusException;
 
 
@@ -17,11 +18,11 @@ public class OrderEdit implements Serializable {
   private Order order;
 
   @Valid
-  @NotBlank(message = "Nebylo zadáno ID zákazníka")
+  @NotNull(message = "Nebylo zadáno ID zákazníka")
   private Integer userId;
 
   @Valid
-  @NotBlank(message = "Objednavka je prázdná")
+  @NotEmpty(message = "Objednavka je prázdná")
   private Map<Integer,Integer> keyItemCount;
 
   public OrderEdit() {
@@ -29,10 +30,10 @@ public class OrderEdit implements Serializable {
 
   public OrderEdit(Order order) throws ResponseStatusException{
     this.order = order;
-    this.userId = order.getUser().getId();
-    this.keyItemCount = this.updateKeyItemCount();
+    if (this.order.getUser() == null || !this.checkBouquets()) throw new InvalidOrderException("Tuto objednávku již nelze editovat");
 
-    if (this.checkBouquets()) throw new InvalidOrderException("Tuto objednávku již nelze editovat");
+    this.userId = order.getUser() == null ? null : order.getUser().getId();
+    this.keyItemCount = this.updateKeyItemCount();
   }
 
   public Order getOrder() {

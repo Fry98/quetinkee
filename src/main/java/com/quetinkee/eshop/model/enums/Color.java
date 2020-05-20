@@ -1,5 +1,6 @@
 package com.quetinkee.eshop.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 
 public enum Color {
@@ -31,6 +32,7 @@ public enum Color {
     return (Color) map.get(val);
   }
 
+  @JsonValue
   public Integer getValue() {
     return this.value;
   }

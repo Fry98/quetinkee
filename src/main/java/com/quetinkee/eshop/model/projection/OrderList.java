@@ -19,6 +19,8 @@ public interface OrderList extends InterfaceList{
 
     public PaymentOption getPayment();
 
+    public String getTotalPrice();
+
     public Date getDay();
 
     public Time getTime();

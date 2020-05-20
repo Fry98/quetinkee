@@ -4,6 +4,7 @@ import com.quetinkee.eshop.model.enums.OrderStatus;
 import com.quetinkee.eshop.model.enums.PaymentOption;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import javax.validation.Valid;
@@ -43,7 +45,7 @@ public class Order extends AbstractEntity{
     private BigDecimal totalPrice;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(nullable = true)
     private User user;
 
@@ -64,19 +66,6 @@ public class Order extends AbstractEntity{
     @Column(nullable = false)
     private String userMail;
 
-    @Valid
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private OrderAddress userAddressBilling;
-
-    @Valid
-    @NotNull(message = "Zadejte doručovací adresu")
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(nullable = true)
-    private OrderAddress userAddressDelivery;
-
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<OrderItem> contains;
-
     @NotNull(message = "Datum dodání je povinná položka")
     private Date day;
 
@@ -85,20 +74,36 @@ public class Order extends AbstractEntity{
 
     private Timestamp created;
 
+    @Valid
+    @NotNull(message = "Zadejte doručovací adresu")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(nullable = true)
+    private OrderAddress userAddressDelivery;
+
+    @Valid
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private OrderAddress userAddressBilling;
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OrderItem> contains;
+
     public Order() {
         java.util.Date date = new java.util.Date();
         this.created = new Timestamp(date.getTime());
     }
 
+    @JsonProperty
     public Set<OrderItem> getContains() {
         return contains;
     }
 
+    @JsonIgnore
     public void setContains(Set<OrderItem> contains) {
         this.contains = contains;
         this.calculateTotalPrice();
     }
 
+    @JsonProperty
     public OrderStatus getStatus() {
         return this.status;
     }
@@ -121,6 +126,7 @@ public class Order extends AbstractEntity{
     }
 
     public void addOrderItem(Bouquet bouquet, Integer quantity){
+        Objects.requireNonNull(bouquet);
         if (this.contains == null) {
             this.contains = new HashSet<>();
         }
@@ -139,16 +145,19 @@ public class Order extends AbstractEntity{
     }
 
     public void removeOrderItem(Bouquet bouquet){
+        Objects.requireNonNull(bouquet);
         contains.removeIf(pos -> bouquet == pos.getBouquet());
         this.calculateTotalPrice();
     }
 
     public void removeOrderItem(OrderItem pos){
+        Objects.requireNonNull(pos);
         contains.remove(pos);
         this.calculateTotalPrice();
     }
 
     public void adjustQuantity(Bouquet bouquet, Integer quantity){
+        Objects.requireNonNull(bouquet);
         for(OrderItem pos : contains){
             if (bouquet == pos.getBouquet()) {
                 pos.setQuantity(quantity);
@@ -160,10 +169,8 @@ public class Order extends AbstractEntity{
     public void calculateTotalPrice(){
         this.totalPrice = new BigDecimal(0);
         for(OrderItem pos : contains){
-          System.out.println(pos.getBouquet().getPriceDec().multiply(new BigDecimal(pos.getQuantity())));
             this.totalPrice = this.totalPrice.add(pos.getBouquet().getPriceDec().multiply(new BigDecimal(pos.getQuantity())));
         }
-        System.out.println("total: " + this.totalPrice);
     }
 
     public void setUserFirstName(String userFirstName) {
@@ -238,6 +245,7 @@ public class Order extends AbstractEntity{
         this.time = time;
     }
 
+    @JsonProperty
     public Timestamp getCreated() {
         return this.created;
     }

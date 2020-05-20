@@ -2,14 +2,13 @@
 
 - nepovinné parametry jsou označeny (optional) jen u vytváření
 - u User a Profile jsou nyní nezdokumentované enpointy pro editaci adresy
-- všechny DELETE jsou "smaž vše"
+- všechny DELETE jsou "smaž vše" (vyjma objednávek)
 - jediné co v tuto chvíli nefunguje je profile - forget password
 - PATCH podporuje update jen změněných parametrů, ale seznamy klíčů u kytice se berou jako celek!
 
 ## Bouquet (admin only)
 
 ### 1. Stránkovací seznam
-
 Stránkovací seznam všech kytic
 
 `GET /api/bouquets[?page=0][&size=10]`
@@ -298,7 +297,7 @@ none
 #### Response body
 `class List<OptionList>`
 
-```json5
+```json
 [
     {"name":"Nové","id":"3"},
     {"name":"Překvapení","id":"8"},
@@ -324,7 +323,7 @@ id   : int        id kategorie
 #### Response body
 `class Category`
 
-```json5
+```json
 {
     "id":3,
     "name":"Nové",
@@ -696,6 +695,10 @@ none
 TODO asi jen status OK / fail
 
 
+
+
+
+
 ## Shop
 
 ### 1. Seznam sekcí
@@ -860,6 +863,7 @@ id   : int        id kategorie
     "empty":false
 }
 ```
+
 ### 5. Detail kytice
 
 Základní informace o kytici
@@ -980,6 +984,572 @@ id   : int        id kytice
 
 #### Response body
 id uživatele
+
+### 9. Fulltext search
+
+Vyhledávání v textech u všech kyticích pomocí elasticsearch. 
+
+- pokud není elasticsearch dostupný, vrací 501 NOT_IMPLEMENTED.
+
+`GET /api/shop/search[/{id}]?q={q}[&page=0][&size=10]`
+
+#### Request body
+none
+
+#### Request params
+```
+id   : int  (optional)         id kategorie
+page : int  (optional def. 0)  stránka
+size : int  (optional def. 10) počet záznamů na stránku
+q    : string                  hledaný řetězec
+```
+
+#### Response body
+`class Slice<BouquetList>`
+
+```json
+{
+    "content":[
+        {"price":"200.00","path":"uploads/img","image":"11_img.jpg","name":"Kytice hezká","id":13,"size":"MEDIUM","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"Kyticke hezčí","id":14,"size":"LARGE","active":true},
+        {"price":"100.10","path":"uploads/img","image":"11_img.jpg","name":"Nejhezčí kytice","id":12,"size":"SMALL","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"the EGG","id":15,"size":"LARGE","active":false}
+    ],
+    "pageable":{
+        "sort":{"unsorted":false,"sorted":true,"empty":false},
+        "pageNumber":0,
+        "pageSize":10,
+        "offset":0,
+        "unpaged":false,
+        "paged":true
+    },
+    "last":true,
+    "first":true,
+    "sort":{"unsorted":false,"sorted":true,"empty":false},
+    "size":10,
+    "number":0,
+    "numberOfElements":4,
+    "empty":false
+}
+```
+
+
+
+
+
+
+## Shop order (signed only)
+
+### 1. Vytvoření objednávky
+
+Vytvoření objednávky v obchodě
+
+- payment může být cash / card
+
+`POST /api/shop/orders`
+
+#### Request body
+`class OrderEdit`
+
+```json
+{
+    "order": {
+        "payment":"cash",
+        "userFirstName":"First",
+        "userLastName":"Last",
+        "userPhone":"123456789",
+        "userMail":"test@test.cz",
+        "day":"2020-02-02",
+        "time":"10:11:12",
+        "totalPrice":"100.10",   // cena bude znovu vypočtena, zde je jen aby záznam prošel vstupní validací
+        "userAddressDelivery":{
+            "street":"mesto",
+            "city":"psc",
+            "zip":"psc"
+        },
+        "userAddressBilling":{   // optinal
+            "street":"mesto",
+            "city":"psc",
+            "zip":"psc"
+        },
+    },
+    "userId": 1,      // id právě přihlášeného zákazníka
+    "keyItemCount":{  // id květiny : počet ks
+        "12":1,
+        "14":2
+    }
+}
+```
+
+#### Request params
+none
+
+#### Response body
+id objednávky
+
+### 2. Stránkovací seznam
+
+Stránkovací seznam objednávek zákazníka
+
+`GET /api/shop/orders[?page=0][&size=10]`
+
+#### Request body
+none
+
+#### Request params
+```
+page : int  (optional def. 0)  stránka
+size : int  (optional def. 10) počet záznamů na stránku
+```
+
+#### Response body
+`class Slice<OrderList>`
+
+```json
+{
+    "content":[
+        {
+            "status":"new",
+            "userFirstName":"First",
+            "userLastName":"Last",
+            "userMail":"test@test.cz",
+            "userPhone":"123456789",
+            "payment":"cash",
+            "totalPrice": "100",
+            "day":"2020-02-02",
+            "time":"10:11:12",
+            "id":18
+        }
+    ],
+    "pageable":{
+        "sort":{"sorted":true,"unsorted":false,"empty":false},
+        "pageSize":10,
+        "pageNumber":0,
+        "offset":0,
+        "paged":true,
+        "unpaged":false
+    },
+    "first":true,
+    "last":true,
+    "sort":{"sorted":true,"unsorted":false,"empty":false},
+    "numberOfElements":1,
+    "size":10,
+    "number":0,
+    "empty":false
+}
+```
+
+### 3. Detail objednávky zákazníka
+
+`GET /api/shop/orders/{id}`
+
+#### Request body
+none
+
+#### Request params
+```
+id   : int      id kategorie
+```
+
+#### Response body
+`class Order`
+
+```json
+{
+    "id":18,
+    "payment":"cash",
+    "totalPrice":400.20,
+    "userFirstName":"First",
+    "userLastName":"Last",
+    "userPhone":"123456789",
+    "userMail":"test@test.cz",
+    "userAddressDelivery":{
+        "street":"mesto",
+        "city":"psc",
+        "zip":"psc"
+    },
+    "userAddressBilling":{
+        "street":"mesto",
+        "city":"psc",
+        "zip":"psc"
+    },
+    "contains":[
+        {
+            "id":21,
+            "name":"Kytice hezká",
+            "price":"200.00",
+            "quantity":1
+        },
+        {
+            "id":20,
+            "name":"Nejhezčí kytice",
+            "price":"100.10",
+            "quantity":2
+        }
+    ],
+    "day":"2020-02-02",
+    "time":"10:11:12"
+}
+```
+
+
+
+
+
+## Orders (admin only)
+
+### 1. Stránkovací seznam
+Stránkovací seznam všech objednávek - stav musí být uveden ve formátu "STORNO" atd.
+
+- NEW(new) - nově založený
+- READY(rdy) - připravený na odeslání
+- PENDING(pnd) - odeslaný, nepřevzatý
+- FINISH(fin) - dodaný
+- STORNO(sto) - stornovaný
+
+
+`GET /api/orders[{status}][?page=0][&size=10]`
+
+#### Request body
+none
+
+#### Request params
+```
+status : String (optional)         nový status
+page : int      (optional def. 0)  stránka
+size : int      (optional def. 10) počet záznamů na stránku
+```
+
+#### Response body
+`class Slice<OrderList>`
+
+```json
+{
+    "content":[
+        {
+            "status":"new",
+            "userFirstName":"First",
+            "userLastName":"Last",
+            "userMail":"test@test.cz",
+            "userPhone":"123456789",
+            "payment":"cash",
+            "totalPrice": "100",
+            "day":"2020-02-02",
+            "time":"10:11:12",
+            "id":18
+        }
+    ],
+    "pageable":{
+        "sort":{"sorted":true,"unsorted":false,"empty":false},
+        "pageSize":10,
+        "pageNumber":0,
+        "offset":0,
+        "paged":true,
+        "unpaged":false
+    },
+    "first":true,
+    "last":true,
+    "sort":{"sorted":true,"unsorted":false,"empty":false},
+    "numberOfElements":1,
+    "size":10,
+    "number":0,
+    "empty":false
+}
+```
+
+### 2. Detail objednávky
+Pro editaci
+
+- lze zobrazit jen záznamy které odkazují na existující bouquets
+
+`GET /api/orders/{id}`
+
+#### Request body
+none
+
+#### Request params
+```
+id   : int        id objednávky
+```
+
+#### Response body
+`class OrderEdit`
+
+```json
+{
+    "id": 20,
+    "order": {
+        "id": 20,
+        "status":"new",
+        "payment":"cash",
+        "userFirstName":"First",
+        "userLastName":"Last",
+        "userPhone":"123456789",
+        "userMail":"test@test.cz",
+        "day":"2020-02-02",
+        "time":"10:11:12",
+        "created":"2020-05-20T12:31:34.496+0000",
+        "totalPrice":"100.10",   // cena bude znovu vypočtena, zde je jen aby záznam prošel vstupní validací
+        "userAddressDelivery":{
+            "street":"mesto",
+            "city":"psc",
+            "zip":"psc"
+        },
+        "userAddressBilling":{   // optinal
+            "street":"mesto",
+            "city":"psc",
+            "zip":"psc"
+        },
+        "contains":[
+            {
+                "id":21,
+                "name":"Kytice hezká",
+                "price":"200.00",
+                "quantity":1
+            },
+            {
+                "id":20,
+                "name":"Nejhezčí kytice",
+                "price":"100.10",
+                "quantity":2
+            }
+        ]
+    },
+    "userId": 1,      // id právě přihlášeného zákazníka
+    "keyItemCount":{  // id květiny : počet ks
+        "12":1,
+        "14":2
+    }
+}
+```
+
+### 3. Detailní popis objednávky
+Pro výpis, není závyslí na bouquets
+
+`GET /api/orders/{id}/info`
+
+#### Request body
+none
+
+#### Request params
+```
+id   : int        id objednávky
+```
+
+#### Response body
+`class Order`
+
+```json
+{
+    "id":18,
+    "payment":"cash",
+    "totalPrice":400.20,
+    "userFirstName":"First",
+    "userLastName":"Last",
+    "userPhone":"123456789",
+    "userMail":"test@test.cz",
+    "userAddressDelivery":{
+        "street":"mesto",
+        "city":"psc",
+        "zip":"psc"
+    },
+    "userAddressBilling":{
+        "street":"mesto",
+        "city":"psc",
+        "zip":"psc"
+    },
+    "contains":[
+        {
+            "id":21,
+            "name":"Kytice hezká",
+            "price":"200.00",
+            "quantity":1
+        },
+        {
+            "id":20,
+            "name":"Nejhezčí kytice",
+            "price":"100.10",
+            "quantity":2
+        }
+    ],
+    "day":"2020-02-02",
+    "time":"10:11:12"
+}
+```
+
+### 4. Založení objednávky
+Data objednávky jsou ve stejném formátu jako u GET
+
+- při založení a editaci nelze měnit status objednávky
+
+`POST /api/orders`
+
+#### Request body
+`class OrderEdit`
+
+```json
+{
+    "order": {
+        "payment":"cash",
+        "userFirstName":"First",
+        "userLastName":"Last",
+        "userPhone":"123456789",
+        "userMail":"test@test.cz",
+        "day":"2020-02-02",
+        "time":"10:11:12",
+        "totalPrice":"100.10",   // cena bude znovu vypočtena, zde je jen aby záznam prošel vstupní validací
+        "userAddressDelivery":{
+            "street":"mesto",
+            "city":"psc",
+            "zip":"psc"
+        },
+        "userAddressBilling":{   // optinal
+            "street":"mesto",
+            "city":"psc",
+            "zip":"psc"
+        },
+    },
+    "userId": 1,      // id zákazníka
+    "keyItemCount":{  // id květiny : počet ks
+        "12":1,
+        "14":2
+    }
+}
+```
+
+#### Request params
+none
+
+#### Response body
+id objednávky
+
+### 5. Aktualizace objednávky
+Data objednávky jsou ve stejném formátu jako u GET
+
+- při založení a editaci nelze měnit status objednávky
+- lze editovat jen záznamy které odkazují na existující bouquets
+
+`PATCH /api/orders/{id}`
+
+#### Request body
+`class User`
+
+```json
+{
+    "order": {
+        "payment":"cash",
+        "userFirstName":"First",
+        "userLastName":"Last",
+        "userPhone":"123456789",
+        "userMail":"test@test.cz",
+        "day":"2020-02-02",
+        "time":"10:11:12",
+        "totalPrice":"100.10",
+        "userAddressDelivery":{
+            "street":"mesto",
+            "city":"psc",
+            "zip":"psc"
+        },
+        "userAddressBilling":{
+            "street":"mesto",
+            "city":"psc",
+            "zip":"psc"
+        },
+    },
+    "userId": 1,
+    "keyItemCount":{
+        "12":1,
+        "14":2
+    }
+}
+```
+
+#### Request params
+```
+id   : int        id objednávky
+```
+
+#### Response body
+`class OrderEdit`
+
+```json
+{
+    "id": 20,
+    "order": {
+        "id": 20,
+        "status":"new",
+        "payment":"cash",
+        "userFirstName":"First",
+        "userLastName":"Last",
+        "userPhone":"123456789",
+        "userMail":"test@test.cz",
+        "day":"2020-02-02",
+        "time":"10:11:12",
+        "totalPrice":"100.10",
+        "userAddressDelivery":{
+            "street":"mesto",
+            "city":"psc",
+            "zip":"psc"
+        },
+        "userAddressBilling":{
+            "street":"mesto",
+            "city":"psc",
+            "zip":"psc"
+        },
+    },
+    "userId": 1,
+    "keyItemCount":{
+        "12":1,
+        "14":2
+    }
+}
+```
+
+### 6. Změna stavu objednávky
+Typy stavů (OrderStatus) - stav musí být uveden ve formátu "STORNO" atd.
+
+- NEW(new) - nově založený
+- READY(rdy) - připravený na odeslání
+- PENDING(pnd) - odeslaný, nepřevzatý
+- FINISH(fin) - dodaný
+- STORNO(sto) - stornovaný
+
+Zněny stavu:
+
+- nový (new) záznam lze přesunout do připravený READY, nebo stornovat STORNO
+- připravený (rdy) záznam lze přesunout do odeslaný PENDING, nebo stornovat STORNO
+- odeslaný (pnd) záznam lze přesunout do připravený FINISH, nebo stornovat STORNO
+
+
+`PUT /api/orders/{id}/{status}`
+
+#### Request body
+none
+
+#### Request params
+```
+id     : int        id objednávky
+status : String     nový status
+```
+
+#### Response body
+none
+
+### 7. Smazání objednávky
+
+`DELETE /api/orders/{id}`
+
+#### Request body
+none
+
+#### Request params
+```
+id   : int        id objednávky
+```
+
+#### Response body
+none
+
 
 
 

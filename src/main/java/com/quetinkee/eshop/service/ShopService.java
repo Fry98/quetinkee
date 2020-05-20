@@ -34,6 +34,8 @@ import com.quetinkee.eshop.rabbit.CacheRabbit;
 import com.quetinkee.eshop.rabbit.SearchRabbit;
 import com.quetinkee.eshop.utils.ValidationException;
 import com.quetinkee.eshop.utils.helpers.ReviewSubmit;
+import java.util.ArrayList;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -153,16 +155,16 @@ public class ShopService {
     return this.reviewDao.findAllByBouquet(bouquet, paging);
   }
 
-  public Slice<BouquetList> getSeachResults(String find, Integer pageNum, Integer pageSize, boolean showAll) throws ResponseStatusException {
+  public Slice<BouquetList> getSeachResults(Integer id, String find, Integer pageNum, Integer pageSize, boolean showAll) throws ResponseStatusException {
     List<Integer> keys = this.searchRabbit.find(find);
     if (keys == null) throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Služba dočasně nedostupná");
 
+    Pageable paging = PageRequest.of(0, pageSize);
     if (keys.size() > 0) {
       String order = keys.toString();
       order = ',' + order.substring(1, order.length()-1) + ',';
-      Pageable paging = PageRequest.of(0, pageSize);
-      return this.bouquetDao.findAllByActiveAndIdInAndCategoriesNotNull(showAll, keys, order, paging);
+      return this.bouquetDao.findAllByActiveAndIdInAndCategoriesId(showAll, id, keys, order, paging);
     }
-    return null;
+    return new SliceImpl<>(new ArrayList<>(), paging, false);
   }
 }

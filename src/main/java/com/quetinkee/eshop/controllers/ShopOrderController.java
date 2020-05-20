@@ -39,7 +39,7 @@ public class ShopOrderController {
   }
 
   @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity createOrder(@PathVariable("id") Integer id, @Valid @RequestBody OrderEdit order, Authentication authentication) {
+  public ResponseEntity createOrder(@Valid @RequestBody OrderEdit order, Authentication authentication) {
     User user = ((UserDetail) authentication.getDetails()).getUser();
     this.orderService.createShop(order, user);
     return new ResponseEntity(order.getId(), HttpStatus.CREATED);
