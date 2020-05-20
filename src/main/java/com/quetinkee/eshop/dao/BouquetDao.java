@@ -1,12 +1,14 @@
 package com.quetinkee.eshop.dao;
 
 import com.quetinkee.eshop.model.Bouquet;
+import com.quetinkee.eshop.model.projection.BouquetFlowerCountList;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import com.quetinkee.eshop.model.projection.BouquetList;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface BouquetDao extends GenericDao<Bouquet, BouquetList> {
@@ -21,4 +23,7 @@ public interface BouquetDao extends GenericDao<Bouquet, BouquetList> {
 
   @Query(value = "SELECT b FROM Bouquet b JOIN b.categories c WHERE b.active = true AND c.active = true AND c.id = ?1")
   Slice<BouquetList> findAllByCategoriesIdAndActiveTrue(Integer id, Pageable pageable);
+
+  @Query(nativeQuery = true, value = "SELECT bouquet_id AS bouquetId, flower_id AS flowerId, b.count AS count FROM bouquet_flower_count b WHERE bouquet_id IN ?1")
+  Set<BouquetFlowerCountList> findCountsAllByIdIn(Set<Integer> ids);
 }

@@ -6,6 +6,7 @@ import com.quetinkee.eshop.dao.UserDao;
 import com.quetinkee.eshop.model.*;
 import com.quetinkee.eshop.model.enums.OrderStatus;
 import com.quetinkee.eshop.model.projection.OrderList;
+import com.quetinkee.eshop.utils.Storage;
 import com.quetinkee.eshop.utils.ValidationException;
 import com.quetinkee.eshop.utils.helpers.OrderEdit;
 import java.util.Iterator;
@@ -28,11 +29,15 @@ public class OrderService extends GenericAdminService<OrderDao, Order, OrderList
     private final BouquetDao bouquetDao;
     private final UserDao userDao;
 
+    private final Storage storage;
+
     @Autowired
-    public OrderService(Validator validator, OrderDao dao, BouquetDao bouquetDao, UserDao userDao) {
+    public OrderService(Validator validator, OrderDao dao, BouquetDao bouquetDao, UserDao userDao, Storage storage) {
         super(validator, dao, Sort.by(Order_.ID));
         this.bouquetDao = bouquetDao;
         this.userDao = userDao;
+
+        this.storage = storage;
     }
 
     @Transactional(readOnly = true)
@@ -52,17 +57,15 @@ public class OrderService extends GenericAdminService<OrderDao, Order, OrderList
         Objects.requireNonNull(original);
 
         if (newStatus != original.getStatus()) {
-            boolean consume = false;
-            boolean free = false;
             switch (original.getStatus()) {
                 case NEW:
                     if (newStatus == OrderStatus.STORNO) {
-                        free = true;
+                        this.storage.freeFlowers(original.getContains());
                         original.setStatus(newStatus);
                         break;
                     }
                     if (newStatus == OrderStatus.READY) {
-                        consume = true;
+                        this.storage.consumeFlowers(original.getContains());
                         original.setStatus(newStatus);
                         break;
                     }
@@ -171,7 +174,12 @@ public class OrderService extends GenericAdminService<OrderDao, Order, OrderList
         if (record.getStatus() == null) {
             record.setStatus(OrderStatus.NEW);
         }
+        this.storage.reserveFlowers(record.getContains());
         return super.create(record);
+    }
+
+    public Map<Integer,Integer> checkItemsInStock(Map<Integer,Integer> cart) {
+        return this.storage.itemsInStock(cart);
     }
 
     private void updateAddress (OrderAddress original, OrderAddress address) {

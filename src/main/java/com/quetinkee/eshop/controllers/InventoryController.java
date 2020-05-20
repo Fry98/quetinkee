@@ -1,8 +1,5 @@
 package com.quetinkee.eshop.controllers;
 
-import com.quetinkee.eshop.model.Category;
-import com.quetinkee.eshop.model.Inventory;
-import com.quetinkee.eshop.service.CategoryService;
 import com.quetinkee.eshop.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
@@ -16,13 +13,13 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/inventories")
+@RequestMapping("/api/stock")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class InventoryController {
 
     @Autowired
     private InventoryService service;
-
+/*
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Slice<Inventory> getPage(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
         return this.service.findAll(page, size, false);
@@ -52,12 +49,5 @@ public class InventoryController {
         service.delete(inventory);
         return new ResponseEntity(HttpStatus.OK);
     }
-
-    private Inventory getInventory(Integer id) throws ResponseStatusException {
-        Inventory inventory = this.service.find(id);
-        if (inventory == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventář neexistuje");
-        }
-        return inventory;
-    }
+*/
 }

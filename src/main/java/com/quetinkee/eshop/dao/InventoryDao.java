@@ -1,22 +1,18 @@
 package com.quetinkee.eshop.dao;
 
-import com.quetinkee.eshop.model.Category;
-import com.quetinkee.eshop.model.Inventory;
+import com.quetinkee.eshop.model.FlowersInStock;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
-public interface InventoryDao extends JpaRepository<Inventory, Integer> {
+public interface InventoryDao extends JpaRepository<FlowersInStock, Integer> {
 
-    Inventory findByIdAndActiveTrue(Integer id);
+    Slice<FlowersInStock> findAllBy(Pageable pageable);
 
-    Slice<Inventory> findAllBy(Pageable pageable);
-
-    Slice<Inventory> findAllByActiveTrue(Pageable pageable);
-
-    List<Inventory> findAllByActiveTrue();
+    Set<FlowersInStock> findAllByFlowerIdIn(Set<Integer> keySet);
 }

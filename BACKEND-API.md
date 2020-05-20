@@ -1208,7 +1208,7 @@ Stránkovací seznam všech objednávek - stav musí být uveden ve formátu "ST
 - STORNO(sto) - stornovaný
 
 
-`GET /api/orders[{status}][?page=0][&size=10]`
+`GET /api/orders[?status=''][&page=0][&size=10]`
 
 #### Request body
 none

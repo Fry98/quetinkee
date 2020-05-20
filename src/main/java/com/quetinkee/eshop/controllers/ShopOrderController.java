@@ -6,6 +6,7 @@ import com.quetinkee.eshop.model.projection.OrderList;
 import com.quetinkee.eshop.service.OrderService;
 import com.quetinkee.eshop.service.security.UserDetail;
 import com.quetinkee.eshop.utils.helpers.OrderEdit;
+import java.util.Map;
 import java.util.Objects;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,11 @@ public class ShopOrderController {
   public Slice<OrderList> getOrdersSlice(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size, Authentication authentication) {
     User user = ((UserDetail) authentication.getDetails()).getUser();
     return this.orderService.getSlice(user.getId(), page, size);
+  }
+
+  @PostMapping(value = "/cart", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public Map<Integer,Integer> checkItemsInStock(@Valid @RequestBody Map<Integer,Integer> cart) {
+    return this.orderService.checkItemsInStock(cart);
   }
 
   @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)

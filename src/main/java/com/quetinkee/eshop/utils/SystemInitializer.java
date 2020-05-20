@@ -6,6 +6,7 @@ import com.quetinkee.eshop.model.BouquetFlowerCount;
 import com.quetinkee.eshop.model.Category;
 import com.quetinkee.eshop.model.enums.Color;
 import com.quetinkee.eshop.model.Flower;
+import com.quetinkee.eshop.model.FlowersInStock;
 import com.quetinkee.eshop.model.Review;
 import com.quetinkee.eshop.model.enums.Role;
 import com.quetinkee.eshop.model.enums.Size;
@@ -13,6 +14,7 @@ import com.quetinkee.eshop.model.User;
 import com.quetinkee.eshop.service.BouquetService;
 import com.quetinkee.eshop.service.CategoryService;
 import com.quetinkee.eshop.service.FlowerService;
+import com.quetinkee.eshop.service.InventoryService;
 import com.quetinkee.eshop.service.UserService;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class SystemInitializer {
 
   @Autowired
   private FlowerService flowerService;
+
+  @Autowired
+  private InventoryService inventoryService;
 
   @Autowired
   private UserService userService;
@@ -89,6 +94,8 @@ public class SystemInitializer {
     flowerService.create(flower2);
     Flower flower3 = new Flower("Slunečnice", "žlutá", "30");
     flowerService.create(flower3);
+    Flower flower4 = new Flower("Lilie", "", "8");
+    flowerService.create(flower4);
 
     // bouquets
     Bouquet boqA = new Bouquet("Nejhezčí kytice", "<p>popis A s <strong>HTML</strong></p>", "", "100.10", Size.SMALL, true);
@@ -139,7 +146,19 @@ public class SystemInitializer {
     boqD.addCategory(catDed);
     boqD.addCategory(catHide);
     BouquetFlowerCount bqfc5 = new BouquetFlowerCount(flower3, 3);
+    BouquetFlowerCount bqfc6 = new BouquetFlowerCount(flower4, 1);
     boqD.addBouquetFlowerCount(bqfc5);
+    boqD.addBouquetFlowerCount(bqfc6);
     bouquetService.create(boqD);
+
+
+    // storage
+    FlowersInStock fl1 = new FlowersInStock(flower1, 4);
+    inventoryService.persist(fl1);
+    FlowersInStock fl2 = new FlowersInStock(flower2, 10);
+    inventoryService.persist(fl2);
+    FlowersInStock fl3 = new FlowersInStock(flower3, 15);
+    inventoryService.persist(fl3);
+
   }
 }

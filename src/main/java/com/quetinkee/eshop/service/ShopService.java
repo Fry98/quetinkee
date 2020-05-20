@@ -32,6 +32,7 @@ import com.quetinkee.eshop.utils.helpers.BouquetDetail;
 import com.quetinkee.eshop.model.projection.ReviewList;
 import com.quetinkee.eshop.rabbit.CacheRabbit;
 import com.quetinkee.eshop.rabbit.SearchRabbit;
+import com.quetinkee.eshop.utils.Storage;
 import com.quetinkee.eshop.utils.ValidationException;
 import com.quetinkee.eshop.utils.helpers.ReviewSubmit;
 import java.util.ArrayList;
@@ -47,15 +48,19 @@ public class ShopService {
   private final FilterDao filterDao;
   private final ReviewDao reviewDao;
 
+  private final Storage storage;
+
   private final SearchRabbit searchRabbit;
   private final CacheRabbit cacheRabbit;
 
   @Autowired
-  public ShopService(BouquetDao bouquetDao, CategoryDao categoryDao, FilterDao shopDao, ReviewDao reviewDao, SearchRabbit searchRabbit, CacheRabbit cacheRabbit) {
+  public ShopService(BouquetDao bouquetDao, CategoryDao categoryDao, FilterDao shopDao, ReviewDao reviewDao, Storage storage, SearchRabbit searchRabbit, CacheRabbit cacheRabbit) {
     this.bouquetDao = bouquetDao;
     this.categoryDao = categoryDao;
     this.filterDao = shopDao;
     this.reviewDao = reviewDao;
+
+    this.storage = storage;
 
     this.searchRabbit = searchRabbit;
     this.cacheRabbit = cacheRabbit;
@@ -91,7 +96,7 @@ public class ShopService {
   public BouquetDetail findBouquetDetail(Integer id, boolean showAll) {
     Bouquet bouquet = this.findBouquet(id, showAll);
     if (bouquet != null) {
-      return new BouquetDetail(bouquet, this.reviewDao.findAvgRating(bouquet), -1);
+      return new BouquetDetail(bouquet, this.reviewDao.findAvgRating(bouquet), this.storage.countBouquetsInStock(bouquet.getBouquetFlowerCount()));
     }
     return null;
   }

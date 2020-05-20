@@ -23,8 +23,8 @@ public class OrderController {
     @Autowired
     private OrderService service;
 
-    @GetMapping(value = {"","{status}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Slice<OrderList> getSlice(@PathVariable(name = "status", required = false) OrderStatus status, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Slice<OrderList> getSlice(@Valid @RequestParam(required = false) OrderStatus status, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size) {
         if (status == null) return this.service.getSlice(page, size);
         return this.service.getSlice(status, page, size);
     }

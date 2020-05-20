@@ -1,10 +1,7 @@
 package com.quetinkee.eshop.service;
 
-
-import com.quetinkee.eshop.dao.CategoryDao;
 import com.quetinkee.eshop.dao.InventoryDao;
-import com.quetinkee.eshop.model.Category;
-import com.quetinkee.eshop.model.Inventory;
+import com.quetinkee.eshop.model.FlowersInStock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,44 +25,31 @@ public class InventoryService {
     }
 
     @Transactional(readOnly = true)
-    public Inventory find(Integer id) {
-        Optional<Inventory> inventory = this.dao.findById(id);
+    public FlowersInStock find(Integer id) {
+        Optional<FlowersInStock> inventory = this.dao.findById(id);
         return inventory.isPresent() ? inventory.get() : null;
     }
 
     @Transactional(readOnly = true)
-    public Inventory find(Integer id, boolean activeOnly) {
-        if (activeOnly) return this.dao.findByIdAndActiveTrue(id);
-        return this.find(id);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Inventory> findAll(boolean active) {
-        if (active) return this.dao.findAllByActiveTrue();
-        return this.dao.findAll();
-    }
-
-    @Transactional(readOnly = true)
-    public Slice<Inventory> findAll(Integer pageNum, Integer pageSize, boolean active) {
+    public Slice<FlowersInStock> findAll(Integer pageNum, Integer pageSize) {
         Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("name"));
-        if (active) return this.dao.findAllByActiveTrue(paging);
         return this.dao.findAllBy(paging);
     }
 
     @Transactional
-    public void update(Inventory inventory) {
+    public void update(FlowersInStock inventory) {
         Objects.requireNonNull(inventory);
         this.dao.save(inventory);
     }
 
     @Transactional
-    public void delete (Inventory inventory) {
+    public void delete (FlowersInStock inventory) {
         Objects.requireNonNull(inventory);
         this.dao.delete(inventory);
     }
 
     @Transactional
-    public void persist(Inventory inventory) {
+    public void persist(FlowersInStock inventory) {
         Objects.requireNonNull(inventory);
         this.dao.save(inventory);
     }

@@ -127,6 +127,7 @@ public class Order extends AbstractEntity{
 
     public void addOrderItem(Bouquet bouquet, Integer quantity){
         Objects.requireNonNull(bouquet);
+        Objects.requireNonNull(quantity);
         if (this.contains == null) {
             this.contains = new HashSet<>();
         }
