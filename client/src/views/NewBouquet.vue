@@ -60,13 +60,13 @@
         <label>
           <span>Velikost </span>
           <div id='sizes'>
-            <span :class='{"checkbox-input": true, selected: selectedSize === "SMALL"}' @click='handleSizeClick("SMALL")'>
+            <span :class='{"checkbox-input": true, selected: selectedSize === "s"}' @click='handleSizeClick("s")'>
               Malá
             </span>
-            <span :class='{"checkbox-input": true, selected: selectedSize === "MEDIUM"}' @click='handleSizeClick("MEDIUM")'>
+            <span :class='{"checkbox-input": true, selected: selectedSize === "m"}' @click='handleSizeClick("m")'>
               Střední
             </span>
-            <span :class='{"checkbox-input": true, selected: selectedSize === "LARGE"}' @click='handleSizeClick("LARGE")'>
+            <span :class='{"checkbox-input": true, selected: selectedSize === "l"}' @click='handleSizeClick("l")'>
               Velká
             </span>
           </div>
@@ -122,9 +122,10 @@
         selectedFlowers: [],
         selectedFlower: '',
         selectedColors: [false, false, false, false, false, false, false, false, false, false],
-        selectedSize: null,
+        selectedSize: 'm',
       }
     },
+    props: ['id'],
     created() {
       this.loadData();
     },
@@ -142,6 +143,7 @@
     },
     methods: {
       async loadData() {
+        console.log(this.id);
         try {
           const promises = [];
           promises.push(axios({
@@ -152,6 +154,12 @@
             method: 'GET',
             url: '/api/flowers/list'
           }));
+          if (this.id) {
+            promises.push(axios({
+              method: 'GET',
+              url: `/api/bouquets/${this.id}`
+            }))
+          }
           const res = await Promise.all(promises);
           if (res[0].data) {
             this.categories = res[0].data;
@@ -159,21 +167,41 @@
           if (res[1].data) {
             this.flowers = res[1].data;
           }
+          if (res[2].data) {
+            this.loadBouquet(res[2].data);
+          }
         } catch(err) {
+          console.log(err);
           this.$store.dispatch('openModal', err.response.data.message);
         }
       },
-      async handleSubmit(event) {
+      loadBouquet(bouquetJson) {
+        console.log(bouquetJson);
+        this.bouquetName = bouquetJson.bouquet.name;
+        this.description = bouquetJson.bouquet.perex;
+        this.price = bouquetJson.bouquet.price;
+        this.selectedSize = bouquetJson.bouquet.size;
+        this.active = bouquetJson.bouquet.active;
+        this.selectedCategories = bouquetJson.keyCategories;
+        this.selectedCategories.map(String);
+        bouquetJson.keyColors.forEach(color => this.selectedColors[color] = true);
+        Object.getOwnPropertyNames(bouquetJson.keyFlowerCount).forEach(key => {
+          const selectedFlower = this.flowers.find(flower => flower.id === key);
+          selectedFlower.count = bouquetJson.keyFlowerCount[key];
+          this.selectedFlowers.push(selectedFlower);
+        })
+      },
+      handleSubmit(event) {
         event.stopPropagation();
         event.preventDefault();
+
         const bouquetJSON = JSON.stringify({
           bouquet: {
             name: this.bouquetName,
             perex: this.description,
             price: this.price,
             size: this.selectedSize,
-            active: true,
-            description: ""
+            active: true
           },
           keyCategories: this.selectedCategories.map(x => Number(x)),
           keyColors: this.selectedColors.reduce((out, bool, index) => bool ? out.concat(index) : out, []),
@@ -182,14 +210,36 @@
             return map;
           }, {})
         });
-        
+        console.log(bouquetJSON);
         const formData = new FormData();
         formData.append('bouquet', new Blob([bouquetJSON], { type: 'application/json' }));
         formData.append('blob', this.image);
+
+        if (this.id) {
+          this.updateBouquet(formData);
+        } else {
+          this.createBouquet(formData);
+        }
+      },
+      async createBouquet(formData) {
         try {
           await axios({
             method: 'POST',
             url: '/api/bouquets',
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            data: formData
+          });
+        } catch(err) {
+          this.$store.dispatch('openModal', err.response.data.message);
+        }
+      },
+      async updateBouquet(formData) {
+        try {
+          await axios({
+            method: 'PATCH',
+            url: `/api/bouquets/${this.id}`,
             headers: {
               'Content-Type': 'multipart/form-data'
             },

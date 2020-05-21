@@ -4,6 +4,7 @@
     <h2>Kytice</h2>
     <ul>
       <li @click='navigate("/admin/new-bouquet")'>Vytvořit novou kytici</li>
+      <li @click='navigate("/admin/manage-bouquets")'>Spravovat kytice</li>
       <li @click='navigate("/admin/manage-flowers")'>Spravovat květiny</li>
     </ul>
     <h2>Sklad</h2>

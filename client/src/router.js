@@ -14,6 +14,7 @@ import ManageStorage from "./views/ManageStorage";
 import DeliveryLayout from './views/DeliveryLayout';
 import ManageCategories from "./views/ManageCategories";
 import store from './store';
+import ManageBouquets from "./views/ManageBouquets";
 
 Vue.use(Router);
 
@@ -51,6 +52,13 @@ const router = new Router({
       component: AdminLayout,
       children: [
         {
+          path: 'manage-bouquets',
+          component: ManageBouquets,
+          meta: {
+            auth: AuthLevel.ADMIN
+          }
+        },
+        {
           path: 'manage-categories',
           component: ManageCategories,
           meta: {
@@ -74,6 +82,14 @@ const router = new Router({
         {
           path: 'new-bouquet',
           component: NewBouquet,
+          meta: {
+            auth: AuthLevel.ADMIN
+          },
+        },
+        {
+          path: 'edit-bouquet/:id',
+          component: NewBouquet,
+          props: true,
           meta: {
             auth: AuthLevel.ADMIN
           },
