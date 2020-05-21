@@ -120,7 +120,7 @@
         calendarData: {},
         calendarConfigs: {
           sundayStart: false,
-          dateFormat: 'dd.mm.yyyy',
+          dateFormat: 'yyyy-mm-dd',
           isDatePicker: true,
           isModal: true,
           disabledDates: ['beforeToday', 'afterToday + 5'],
@@ -282,7 +282,8 @@
         for (const item in this.items) {
           items[item] = this.items[item].count;
         }
-        const date = this.calendarData.selectedDate;
+        const date = new Date(this.calendarData.selectedDate.toString());
+
         try {
           const res = await axios({
             method: 'post',
@@ -294,7 +295,7 @@
                 userLastName: this.lastName,
                 userPhone: this.phone,
                 userMail: this.mail,
-                day: date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate(),
+                day: date,
                 time: this.calendarData.selectedHour + ':' + this.calendarData.selectedMinute + ':' + '00',
                 totalPrice: this.getTotal(),
                 userAddressDelivery: {
@@ -313,9 +314,11 @@
             }
           });
           this.step = 3;
-        } catch (err) {
-          this.$store.dispatch('openModal', err.response.data.message);
+          this.$store.dispatch('clearCart');
+        } catch (e) {
+          this.$store.dispatch('openModal', e.response.data.message);
         }
+
       }
     }
   }
