@@ -1,14 +1,14 @@
 <template>
   <div id="sidebar">
     <div id='fulltext-search'>
-      <input type='text' placeholder='Hledat podle názvu...'>
-      <div class='btn search-button'>
+      <input type='text' placeholder='Hledat podle názvu...' v-model="searchBox">
+      <div class='btn search-button' @click='fulltext'>
         <font-awesome-icon id='search-icon' icon='search'></font-awesome-icon>
       </div>
     </div>
     <h1>Kategorie</h1>
     <ul>
-      <li v-for='ctg in $store.getters.categories' :key='ctg.id'>{{ ctg.name }}</li>
+      <li v-for='ctg in $store.getters.categories' :key='ctg.id' @click='category(ctg.id)'>{{ ctg.name }}</li>
     </ul>
     <h1>Vyhledávání</h1>
     <h2>Cena</h2>
@@ -76,7 +76,7 @@
         <span slot="noResult">Květina nebyla nalezena...</span>
       </multiselect>
     </div>
-    <div class='btn'>Vyhledat</div>
+    <div class='btn' @click='filter'>Vyhledat</div>
   </div>
 </template>
 
@@ -89,6 +89,7 @@
     components: { Multiselect },
     data() {
       return {
+        searchBox: '',
         priceFrom: null,
         priceTo: null,
         selectedFlowers: [],
@@ -108,6 +109,36 @@
       },
       handleColorClick(color) {
         this.$set(this.selectedColors, color, !this.selectedColors[color]);
+      },
+      category(id) {
+        this.$store.commit('setSearch', {
+          category: id
+        });
+        this.navigate('/search');
+      },
+      navigate(path) {
+        if (this.$route.path !== path) this.$router.push(path);
+      },
+      fulltext() {
+        const term = this.searchBox.trim();
+        if (term.length === 0) {
+          this.$store.dispatch('openModal', "Vyhledávání nemůže být prázné");
+          return;
+        }
+        this.$store.commit('setSearch', {
+          fulltext: term
+        });
+        this.navigate('/search');
+      },
+      filter() {
+        this.$store.commit('setSearch', {
+          flowers: this.selectedFlowers.map(x => Number(x.id)),
+          priceFrom: this.priceFrom,
+          priceTo: this.priceTo,
+          sizes: this.selectedSizes,
+          colors: this.selectedColors.reduce((out, bool, index) => bool ? out.concat(index) : out, [])
+        });
+        this.navigate('/search');
       }
     },
     computed: {

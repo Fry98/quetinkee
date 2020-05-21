@@ -13,8 +13,9 @@ import ManageFlowers from "./views/ManageFlowers";
 import ManageStorage from "./views/ManageStorage";
 import DeliveryLayout from './views/DeliveryLayout';
 import ManageCategories from "./views/ManageCategories";
-import store from './store';
 import ManageBouquets from "./views/ManageBouquets";
+import Search from './views/Search';
+import store from './store';
 
 Vue.use(Router);
 
@@ -35,6 +36,10 @@ const router = new Router({
         {
           path: '',
           component: Home
+        },
+        {
+          path: 'search',
+          component: Search
         },
         {
           path: 'product/:id',

@@ -7,6 +7,7 @@ const store = new Vuex.Store({
   state: {
     error: null,
     user: null,
+    search: null,
     categories: [],
     flowers: [],
     sidebar: 0,
@@ -14,6 +15,7 @@ const store = new Vuex.Store({
   },
   getters: {
     error: state => state.error,
+    search: state => state.search,
     user: state => state.user,
     isLogged: state => state.user !== null,
     isAdmin: state => state.user !== null && state.user.role === 'ADMIN',
@@ -22,7 +24,7 @@ const store = new Vuex.Store({
     flowers: state => state.flowers,
     sidebar: state => state.sidebar,
     cart: state => state.cart,
-    fullName: state => state.user !== null ? `${state.user.firstName} ${state.user.lastName}` : null
+    fullName: state => state.user !== null ? `${state.user.firstName} ${state.user.lastName}` : null,
   },
   mutations: {
     setError(state, payload) {
@@ -52,6 +54,9 @@ const store = new Vuex.Store({
     },
     setCart(state, payload) {
       state.cart = payload;
+    },
+    setSearch(state, payload) {
+      state.search = payload;
     }
   },
   actions: {

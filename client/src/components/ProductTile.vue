@@ -34,7 +34,7 @@
       },
       img: {
         type: String,
-        default: 'https://scontent-prg1-1.xx.fbcdn.net/v/t31.0-8/10540718_754751824572827_1827493032372882352_o.jpg?_nc_cat=111&_nc_sid=09cbfe&_nc_ohc=iZJ41I_19K8AX_Pizj_&_nc_ht=scontent-prg1-1.xx&oh=ea1355171c59162a277006623e13b2d2&oe=5EE50E95'
+        default: 'https://images.pexels.com/photos/736230/pexels-photo-736230.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
       }
     },
     computed: {
