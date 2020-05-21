@@ -27,12 +27,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/shop/orders")
-@PreAuthorize("isAuthenticated()")
 public class ShopOrderController {
 
   @Autowired
   private OrderService orderService;
 
+  @PreAuthorize("isAuthenticated()")
   @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
   public Slice<OrderList> getOrdersSlice(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size, Authentication authentication) {
     User user = ((UserDetail) authentication.getDetails()).getUser();
@@ -46,11 +46,12 @@ public class ShopOrderController {
 
   @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity createOrder(@Valid @RequestBody OrderEdit order, Authentication authentication) {
-    User user = ((UserDetail) authentication.getDetails()).getUser();
+    User user = authentication != null && authentication.isAuthenticated() ? ((UserDetail) authentication.getDetails()).getUser() : null;
     this.orderService.createShop(order, user);
     return new ResponseEntity(order.getId(), HttpStatus.CREATED);
   }
 
+  @PreAuthorize("isAuthenticated()")
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Order getOrderDetail(@PathVariable("id") Integer id, Authentication authentication) {
     User user = ((UserDetail) authentication.getDetails()).getUser();

@@ -146,8 +146,8 @@ public class OrderService extends GenericAdminService<OrderDao, Order, OrderList
 
     public Order createShop(OrderEdit newData, User user) {
         Objects.requireNonNull(newData);
-        Objects.requireNonNull(user);
-        if (!Objects.equals(newData.getUserId(), user.getId()) || newData.getOrder().getStatus() != null) {
+
+        if (!Objects.equals(newData.getUserId(), user == null ? null : user.getId()) || newData.getOrder().getStatus() != null) {
             throw new ValidationException("Not allowed!");
         }
         return this.create(newData);
@@ -158,7 +158,7 @@ public class OrderService extends GenericAdminService<OrderDao, Order, OrderList
         Objects.requireNonNull(newData);
         Order order = newData.getOrder();
         this.updateItemCounts(order, newData.getKeyItemCount());
-        if (order.getUser() == null) {
+        if (order.getUser() == null && newData.getUserId() != null) {
             Optional<User> exist = this.userDao.findById(newData.getUserId());
             if (exist.isPresent()) order.setUser(exist.get());
             else throw new ValidationException("Neexistující uživatel");
@@ -170,7 +170,6 @@ public class OrderService extends GenericAdminService<OrderDao, Order, OrderList
     @Override
     public Order create(Order record) {
         Objects.requireNonNull(record);
-        if (record.getUser() == null) throw new ValidationException("Nebyl zadán zákazník");
         if (record.getStatus() == null) {
             record.setStatus(OrderStatus.NEW);
         }
