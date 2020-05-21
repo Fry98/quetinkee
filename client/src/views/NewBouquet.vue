@@ -20,7 +20,7 @@
         </label>
         <label>
           <span>Cena </span>
-          <input class='price' v-model='price' type='number' step='.01'>
+          <input class='price' v-model.number='price' type='number' step='.01'>
         </label>
         <label>
           <span>Barvy </span>
@@ -136,14 +136,12 @@
             !this.bouquetName ||
             !this.price ||
             !this.description ||
-            !this.image ||
             this.selectedSize === null ||
             !this.selectedColors.find(value => value === true);
       }
     },
     methods: {
       async loadData() {
-        console.log(this.id);
         try {
           const promises = [];
           promises.push(axios({
@@ -167,16 +165,14 @@
           if (res[1].data) {
             this.flowers = res[1].data;
           }
-          if (res[2].data) {
+          if (this.id && res[2].data) {
             this.loadBouquet(res[2].data);
           }
         } catch(err) {
-          console.log(err);
           this.$store.dispatch('openModal', err.response.data.message);
         }
       },
       loadBouquet(bouquetJson) {
-        console.log(bouquetJson);
         this.bouquetName = bouquetJson.bouquet.name;
         this.description = bouquetJson.bouquet.perex;
         this.price = bouquetJson.bouquet.price;
@@ -213,7 +209,9 @@
         console.log(bouquetJSON);
         const formData = new FormData();
         formData.append('bouquet', new Blob([bouquetJSON], { type: 'application/json' }));
-        formData.append('blob', this.image);
+        if (this.image) {
+          formData.append('blob', this.image);
+        }
 
         if (this.id) {
           this.updateBouquet(formData);
