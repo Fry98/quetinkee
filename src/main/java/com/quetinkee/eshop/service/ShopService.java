@@ -27,6 +27,7 @@ import com.quetinkee.eshop.dao.ReviewDao;
 import com.quetinkee.eshop.model.Review;
 import com.quetinkee.eshop.model.Review_;
 import com.quetinkee.eshop.model.User;
+import com.quetinkee.eshop.model.projection.BouquetListFixForConverter;
 import com.quetinkee.eshop.model.projection.OptionList;
 import com.quetinkee.eshop.utils.helpers.BouquetDetail;
 import com.quetinkee.eshop.model.projection.ReviewList;
@@ -160,7 +161,7 @@ public class ShopService {
     return this.reviewDao.findAllByBouquet(bouquet, paging);
   }
 
-  public Slice<BouquetList> getSeachResults(Integer id, String find, Integer pageNum, Integer pageSize, boolean showAll) throws ResponseStatusException {
+  public Slice<BouquetListFixForConverter> getSeachResults(Integer id, String find, Integer pageNum, Integer pageSize, boolean showAll) throws ResponseStatusException {
     List<Integer> keys = this.searchRabbit.find(find);
     if (keys == null) throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Služba dočasně nedostupná");
 
@@ -168,6 +169,7 @@ public class ShopService {
     if (keys.size() > 0) {
       String order = keys.toString();
       order = ',' + order.substring(1, order.length()-1) + ',';
+      if (id == null) id = 0;
       return this.bouquetDao.findAllByActiveAndIdInAndCategoriesId(showAll, id, keys, order, paging);
     }
     return new SliceImpl<>(new ArrayList<>(), paging, false);

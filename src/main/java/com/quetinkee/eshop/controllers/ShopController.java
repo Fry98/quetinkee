@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.quetinkee.eshop.model.projection.BouquetList;
+import com.quetinkee.eshop.model.projection.BouquetListFixForConverter;
 import com.quetinkee.eshop.service.security.UserDetail;
 import com.quetinkee.eshop.utils.helpers.ReviewSubmit;
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,7 @@ public class ShopController {
   }
 
   @GetMapping(value = {"/search","/search/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-  public Slice<BouquetList> getSearchResults(@PathVariable(name = "id", required = false) Integer id, @RequestParam(required = true, name = "q") String find, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size, Authentication authentication) {
+  public Slice<BouquetListFixForConverter> getSearchResults(@PathVariable(name = "id", required = false) Integer id, @RequestParam(required = true, name = "q") String find, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer size, Authentication authentication) {
     return this.shopService.getSeachResults(id, find, page, size, this.isAdmin(authentication));
   }
 
