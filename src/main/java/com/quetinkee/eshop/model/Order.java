@@ -22,6 +22,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "ORDERS")
@@ -58,6 +59,7 @@ public class Order extends AbstractEntity{
     private String userLastName;
 
     @NotBlank(message = "Telefonní číslo je povinná položka")
+    @Pattern(regexp = "^[0-9]{9}$", message = "Neplatné telefonní číslo")
     @Column(nullable = false)
     private String userPhone;
 

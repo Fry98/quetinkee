@@ -3,6 +3,7 @@ package com.quetinkee.eshop.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "USERS_ADDRESS")
@@ -20,6 +21,7 @@ public class Address extends AbstractEntity {
   private String city;
 
   @NotBlank(message = "PSČ je povinná položka")
+  @Pattern(regexp = "^[0-9]{5}$", message = "Neplatné směrovací číslo")
   @Basic(optional = false)
   @Column(nullable = false)
   private String zip;

@@ -68,7 +68,7 @@ public class SystemInitializer {
     admin.setLastName("Surname");
     admin.setMail(mailAdmin);
     admin.setPassword("heslo");
-    admin.setPhone("123456");
+    admin.setPhone("123456789");
     admin.setRole(Role.ADMIN);
     admin.setAddressDelivery(new Address("Street", "City", "12345"));
     this.userService.create(admin);

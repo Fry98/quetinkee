@@ -160,8 +160,6 @@ public class Storage {
         return output;
     }
 
-
-
     /**
      * Information for detail
      * @param flowers
@@ -180,11 +178,11 @@ public class Storage {
 
         Integer current;
         for (FlowersInStock stock : storage) {
-          current = (stock.getCount() - stock.getReserved()) / map.get(stock.getFlower().getId());
-          if (min > current) {
-            min = current;
-            if (min <= 0) return 0;
-          }
+            current = (stock.getCount() - stock.getReserved()) / map.get(stock.getFlower().getId());
+            if (min > current) {
+                min = current;
+                if (min <= 0) return 0;
+            }
         }
         return min;
     }
@@ -217,8 +215,8 @@ public class Storage {
 
     private boolean haveEverythingInStock(Set<FlowersInStock> storage, Map<Integer,Integer> flowers) {
         for (Map.Entry<Integer, Integer> flower : flowers.entrySet()) {
-          Optional<FlowersInStock> stock = storage.stream().filter(item -> item.getFlower().getId() == flower.getKey()).findFirst();
-          if (!stock.isPresent() || (stock.get().getCount() - stock.get().getReserved()) < flower.getValue()) return false;
+            Optional<FlowersInStock> stock = storage.stream().filter(item -> item.getFlower().getId() == flower.getKey()).findFirst();
+            if (!stock.isPresent() || (stock.get().getCount() - stock.get().getReserved()) < flower.getValue()) return false;
         }
         return true;
     }

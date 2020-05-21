@@ -30,7 +30,7 @@ public class UserService extends GenericAdminService<UserDao, User, UserList> {
   }
 
   public boolean checkPassword(String password) {
-    return !password.isEmpty() && password.length() > 5;
+    return !password.isEmpty() && password.length() >= 5;
   }
 
   public void encodePassword(User user) {
@@ -70,13 +70,14 @@ public class UserService extends GenericAdminService<UserDao, User, UserList> {
   @Override
   public User create(User user) {
     Objects.requireNonNull(user);
-    this.encodePassword(user);
     if (!this.checkPassword(user.getPassword())) {
       throw new ValidationException("Zadejte heslo");
     }
     if (this.isRegistred(user.getMail())) {
       throw new ValidationException("Uživatel se zadaným e-mailem je již registrován");
     }
+
+    this.encodePassword(user);
     if (user.getRole() == null) {
       user.setRole(Role.USER);
     }

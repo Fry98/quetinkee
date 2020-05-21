@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "USERS")
@@ -37,6 +38,7 @@ public class User extends AbstractEntity {
   private String password;
 
   @NotBlank(message = "Telefonní číslo je povinná položka")
+  @Pattern(regexp = "^[0-9]{9}$", message = "Neplatné telefonní číslo")
   @Basic(optional = false)
   @Column(nullable = false)
   private String phone;
