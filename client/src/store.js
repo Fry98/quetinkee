@@ -96,6 +96,10 @@ const store = new Vuex.Store({
     removeFromCart(context, payload) {
       context.commit('removeFromCart', payload);
       localStorage.setItem('cart', JSON.stringify(context.getters.cart));
+    },
+    updateCart(context, payload) {
+      context.commit('setCart', payload);
+      localStorage.setItem('cart', JSON.stringify(context.getters.cart));
     }
   }
 });

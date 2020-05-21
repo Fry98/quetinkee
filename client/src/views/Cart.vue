@@ -12,7 +12,7 @@
           </div>
           <div class="right">
             <span class="price">{{(item.price * item.count).toFixed(2)}}&nbsp;Kč</span>
-            <counter v-model="item.count" class="counter"/>
+            <counter v-model="item.count" class="counter" @input="updateQuantity"/>
             <span class="delete" @click="remove(item.id)">
             <font-awesome-icon icon="times"/>
           </span>
@@ -183,6 +183,9 @@
           item.oldCount = 1;
         }
       },
+      updateQuantity() {
+        this.$store.dispatch('updateCart', this.items);
+      },
       remove(id) {
         this.$store.dispatch('removeFromCart', id);
         delete this.items[id];
@@ -195,7 +198,7 @@
           total += this.items[item].price * this.items[item].count;
         }
 
-        return total;
+        return total.toFixed(2);
       },
       nextStep(step) {
         switch (step) {
