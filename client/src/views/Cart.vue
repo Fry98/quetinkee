@@ -11,7 +11,7 @@
             <span class="name">{{item.name}}</span>
           </div>
           <div class="right">
-            <span class="price">{{item.price * item.count}}&nbsp;Kč</span>
+            <span class="price">{{(item.price * item.count).toFixed(2)}}&nbsp;Kč</span>
             <counter v-model="item.count" class="counter"/>
             <span class="delete" @click="remove(item.id)">
             <font-awesome-icon icon="times"/>
