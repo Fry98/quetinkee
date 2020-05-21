@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class Storage {
 
+    private final Integer max = 10;
+
     private final InventoryDao inventoryDao;
     private final BouquetDao bouquetDao;
     private final FlowerDao flowerDao;
@@ -37,6 +39,7 @@ public class Storage {
     public void reserveFlowers(Set<OrderItem> items) {
         Objects.requireNonNull(items);
         Map<Integer,Integer> flowers = this.getFlowerCounts(items);
+        if(flowers.isEmpty()) return;
 
         // reserve existing flowers
         Set<FlowersInStock> storage = this.inventoryDao.findAllByFlowerIdIn(flowers.keySet());
@@ -64,6 +67,7 @@ public class Storage {
     public void freeFlowers(Set<OrderItem> items) {
         Objects.requireNonNull(items);
         Map<Integer,Integer> flowers = this.getFlowerCounts(items);
+        if(flowers.isEmpty()) return;
 
         Set<FlowersInStock> storage = this.inventoryDao.findAllByFlowerIdIn(flowers.keySet());
         for (FlowersInStock stock : storage) {
@@ -76,6 +80,7 @@ public class Storage {
     public void consumeFlowers(Set<OrderItem> items) {
         Objects.requireNonNull(items);
         Map<Integer,Integer> flowers = this.getFlowerCounts(items);
+        if(flowers.isEmpty()) return;
 
         Set<FlowersInStock> storage = this.inventoryDao.findAllByFlowerIdIn(flowers.keySet());
         for (FlowersInStock stock : storage) {
@@ -93,49 +98,65 @@ public class Storage {
         return this.itemsInStock(bouquets);
     }
 
-    /**
-     * Return null if its everything in storage
-     * @param bouquets
-     * @return
-     */
+
     @Transactional(readOnly = true)
     public Map<Integer,Integer> itemsInStock(Map<Integer,Integer> bouquets) {
         Objects.requireNonNull(bouquets);
 
+        Map<Integer,Integer> output = new HashMap<>();
         Set<BouquetFlowerCountList> counters = this.bouquetDao.findCountsAllByIdIn(bouquets.keySet());
         Map<Integer,Integer> flowers = this.getFlowerTotalCounts(counters, bouquets);
         Set<FlowersInStock> storage = this.inventoryDao.findAllByFlowerIdIn(flowers.keySet());
 
-        // check if everything is in storage
-        if (this.haveEverythingInStock(storage, flowers)) return null;
+        // check if everything is in storage - if so add to output
+        if (this.haveEverythingInStock(storage, flowers)) {
+            for (FlowersInStock stock : storage) {
+                stock.addReserved(flowers.get(stock.getFlower().getId()));
+            }
+            output.putAll(bouquets);
+            bouquets.clear();
+        }
 
-        // else try count possible bouquets
-        Map<Integer,Integer> output = new HashMap<>();
+        // else try count possible demanded bouquets
         while (!bouquets.isEmpty()) {
             boolean found = false;
 
-          Iterator<Map.Entry<Integer, Integer>> it = bouquets.entrySet().iterator();
-          while (it.hasNext()) {
-              Map.Entry<Integer, Integer> bouquet = it.next();
+            Iterator<Map.Entry<Integer, Integer>> it = bouquets.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Integer, Integer> bouquet = it.next();
 
-
-//          for (Map.Entry<Integer, Integer> bouquet : bouquets.entrySet()) {
-              Set<BouquetFlowerCountList> flowersInBouquet = counters.stream().filter(item -> item.getBouquetId() == bouquet.getKey()).collect(Collectors.toSet());
-              if (this.tryConsume(flowersInBouquet, storage)) {
-                  if (output.containsKey(bouquet.getKey())) {
-                      output.put(bouquet.getKey(), output.get(bouquet.getKey()) + 1);
-                  }
-                  else {
-                      output.put(bouquet.getKey(), 1);
-                  }
-                  bouquets.replace(bouquet.getKey(), bouquet.getValue() - 1);
-                  if (bouquets.get(bouquet.getKey()) == 0) it.remove();
-                  found = true;
-              }
-          }
-
-          if (found == false) break;
+                Set<BouquetFlowerCountList> flowersInBouquet = counters.stream().filter(item -> item.getBouquetId() == bouquet.getKey()).collect(Collectors.toSet());
+                if (this.tryConsume(flowersInBouquet, storage)) {
+                    if (output.containsKey(bouquet.getKey())) {
+                        output.replace(bouquet.getKey(), output.get(bouquet.getKey()) + 1);
+                    }
+                    else {
+                        output.put(bouquet.getKey(), 1);
+                    }
+                    bouquet.setValue(bouquet.getValue() - 1);
+                    if (bouquet.getValue() == 0) it.remove();
+                    found = true;
+                }
+            }
+            if (found == false) break;
         }
+
+        // then stock up rest
+        while (true) {
+            boolean found = false;
+
+            for (Map.Entry<Integer, Integer> bouquet : output.entrySet()) {
+                if (bouquet.getValue() < this.max) {
+                    Set<BouquetFlowerCountList> flowersInBouquet = counters.stream().filter(item -> item.getBouquetId() == bouquet.getKey()).collect(Collectors.toSet());
+                    if (this.tryConsume(flowersInBouquet, storage)) {
+                        bouquet.setValue(bouquet.getValue() + 1);
+                        found = true;
+                    }
+                }
+            }
+            if (found == false) break;
+        }
+
         return output;
     }
 
@@ -150,7 +171,7 @@ public class Storage {
     public Integer countBouquetsInStock(Set<BouquetFlowerCount> flowers) {
         Objects.requireNonNull(flowers);
 
-        Integer min = 10;
+        Integer min = this.max;
         Map<Integer,Integer> map = new HashMap<>();
         flowers.forEach(item -> { map.put(item.getFlower().getId(), item.getCount()); });
 
@@ -159,7 +180,6 @@ public class Storage {
 
         Integer current;
         for (FlowersInStock stock : storage) {
-          System.out.println(stock.getCount() + " - " + stock.getReserved() + " / " + map.get(stock.getFlower().getId()));
           current = (stock.getCount() - stock.getReserved()) / map.get(stock.getFlower().getId());
           if (min > current) {
             min = current;
@@ -185,11 +205,8 @@ public class Storage {
     private Map<Integer,Integer> getFlowerTotalCounts(Set<BouquetFlowerCountList> counters, Map<Integer,Integer> map) {
         Map<Integer,Integer> flowers = new HashMap<>();
         for (BouquetFlowerCountList item : counters) {
-          System.out.println(item);
-          System.out.println(item.getBouquetId() + " x " + item.getCount() + " x " + item.getBouquetId());
-          System.out.println("map " + map.get(item.getBouquetId()));
             if (flowers.containsKey(item.getFlowerId())) {
-                flowers.put(item.getFlowerId(), flowers.get(item.getFlowerId()) + (item.getCount() * map.get(item.getBouquetId())));
+                flowers.replace(item.getFlowerId(), flowers.get(item.getFlowerId()) + (item.getCount() * map.get(item.getBouquetId())));
             }
             else {
                 flowers.put(item.getFlowerId(), item.getCount() * map.get(item.getBouquetId()));
