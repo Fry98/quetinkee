@@ -184,6 +184,7 @@
         }
       },
       remove(id) {
+        this.$store.dispatch('removeFromCart', id);
         delete this.items[id];
         this.$forceUpdate();
       },
