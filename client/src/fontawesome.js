@@ -19,6 +19,7 @@ import {
   faCheck,
   faStar,
   faPlus,
+  faPen,
   faMinus,
   faTimes,
   faUsersCog,
@@ -40,6 +41,7 @@ library.add(faCheck);
 library.add(faStar);
 library.add(faStarRegular);
 library.add(faPlus);
+library.add(faPen);
 library.add(faMinus);
 library.add(faTrashAlt);
 library.add(faTimes);
