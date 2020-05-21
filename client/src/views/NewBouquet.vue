@@ -2,7 +2,7 @@
   <div id='new-bouquet'>
     <div class='nb-wrap'>
       <form @submit='handleSubmit($event)'>
-        <h1>Nová kytice</h1>
+        <h1>{{ this.id ? 'Úprava' : 'Nová' }} kytice</h1>
         <label>
           <span>Název </span>
           <input v-model='bouquetName' type='text'>
@@ -122,12 +122,17 @@
         selectedFlowers: [],
         selectedFlower: '',
         selectedColors: [false, false, false, false, false, false, false, false, false, false],
-        selectedSize: 'm',
+        selectedSize: '',
       }
     },
     props: ['id'],
     created() {
       this.loadData();
+    },
+    watch: {
+      id() {
+        this.deleteAllFields();
+      }
     },
     computed: {
       saveIsDisabled() {
@@ -135,6 +140,7 @@
             this.selectedCategories.length < 1 ||
             !this.bouquetName ||
             !this.price ||
+            (!this.id && !this.image) ||
             !this.description ||
             this.selectedSize === null ||
             !this.selectedColors.find(value => value === true);
@@ -159,13 +165,9 @@
             }))
           }
           const res = await Promise.all(promises);
-          if (res[0].data) {
-            this.categories = res[0].data;
-          }
-          if (res[1].data) {
-            this.flowers = res[1].data;
-          }
-          if (this.id && res[2].data) {
+          this.categories = res[0].data;
+          this.flowers = res[1].data;
+          if (this.id) {
             this.loadBouquet(res[2].data);
           }
         } catch(err) {
@@ -218,6 +220,7 @@
         } else {
           this.createBouquet(formData);
         }
+        this.deleteAllFields();
       },
       async createBouquet(formData) {
         try {
@@ -280,6 +283,17 @@
         } else {
           this.selectedCategories.push(category.id);
         }
+      },
+      deleteAllFields() {
+        this.bouquetName = '';
+        this.price = null;
+        this.selectedCategories = [];
+        this.description = '';
+        this.image = null;
+        this.selectedFlowers = [];
+        this.selectedFlower = '';
+        this.selectedColors = [false, false, false, false, false, false, false, false, false, false];
+        this.selectedSize = '';
       }
     }
   }

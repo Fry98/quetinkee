@@ -89,7 +89,6 @@
           if (res.status === 200) {
             const removeIndex = this.flowers.findIndex(flower => flower.id === this.toRemove);
             this.flowers.splice(removeIndex, 1);
-            alert("Smazáno");
           }
         } catch(err) {
           this.$store.dispatch('openModal', err.response.data.message);

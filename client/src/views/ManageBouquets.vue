@@ -9,11 +9,13 @@
           <span>{{ bouquet.name }}</span>
           <div class='actions'>
             <font-awesome-icon
+                title='Upravit'
                 class='icon edit-icon'
                 icon='pen'
                 @click='$router.push(`/admin/edit-bouquet/${bouquet.id}`)'
             ></font-awesome-icon>
             <font-awesome-icon
+                title='Smazat'
                 class='icon remove-icon'
                 :icon="['far', 'trash-alt']"
                 @click='handleRemoveClick(bouquet)'
