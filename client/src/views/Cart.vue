@@ -2,11 +2,12 @@
   <div class="all">
     <div class="cart" v-if="step === 1">
       <h2 class="text-center">1. Košík</h2>
-
       <div class="items">
         <div class="item" v-for="item in items" :key="item.id">
           <div class="left">
-            <div class="image"></div>
+            <div class="image">
+              <img :src="item.img" alt=""/>
+            </div>
             <span class="name">{{item.name}}</span>
           </div>
           <div class="right">
@@ -43,8 +44,8 @@
           <div class="payment">
             Platba:
             <select v-model="payment">
-              <option v-bind:value="{ card: 'Platba kartou' }">Platba kartou</option>
-              <option v-bind:value="{ cash: 'Hotově' }">Hotově</option>
+              <option v-bind:value="{ value: 'card', text: 'Platba kartou' }">Platba kartou</option>
+              <option v-bind:value="{ value: 'cash', text: 'Hotově' }">Hotově</option>
             </select>
           </div>
         </div>
@@ -103,6 +104,7 @@
   import Counter from "../components/Counter";
   import {FunctionalCalendar} from 'vue-functional-calendar';
   import GeneralInput from "../components/GeneralInput";
+  import axios from "axios";
 
   export default {
     components: {
@@ -113,36 +115,7 @@
     data() {
       const user = this.$store.getters.user;
       return {
-        items: {
-          0: {
-            id: 0,
-            name: 'Název kytice',
-            price: 249,
-            count: 1,
-            oldCount: 1
-          },
-          1: {
-            id: 1,
-            name: 'Bezva kytice',
-            price: 549,
-            count: 1,
-            oldCount: 1
-          },
-          2: {
-            id: 2,
-            name: 'Super kytice',
-            price: 749,
-            count: 1,
-            oldCount: 1
-          },
-          3: {
-            id: 3,
-            name: 'Pěkná kytice',
-            price: 349,
-            count: 1,
-            oldCount: 1
-          }
-        },
+        items: {},
         step: 1,
         calendarData: {},
         calendarConfigs: {
@@ -171,6 +144,9 @@
         billingIsSame: user ? user.addressBilling === null : true,
         termsAndConditions: false
       }
+    },
+    async mounted() {
+      this.items = this.$store.state.cart;
     },
     watch: {
       count() {
@@ -276,26 +252,65 @@
                 return;
               }
 
-              if(this.billingStreet.trim().length === 0){
+              if (this.billingStreet.trim().length === 0) {
                 this.$store.dispatch('openModal', 'Zadejte ulici a č.p. pro fakturaci');
                 return;
               }
 
-              if(this.billingZip.trim().length === 0){
+              if (this.billingZip.trim().length === 0) {
                 this.$store.dispatch('openModal', 'Zadejte PSČ pro fakturaci');
                 return;
               }
             }
 
-            if(!this.termsAndConditions){
+            if (!this.termsAndConditions) {
               this.$store.dispatch('openModal', 'Musíte souhlasit s obchodními podmínkami');
               return;
             }
-
-            this.step = 3;
+            this.createOrder();
             break;
           default:
             break;
+        }
+      },
+      async createOrder() {
+        let items = {};
+        for (const item in this.items) {
+          items[item] = this.items[item].count;
+        }
+        const date = this.calendarData.selectedDate;
+        try {
+          const res = await axios({
+            method: 'post',
+            url: '/api/shop/orders',
+            data: {
+              order: {
+                payment: this.payment.value,
+                userFirstName: this.firstName,
+                userLastName: this.lastName,
+                userPhone: this.phone,
+                userMail: this.mail,
+                day: date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate(),
+                time: this.calendarData.selectedHour + ':' + this.calendarData.selectedMinute + ':' + '00',
+                totalPrice: this.getTotal(),
+                userAddressDelivery: {
+                  street: this.street,
+                  city: this.city,
+                  zip: this.zip
+                },
+                userAddressBilling: this.billingIsSame ? null : {
+                  street: this.billingStreet,
+                  city: this.billingCity,
+                  zip: this.billingZip
+                }
+              },
+              userId: this.$store.getters.user.id,
+              keyItemCount: items
+            }
+          });
+          this.step = 3;
+        } catch (err) {
+          this.$store.dispatch('openModal', err.response.data.message);
         }
       }
     }
@@ -358,8 +373,13 @@
           .image {
             width: 180px;
             height: 120px;
-            background-color: #f00;
+            background-color: $almostWhite;
             margin-right: 15px;
+
+            img {
+              width: 100%;
+              height: 100%;
+            }
           }
 
         }
@@ -409,7 +429,7 @@
       }
 
       .total, .button {
-        width: 250px;
+        width: 300px;
       }
     }
   }
