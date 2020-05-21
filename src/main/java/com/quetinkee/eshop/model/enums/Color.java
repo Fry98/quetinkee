@@ -24,7 +24,7 @@ public enum Color {
 
   static {
     for (Color val : Color.values()) {
-      map.put(val.toString(), val);
+      map.put(val.getValue(), val);
     }
   }
 
