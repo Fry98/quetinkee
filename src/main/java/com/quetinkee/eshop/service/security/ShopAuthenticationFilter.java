@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -38,12 +39,11 @@ public class ShopAuthenticationFilter extends UsernamePasswordAuthenticationFilt
    * @param request
    * @param response
    * @return
-   * @throws AuthenticationException 
+   * @throws AuthenticationException
    */
   @Override
   public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-
-    if (request.getContentType().contains("json")) {
+    if (request.getContentType() != null && request.getContentType().contains("json")) {
       try {
         StringBuilder sb = new StringBuilder();
         String line;
@@ -60,7 +60,7 @@ public class ShopAuthenticationFilter extends UsernamePasswordAuthenticationFilt
         this.json = true;
       }
       catch (IOException ex) {
-        Logger.getLogger(ShopAuthenticationFilter.class.getName()).log(Level.INFO, null, ex);
+        LoggerFactory.getLogger(ShopAuthenticationFilter.class).info(ex.getMessage());
       }
     }
     return super.attemptAuthentication(request, response);

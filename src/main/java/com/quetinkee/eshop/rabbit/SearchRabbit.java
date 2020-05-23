@@ -4,6 +4,7 @@ import com.quetinkee.eshop.model.Bouquet;
 import java.util.HashMap;
 import java.util.List;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,7 @@ public class SearchRabbit {
       return rest.getForObject("http://localhost:4200/api/search?q={find}", List.class, params);
     }
     catch (RestClientException ex) {
-      // TODO: convert to log?
-      System.out.println("Search offline: " + ex.getMessage());
+      LoggerFactory.getLogger(SearchRabbit.class).warn(ex.getMessage());
     }
     return null;
   }

@@ -62,7 +62,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .and()
         .addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         .formLogin()
-        .loginPage("/login")
       .and()
         .logout()
         .invalidateHttpSession(true)

@@ -5,6 +5,7 @@ import com.quetinkee.eshop.utils.ErrorMessage;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -24,6 +25,12 @@ public class ExeptionHandler {
   @ExceptionHandler(JsonMappingException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorMessage handleJsonException(JsonMappingException ce) {
+     return new ErrorMessage(ce.getMessage());
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public ErrorMessage handleJsonException(AccessDeniedException ce) {
      return new ErrorMessage(ce.getMessage());
   }
 
