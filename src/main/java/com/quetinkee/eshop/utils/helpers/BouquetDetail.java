@@ -3,7 +3,9 @@ package com.quetinkee.eshop.utils.helpers;
 import com.quetinkee.eshop.model.Bouquet;
 import java.io.Serializable;
 
-
+/**
+ * Support class for bouquet detail with rating and inventory info
+ */
 public class BouquetDetail implements Serializable {
 
   private final Bouquet bouquet;

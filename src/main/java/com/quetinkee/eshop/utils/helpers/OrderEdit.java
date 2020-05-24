@@ -10,7 +10,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import org.springframework.web.server.ResponseStatusException;
 
-
+/**
+ * Support class for creating order
+ */
 public class OrderEdit implements Serializable {
 
   @Valid

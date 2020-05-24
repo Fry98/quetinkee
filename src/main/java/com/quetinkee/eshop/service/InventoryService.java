@@ -1,7 +1,11 @@
 package com.quetinkee.eshop.service;
 
 import com.quetinkee.eshop.dao.InventoryDao;
+import com.quetinkee.eshop.model.Flower_;
 import com.quetinkee.eshop.model.FlowersInStock;
+import com.quetinkee.eshop.model.projection.FlowersInStockList;
+import com.quetinkee.eshop.model.projection.FlowersToRestockList;
+import com.quetinkee.eshop.utils.helpers.FlowerSInStockEdit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,9 +14,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class InventoryService {
@@ -31,8 +35,13 @@ public class InventoryService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<FlowersInStock> findAll(Integer pageNum, Integer pageSize) {
-        Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by("name"));
+    public Set<FlowersToRestockList> getWhatRestock() {
+        return this.dao.findRestockAll(Sort.by(Flower_.NAME));
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<FlowersInStockList> findAll(Integer pageNum, Integer pageSize) {
+        Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Flower_.NAME));
         return this.dao.findAllBy(paging);
     }
 
@@ -53,5 +62,9 @@ public class InventoryService {
         Objects.requireNonNull(inventory);
         this.dao.save(inventory);
     }
+
+  public Set<FlowersInStockList> updateStock(Set<FlowerSInStockEdit> newStock) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }
 
