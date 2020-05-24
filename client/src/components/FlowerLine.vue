@@ -21,14 +21,12 @@
       }
     },
     watch: {
-      'strCount': {
-        handler(newVal, oldVal) {
-          if (/^[0-9]{0,3}$/.test(newVal)) {
-            this.flower.count = parseFloat(newVal);
-            this.$emit('count-change', this.flower);
-          } else {
-            this.strCount = oldVal;
-          }
+      strCount(newVal, oldVal) {
+        if (/^[0-9]{0,3}$/.test(newVal)) {
+          this.flower.count = parseFloat(newVal);
+          this.$emit('count-change', this.flower);
+        } else {
+          this.strCount = oldVal;
         }
       }
     },
