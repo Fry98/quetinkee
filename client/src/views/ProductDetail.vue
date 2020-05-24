@@ -103,6 +103,7 @@
         this.desc = res.data.bouquet.perex;
         this.price = res.data.bouquet.price;
         this.stars = res.data.rating !== null ? Math.round(res.data.rating) : null;
+        this.img = res.data.bouquet.path !== null ? `/${res.data.bouquet.path}/${res.data.bouquet.image}` : null;
         this.stock = res.data.storage;
       } catch (e) {
         this.$router.push('/');
@@ -128,11 +129,11 @@
         }
       },
       bgImage() {
-        if (this.img === null) {
-          return {
-            background: '#C4C4C4'
-          };
-        }
+        return this.img === null ? {
+          "background-color": '#C4C4C4'
+        } : {
+          "background-image": `url("${this.img}")`
+        };
       }
     },
     methods: {
@@ -210,6 +211,8 @@
         height: 370px;
         padding-right: 1rem;
         flex-shrink: 0;
+        background-position: center center ;
+        background-size: cover;
 
         img {
           width: 100%;

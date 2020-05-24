@@ -34,12 +34,16 @@
       },
       img: {
         type: String,
-        default: 'https://images.pexels.com/photos/736230/pexels-photo-736230.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+        required: true
       }
     },
     computed: {
       style() {
-        return `background-image: url(${this.img});`;
+        return this.img === null ? {
+          'background-color': '#C4C4C4'
+        } : {
+          'background-image': `url(${this.img}`
+        };
       },
       inCart() {
         return this.$store.getters.cart[this.id] !== undefined;

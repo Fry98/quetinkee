@@ -1,10 +1,13 @@
 <template>
   <div id="sidebar">
     <div id='fulltext-search'>
-      <input type='text' placeholder='Hledat podle názvu...' v-model="searchBox">
-      <div class='btn search-button' @click='fulltext'>
-        <font-awesome-icon id='search-icon' icon='search'></font-awesome-icon>
-      </div>
+      <form @submit.prevent='fulltext'>
+        <input type='text' placeholder='Hledat podle názvu...' v-model="searchBox">
+        <div class='btn search-button' @click="$refs.submit.click()">
+          <font-awesome-icon id='search-icon' icon='search'></font-awesome-icon>
+        </div>
+        <input type="submit" ref='submit'>
+      </form>
     </div>
     <h1>Kategorie</h1>
     <ul>
@@ -13,7 +16,7 @@
     <h1>Vyhledávání</h1>
     <h2>Cena</h2>
     <div id='price'>
-      <input type='number' placeholder='Od' v-model='priceFrom'> - <input type='number' placeholder='Do' v-model='priceTo'>
+      <input type='text' placeholder='Od' v-model='priceFrom'> - <input type='text' placeholder='Do' v-model='priceTo'>
     </div>
     <h2>Velikost</h2>
     <div id='sizes'>
@@ -90,8 +93,8 @@
     data() {
       return {
         searchBox: '',
-        priceFrom: null,
-        priceTo: null,
+        priceFrom: '',
+        priceTo: '',
         selectedFlowers: [],
         selectedSizes: [false, false, false],
         selectedColors: [false, false, false, false, false, false, false, false, false, false],
@@ -119,7 +122,7 @@
       navigate(path) {
         if (this.$route.path !== path) this.$router.push(path);
       },
-      fulltext() {
+      fulltext(e) {
         const term = this.searchBox.trim();
         if (term.length === 0) {
           this.$store.dispatch('openModal', "Vyhledávání nemůže být prázné");
@@ -131,6 +134,10 @@
         this.navigate('/search');
       },
       filter() {
+        if (!(/^[0-9]{0,6}$/.test(this.priceFrom) && /^[0-9]{0,6}$/.test(this.priceTo))) {
+          this.$store.dispatch('openModal', "Neplatný cenový rozsah");
+          return;
+        }
         this.$store.commit('setSearch', {
           flowers: this.selectedFlowers.map(x => Number(x.id)),
           priceFrom: this.priceFrom,
@@ -273,9 +280,6 @@
   }
 
   #fulltext-search {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
     margin-bottom: 5px;
     input[type='text'] {
       width: 75%;
@@ -285,12 +289,20 @@
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
       margin-right: 8px;
     }
+    input[type='submit'] {
+      display: none;
+    }
     .search-button {
       height: 37px;
       width: 37px;
       border-radius: 100%;
       padding: 0;
       font-size: .9em;
+    }
+    form {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
     }
   }
 

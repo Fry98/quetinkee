@@ -12,7 +12,8 @@ module.exports = {
   configureWebpack: {
     devServer: {
       proxy: {
-        '/api': {target: 'http://localhost'}
+        '/api': { target: 'http://localhost' },
+        '/uploads': { target: 'http://localhost' }
       }
     }
   }

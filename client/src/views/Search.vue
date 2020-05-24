@@ -7,7 +7,7 @@
     infinite-scroll-listen-for-event='checkScroll'
   >
     <div class='card' v-for='item in items' :key='item.id'>
-      <product-tile :name='item.name' :price='Number(item.price)' :id='item.id'></product-tile>
+      <product-tile :name='item.name' :price='Number(item.price)' :id='item.id' :img='getImage(item)'></product-tile>
     </div>
     <div class='loading' v-if='!last'>Loading...</div>
     <div class='loading' v-if='last && items.length === 0'>Žádné nalezené záznamy</div>
@@ -16,7 +16,7 @@
 
 <script>
   import ProductTile from '../components/ProductTile';
-  import axios from 'axios';
+  import axios, { CancelToken } from 'axios';
 
   export default {
     components: {
@@ -27,7 +27,8 @@
         items: [],
         page: 0,
         last: false,
-        loading: false
+        loading: false,
+        cancelToken: CancelToken.source()
       };
     },
     computed: {
@@ -44,6 +45,8 @@
         this.page = 0;
         this.last = false;
         this.loading = false;
+        this.cancelToken.cancel();
+        this.cancelToken = CancelToken.source();
         this.$emit('checkScroll');
       }
     },
@@ -64,17 +67,21 @@
           this.loading = false;
           this.$emit('checkScroll');
         } catch (e) {
-          console.log(e);
+          if (axios.isCancel(e)) return;
           this.$store.dispatch('openModal', "Chyba při vyhledávání");
         }
       },
       async category(search) {
-        const res = await axios(`/api/shop/category/${this.search.category}?page=${this.page}&size=15`);
-        this.items.push(...res.data.content);
-        this.last = res.data.last;
+          const res = await axios(`/api/shop/category/${this.search.category}?page=${this.page}&size=15`, {
+            cancelToken: this.cancelToken.token
+          });
+          this.items.push(...res.data.content);
+          this.last = res.data.last;
       },
       async fulltext(search) {
-        const res = await axios(encodeURI(`/api/shop/search?q=${this.search.fulltext}?page=${this.page}&size=15`));
+        const res = await axios(encodeURI(`/api/shop/search?q=${this.search.fulltext}&page=${this.page}&size=15`), {
+          cancelToken: this.cancelToken.token
+        });
         this.items.push(...res.data.content);
         this.last = res.data.last;
       },
@@ -83,14 +90,21 @@
         if (this.search.colors.length > 0) data.colors = this.search.colors;
         if (this.search.sizes.filter(x => x).length > 0) data.sizes = this.search.sizes;
         if (this.search.flowers.length > 0) data.flowers = this.search.flowers;
+        data.prices = {};
+        data.prices.min = this.search.priceFrom.length > 0 ? this.search.priceFrom : 0;
+        data.prices.max = this.search.priceTo.length > 0 ? this.search.priceTo : 1000000;
 
         const res = await axios({
           method: 'post',
           url: `/api/shop/filter?page=${this.page}&size=15`,
+          cancelToken: this.cancelToken.token,
           data
         });
         this.items.push(...res.data.content);
         this.last = res.data.last;
+      },
+      getImage(flower) {
+        return flower.path === null ? null : `/${flower.path}/${flower.image}`;
       }
     }
   }
