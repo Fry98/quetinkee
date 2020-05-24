@@ -132,12 +132,13 @@
       price(newVal, oldVal) {
         if (newVal && typeof newVal !== 'number') {
           if (newVal.endsWith('.') || newVal.endsWith(',')) {
-            if (newVal.match(/[.,]/g).length > 1) {
+            if (newVal.length === 1 || newVal.match(/[.,]/g).length > 1) {
               this.price = oldVal;
             }
             return;
           }
-          if (!newVal.match(/\d{1,6}[.,]?\d{1,2}|\d{1,6}/g).includes(newVal)) {
+          const match = newVal.match(/\d{1,6}[.,]\d{1,2}|\d{1,6}/g);
+          if (!match || !match.includes(newVal)) {
             this.price = oldVal;
           }
         }
