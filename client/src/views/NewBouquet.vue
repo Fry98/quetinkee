@@ -20,7 +20,7 @@
         </label>
         <label>
           <span>Cena </span>
-          <input class='price' v-model='price'>
+          <input class='price' v-model='price' @blur='validatePrice()'>
         </label>
         <label>
           <span>Barvy </span>
@@ -310,6 +310,11 @@
         const index = this.selectedFlowers.findIndex(f => f.id === flower.id);
         this.$set(this.selectedFlowers, index, flower);
         console.log(this.selectedFlowers);
+      },
+      validatePrice() {
+        if (this.price.endsWith('.') || this.price.endsWith(',')) {
+          this.price = this.price.slice(0, -1);
+        }
       }
     }
   }
