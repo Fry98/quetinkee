@@ -11,16 +11,16 @@
           <span>Kategorie </span>
           <select ref='sel' name='category' v-model='selectedCategories' multiple>
             <option
-              v-for='category in categories'
-              @mousedown='handleOptionMousedown(category, $event)'
-              :value='category.id'
-              :key='category.id'
+                v-for='category in categories'
+                @mousedown='handleOptionMousedown(category, $event)'
+                :value='category.id'
+                :key='category.id'
             >{{ category.name }}</option>
           </select>
         </label>
         <label>
           <span>Cena </span>
-          <input class='price' v-model.number='price' type='number' step='.01'>
+          <input class='price' v-model='price'>
         </label>
         <label>
           <span>Barvy </span>
@@ -128,6 +128,19 @@
     watch: {
       id() {
         this.deleteAllFields();
+      },
+      price(newVal, oldVal) {
+        if (newVal && typeof newVal !== 'number') {
+          if (newVal.endsWith('.') || newVal.endsWith(',')) {
+            if (newVal.match(/[.,]/g).length > 1) {
+              this.price = oldVal;
+            }
+            return;
+          }
+          if (!newVal.match(/\d{1,6}[.,]?\d{1,2}|\d{1,6}/g).includes(newVal)) {
+            this.price = oldVal;
+          }
+        }
       }
     },
     computed: {
@@ -166,14 +179,14 @@
           if (this.id) {
             this.loadBouquet(res[2].data);
           }
-        } catch(err) {
+        } catch (err) {
           this.$store.dispatch('openModal', err.response.data.message);
         }
       },
       loadBouquet(bouquetJson) {
         this.bouquetName = bouquetJson.bouquet.name;
         this.description = bouquetJson.bouquet.perex;
-        this.price = bouquetJson.bouquet.price;
+        this.price = bouquetJson.bouquet.price.toString();
         this.selectedSize = bouquetJson.bouquet.size;
         this.active = bouquetJson.bouquet.active;
         this.selectedCategories = bouquetJson.keyCategories;
@@ -193,7 +206,7 @@
           bouquet: {
             name: this.bouquetName,
             perex: this.description,
-            price: this.price,
+            price: parseFloat(this.price),
             size: this.selectedSize,
             active: true
           },
@@ -214,8 +227,8 @@
           this.updateBouquet(formData);
         } else {
           this.createBouquet(formData);
+          this.deleteAllFields();
         }
-        this.deleteAllFields();
       },
       async createBouquet(formData) {
         try {
@@ -227,13 +240,13 @@
             },
             data: formData
           });
-        } catch(err) {
+        } catch (err) {
           this.$store.dispatch('openModal', err.response.data.message);
         }
       },
       async updateBouquet(formData) {
         try {
-          await axios({
+          const res = await axios({
             method: 'PATCH',
             url: `/api/bouquets/${this.id}`,
             headers: {
@@ -241,7 +254,10 @@
             },
             data: formData
           });
-        } catch(err) {
+          if (res.status === 200) {
+            this.$store.dispatch('openModal', 'Kytice byla uložena.');
+          }
+        } catch (err) {
           this.$store.dispatch('openModal', err.response.data.message);
         }
       },
@@ -356,7 +372,7 @@
       align-items: center;
       margin-bottom: 10px;
 
-      &>span {
+      & > span {
         width: 130px;
         float: left;
         font-weight: bold;
