@@ -1,22 +1,26 @@
 package com.quetinkee.eshop.utils.helpers;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * Support class for creating inventory management
  */
-public class FlowerSInStockEdit {
+public class FlowersInStockEdit {
 
   @Valid
+  @NotNull(message = "Chybí id kytky")
   private Integer id;
 
   @Valid
+  @Min(value = 0)
   private Integer minCount;
 
   @Valid
   private Integer free;
 
-  public FlowerSInStockEdit() {
+  public FlowersInStockEdit() {
   }
 
   public Integer getId() {

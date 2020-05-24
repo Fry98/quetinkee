@@ -37,8 +37,8 @@ public class Flower extends AbstractEntity {
   private Set<BouquetFlowerCount> bouquetFlowerCount;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "flower", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<FlowersInStock> flowersInStock;
+  @OneToOne(mappedBy = "flower", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private FlowersInStock flowersInStock;
 
   public Flower() {
   }
@@ -108,4 +108,20 @@ public class Flower extends AbstractEntity {
   public void setBouquetFlowerCount(Set<BouquetFlowerCount> flowerCount) {
     this.bouquetFlowerCount = flowerCount;
   }
+
+  public FlowersInStock getFlowersInStock() {
+    return this.flowersInStock;
+  }
+
+  public void setFlowersInStock(FlowersInStock flowersInStock) {
+    this.flowersInStock = flowersInStock;
+  }
+
+  @PrePersist
+  private void prePersist() {
+    if (this.flowersInStock == null) {
+      this.flowersInStock = new FlowersInStock(this, 0);
+    }
+  }
+
 }

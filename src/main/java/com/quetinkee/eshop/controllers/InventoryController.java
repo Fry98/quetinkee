@@ -3,7 +3,7 @@ package com.quetinkee.eshop.controllers;
 import com.quetinkee.eshop.model.projection.FlowersInStockList;
 import com.quetinkee.eshop.model.projection.FlowersToRestockList;
 import com.quetinkee.eshop.service.InventoryService;
-import com.quetinkee.eshop.utils.helpers.FlowerSInStockEdit;
+import com.quetinkee.eshop.utils.helpers.FlowersInStockEdit;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
@@ -27,11 +27,11 @@ public class InventoryController {
     }
 
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Set<FlowersInStockList> patchAll(@Valid @RequestBody Set<FlowerSInStockEdit> newStock) {
+    public Set<FlowersInStockList> patchAll(@Valid @RequestBody Set<FlowersInStockEdit> newStock) {
         return this.service.updateStock(newStock);
     }
 
-    @GetMapping(value = "/restock", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/missing", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<FlowersToRestockList> getWhatRestock() {
         return this.service.getWhatRestock();
     }

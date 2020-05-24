@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FilterDao extends JpaRepository<Bouquet, Integer>,FilterDynamic {
 
-  static String ACTIVE = "JOIN b.categories c WHERE (?1 = true OR b.active = true) AND (?1 = true OR c.active = true)";
+  final static String ACTIVE = "JOIN b.categories c WHERE (?1 = true OR b.active = true) AND (?1 = true OR c.active = true)";
 
   @Query(value = "SELECT b.size FROM Bouquet b " + ACTIVE + " GROUP BY b.size")
   Set<Size> searchSizes(Boolean showAll);

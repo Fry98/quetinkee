@@ -5,7 +5,8 @@ import com.quetinkee.eshop.model.Flower_;
 import com.quetinkee.eshop.model.FlowersInStock;
 import com.quetinkee.eshop.model.projection.FlowersInStockList;
 import com.quetinkee.eshop.model.projection.FlowersToRestockList;
-import com.quetinkee.eshop.utils.helpers.FlowerSInStockEdit;
+import com.quetinkee.eshop.utils.helpers.FlowersInStockEdit;
+import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,36 +36,46 @@ public class InventoryService {
     }
 
     @Transactional(readOnly = true)
-    public Set<FlowersToRestockList> getWhatRestock() {
-        return this.dao.findRestockAll(Sort.by(Flower_.NAME));
-    }
-
-    @Transactional(readOnly = true)
     public Slice<FlowersInStockList> findAll(Integer pageNum, Integer pageSize) {
         Pageable paging = PageRequest.of(pageNum, pageSize, Sort.by(Flower_.NAME));
         return this.dao.findAllBy(paging);
     }
 
+    @Transactional(readOnly = true)
+    public Set<FlowersToRestockList> getWhatRestock() {
+        return this.dao.findRestockAll(Sort.by(Flower_.NAME));
+    }
+
     @Transactional
-    public void update(FlowersInStock inventory) {
+    public Set<FlowersInStockList> updateStock(Set<FlowersInStockEdit> delivery) {
+        Set<Integer> keys = new HashSet<>();
+        for (FlowersInStockEdit item : delivery) {
+            keys.add(item.getId());
+        }
+
+        Set<FlowersInStock> stocks = this.dao.findAllByFlowerIdIn(keys);
+        stocks.forEach((item) -> {
+            Optional<FlowersInStockEdit> newStock = delivery.stream().filter(rec -> Objects.equals(rec.getId(), item.getId())).findFirst();
+            if (newStock.isPresent()) {
+                this.updateStockCounts(item, newStock.get());
+            }
+        });
+        return this.dao.findAllByFlowerIn(keys);
+    }
+
+    @Transactional
+    public void save(FlowersInStock inventory) {
         Objects.requireNonNull(inventory);
         this.dao.save(inventory);
     }
 
-    @Transactional
-    public void delete (FlowersInStock inventory) {
-        Objects.requireNonNull(inventory);
-        this.dao.delete(inventory);
+    private void updateStockCounts(FlowersInStock record, FlowersInStockEdit newData) {
+        if (newData.getMinCount() != null) record.setMinimalCount(newData.getMinCount());
+        if (newData.getFree() != null) {
+            int diff = newData.getFree() - (record.getCount() - record.getReserved());
+            record.setCount(record.getCount() + diff);
+        }
+        this.save(record);
     }
-
-    @Transactional
-    public void persist(FlowersInStock inventory) {
-        Objects.requireNonNull(inventory);
-        this.dao.save(inventory);
-    }
-
-  public Set<FlowersInStockList> updateStock(Set<FlowerSInStockEdit> newStock) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
 }
 

@@ -99,6 +99,8 @@ public class SystemInitializer {
 
     // bouquets
     Bouquet boqA = new Bouquet("Nejhezčí kytice", "<p>popis A s <strong>HTML</strong></p>", "", "100.10", Size.SMALL, true);
+    boqA.setPath("uploads/imgs");
+    boqA.setImage("1.jpg");
     boqA.addColor(Color.YELLOW);
     boqA.addCategory(catAction);
     boqA.addCategory(catNew);
@@ -118,6 +120,8 @@ public class SystemInitializer {
 */
 
     Bouquet boqB = new Bouquet("Kytice hezká", "<p>popis B s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "200", Size.MEDIUM, true);
+    boqB.setPath("uploads/imgs");
+    boqB.setImage("2.jpg");
     boqB.addColor(Color.RED);
     BouquetFlowerCount bqfc2 = new BouquetFlowerCount(flower2, 2);
     boqB.addBouquetFlowerCount(bqfc2);
@@ -127,6 +131,8 @@ public class SystemInitializer {
     bouquetService.create(boqB);
 
     Bouquet boqC = new Bouquet("Kyticke hezčí", "<p>popis C s <strong>HTML</strong></p>", null, "9999999.9999", Size.LARGE, true);
+    boqC.setPath("uploads/imgs");
+    boqC.setImage("3.jpg");
     boqC.addColor(Color.PINK);
     boqC.addColor(Color.BLUE);
     boqC.addCategory(catAction);
@@ -140,6 +146,8 @@ public class SystemInitializer {
     bouquetService.create(boqC);
 
     Bouquet boqD = new Bouquet("the EGG", "<p>popis C s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "9999999.9999", Size.LARGE, false);
+    boqD.setPath("uploads/imgs");
+    boqD.setImage("4.jpg");
     boqD.addColor(Color.LIME);
     boqD.addCategory(catAction);
     boqD.addCategory(catBirth);
@@ -153,12 +161,15 @@ public class SystemInitializer {
 
 
     // storage
-    FlowersInStock fl1 = new FlowersInStock(flower1, 4);
-    inventoryService.persist(fl1);
-    FlowersInStock fl2 = new FlowersInStock(flower2, 10);
-    inventoryService.persist(fl2);
-    FlowersInStock fl3 = new FlowersInStock(flower3, 15);
-    inventoryService.persist(fl3);
+    FlowersInStock fl1 = flower1.getFlowersInStock();
+    fl1.setCount(4);
+    inventoryService.save(fl1);
+    FlowersInStock fl2 = flower2.getFlowersInStock();
+    fl2.setCount(10);
+    inventoryService.save(fl2);
+    FlowersInStock fl3 = flower3.getFlowersInStock();
+    fl3.setCount(15);
+    inventoryService.save(fl3);
 
   }
 }

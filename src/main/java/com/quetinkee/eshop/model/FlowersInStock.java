@@ -8,10 +8,13 @@ import javax.persistence.*;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class FlowersInStock extends AbstractEntity {
+public class FlowersInStock implements Serializable {
 
-  //  @Id
+    @Id
+    private Integer id;
+
     @OneToOne
+    @MapsId
     @JoinColumn(unique = true)
     private Flower flower;
 
@@ -41,6 +44,10 @@ public class FlowersInStock extends AbstractEntity {
         this.count = kkount;
         this.minCount = 10;
         this.reserved = 0;
+    }
+
+    public Integer getId() {
+        return this.id;
     }
 
     public void setCount(int kkount){
