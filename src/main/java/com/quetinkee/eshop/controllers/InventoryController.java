@@ -4,6 +4,7 @@ import com.quetinkee.eshop.model.projection.FlowersInStockList;
 import com.quetinkee.eshop.model.projection.FlowersToRestockList;
 import com.quetinkee.eshop.service.InventoryService;
 import com.quetinkee.eshop.utils.helpers.FlowersInStockEdit;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
@@ -27,8 +28,8 @@ public class InventoryController {
     }
 
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Set<FlowersInStockList> patchAll(@Valid @RequestBody Set<FlowersInStockEdit> newStock) {
-        return this.service.updateStock(newStock);
+    public Set<FlowersInStockList> updateMap(@Valid @RequestBody Map<Integer,FlowersInStockEdit> newStock) {
+        return this.service.updateMap(newStock);
     }
 
     @GetMapping(value = "/missing", produces = MediaType.APPLICATION_JSON_VALUE)

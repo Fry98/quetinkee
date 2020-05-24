@@ -5,8 +5,9 @@ import com.quetinkee.eshop.model.Flower_;
 import com.quetinkee.eshop.model.FlowersInStock;
 import com.quetinkee.eshop.model.projection.FlowersInStockList;
 import com.quetinkee.eshop.model.projection.FlowersToRestockList;
+import com.quetinkee.eshop.utils.ValidationException;
 import com.quetinkee.eshop.utils.helpers.FlowersInStockEdit;
-import java.util.HashSet;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,20 +48,18 @@ public class InventoryService {
     }
 
     @Transactional
-    public Set<FlowersInStockList> updateStock(Set<FlowersInStockEdit> delivery) {
-        Set<Integer> keys = new HashSet<>();
-        for (FlowersInStockEdit item : delivery) {
-            keys.add(item.getId());
+    public Set<FlowersInStockList> updateMap(Map<Integer,FlowersInStockEdit> delivery) throws ValidationException {
+        Objects.requireNonNull(delivery);
+        Set<FlowersInStock> stocks = this.dao.findAllByFlowerIdIn(delivery.keySet());
+        if (delivery.size() != stocks.size()) {
+            throw new ValidationException("Neexistující květina");
         }
-
-        Set<FlowersInStock> stocks = this.dao.findAllByFlowerIdIn(keys);
         stocks.forEach((item) -> {
-            Optional<FlowersInStockEdit> newStock = delivery.stream().filter(rec -> Objects.equals(rec.getId(), item.getId())).findFirst();
-            if (newStock.isPresent()) {
-                this.updateStockCounts(item, newStock.get());
+            if (delivery.containsKey(item.getId())) {
+                this.updateStockCounts(item, delivery.get(item.getId()));
             }
         });
-        return this.dao.findAllByFlowerIn(keys);
+        return this.dao.findAllByFlowerIn(delivery.keySet());
     }
 
     @Transactional

@@ -28,10 +28,10 @@ size : int  (optional def. 10) počet záznamů na stránku
 ```json
 {
     "content":[
-        {"price":"200.00","path":"uploads/img","image":"11_img.jpg","name":"Kytice hezká","id":13,"size":"MEDIUM","active":true},
-        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"Kyticke hezčí","id":14,"size":"LARGE","active":true},
-        {"price":"100.10","path":"uploads/img","image":"11_img.jpg","name":"Nejhezčí kytice","id":12,"size":"SMALL","active":true},
-        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"the EGG","id":15,"size":"LARGE","active":false}
+        {"price":"200.00","path":"uploads/img","image":"11_img.jpg","name":"Kytice hezká","id":13,"size":"m","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"Kyticke hezčí","id":14,"size":"l","active":true},
+        {"price":"100.10","path":"uploads/img","image":"11_img.jpg","name":"Nejhezčí kytice","id":12,"size":"s","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"the EGG","id":15,"size":"l","active":false}
     ],
     "pageable":{
         "sort":{"unsorted":false,"sorted":true,"empty":false},
@@ -100,7 +100,7 @@ id   : int        id kytice
         "path":"uploads/img",
         "image":"11_img.jpg",
         "price":"100.10",
-        "size":"SMALL",
+        "size":"s",
         "active":true
     },
     "keyCategories":[   // id kategorie
@@ -138,7 +138,7 @@ Data kytice jsou ve stejném formátu jako u GET, nutné odeslat jako Content-Ty
         "perex":"<p>popis A s <strong>HTML</strong></p>",
         "description":"",   // optional
         "price":"100.10",
-        "size":"SMALL",     // optional
+        "size":"s",     // optional
         "active":true       // optional default - false
     },
     "keyCategories":[   // id kategorie
@@ -179,7 +179,7 @@ Data kytice jsou ve stejném formátu jako u GET, nutné odeslat jako Content-Ty
         "perex":"<p>popis A s <strong>HTML</strong></p>",
         "description":"",
         "price":"100.10",
-        "size":"SMALL",
+        "size":"s",
         "active":true
     },
     "keyCategories":[   // id kategorie
@@ -213,7 +213,7 @@ id   : int        id kytice
         "path":"uploads/img",
         "image":"11_img.jpg",
         "price":"100.10",
-        "size":"SMALL",
+        "size":"s",
         "active":true
     },
     "keyCategories":[   // id kategorie
@@ -401,6 +401,137 @@ id   : int        id kategorie
 
 #### Response body
 none
+
+
+
+
+
+
+## Inventory (admin only)
+### 1. Stránkovací seznam
+Stránkovací seznam všech zásob květin
+
+`GET /api/Inventory[?page=0][&size=10]`
+
+#### Request body
+none
+
+#### Request params
+```
+page : int  (optional def. 0)  stránka
+size : int  (optional def. 10) počet záznamů na stránku
+```
+
+#### Response body
+`class Slice<FlowersInStockList>`
+
+```json5
+{
+    "content":[
+        {
+            "minCount":10,      // min počet pro zásoby
+            "free":26,          // počet volných kytek (celkový - rezervované)
+            "reserved":4,       // rezervované kusy
+            "name":"Fialka",    // název květiny
+            "id":10,            // id květiny
+            "count":30          // celkový počet skladem
+        },
+        {
+            "minCount":5,
+            "free":0,
+            "reserved":0,
+            "name":"Lilie",
+            "id":12,
+            "count":0
+        },
+        {
+            "minCount":10,
+            "free":2,
+            "reserved":2,
+            "name":"Růže",
+            "id":9,
+            "count":4
+        }
+    ],
+    "pageable":...
+}
+```
+
+### 2. Doplnění zboží
+Stránkovací seznam všech zásob květin
+
+`PATCH /api/Inventory`
+
+#### Request body
+`class Map<Integer,FlowersInStockEdit>`
+
+```json5
+{
+    "10": {                 // id květiny
+        "free": 30,         // počet volných květin (optinal)
+        "minCount": 5       // min počet pro zásoby (optinal)
+    },
+    "12": {
+        "free": 30
+    }
+}
+```
+#### Request params
+none
+
+#### Response body
+`class Set<FlowersInStockList>`
+
+```json5
+[
+    {
+        "minCount":10,      // min počet pro zásoby
+        "free":26,          // počet volných květin (celkový - rezervované)
+        "reserved":4,       // rezervované kusy
+        "name":"Fialka",    // název květiny
+        "id":10,            // id květiny
+        "count":30          // celkový počet skladem
+    },
+    {
+        "minCount":5,
+        "free":0,
+        "reserved":0,
+        "name":"Lilie",
+        "id":12,
+        "count":0
+    }
+]
+```
+
+### 2. Výpis chybějících květin
+Seznam květin kterých je méně než minimum, nebo je více rezervovacích 
+
+`GET /api/Inventory/missing`
+
+#### Request body
+none
+
+#### Request params
+none
+
+#### Response body
+`class Set<FlowersToRestockList>`
+
+```json5
+[
+    {
+        "restock":5,        // ks k objednání
+        "name":"Lilie",     // název květiny
+        "id":12             // id květiny
+    },
+    {
+        "restock":8,
+        "name":"Růže",
+        "id":9
+    }
+]
+```
+
 
 
 
@@ -777,7 +908,7 @@ Stránkovací seznam výsledků - všechny parametry jsou nepovinné
 
 ```json5
 {
-    "flowers": [1,2,3],         // optional - id kytky
+    "flowers": [1,2,3],         // optional - id květiny
     "colors": [1,2,3],          // optional - id barvy
     "sizes":[false,true,true],  // optional
     "prices": {                 // optional
@@ -801,7 +932,7 @@ size : int  (optional def. 10) počet záznamů na stránku
 ```json5
 {
     "content":[
-        {"name":"Nejhezčí kytice","path":"uploads/img","image":"11_img.jpg","price":"100.10","size":"SMALL","active":true,"id":12}
+        {"name":"Nejhezčí kytice","path":"uploads/img","image":"11_img.jpg","price":"100.10","size":"s","active":true,"id":12}
     ],
     "pageable":{
         "sort":{"unsorted":false,"sorted":true,"empty":false},
@@ -841,10 +972,10 @@ id   : int        id kategorie
 ```json5
 {
     "content":[
-        {"price":"200.00","path":"uploads/img","image":"11_img.jpg","name":"Kytice hezká","id":13,"size":"MEDIUM","active":true},
-        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"Kyticke hezčí","id":14,"size":"LARGE","active":true},
-        {"price":"100.10","path":"uploads/img","image":"11_img.jpg","name":"Nejhezčí kytice","id":12,"size":"SMALL","active":true},
-        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"the EGG","id":15,"size":"LARGE","active":false}
+        {"price":"200.00","path":"uploads/img","image":"11_img.jpg","name":"Kytice hezká","id":13,"size":"m","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"Kyticke hezčí","id":14,"size":"l","active":true},
+        {"price":"100.10","path":"uploads/img","image":"11_img.jpg","name":"Nejhezčí kytice","id":12,"size":"s","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"the EGG","id":15,"size":"l","active":false}
     ],
     "pageable":{
         "sort":{"unsorted":false,"sorted":true,"empty":false},
@@ -891,7 +1022,7 @@ id   : int        id kytice
         "path":"uploads/img",
         "image":"11_img.jpg",
         "price":"100.10",
-        "size":"SMALL",
+        "size":"s",
         "active":true
     },
     "rating":5.0,
@@ -1010,10 +1141,10 @@ q    : string                  hledaný řetězec
 ```json
 {
     "content":[
-        {"price":"200.00","path":"uploads/img","image":"11_img.jpg","name":"Kytice hezká","id":13,"size":"MEDIUM","active":true},
-        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"Kyticke hezčí","id":14,"size":"LARGE","active":true},
-        {"price":"100.10","path":"uploads/img","image":"11_img.jpg","name":"Nejhezčí kytice","id":12,"size":"SMALL","active":true},
-        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"the EGG","id":15,"size":"LARGE","active":false}
+        {"price":"200.00","path":"uploads/img","image":"11_img.jpg","name":"Kytice hezká","id":13,"size":"m","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"Kyticke hezčí","id":14,"size":"l","active":true},
+        {"price":"100.10","path":"uploads/img","image":"11_img.jpg","name":"Nejhezčí kytice","id":12,"size":"s","active":true},
+        {"price":"10000000.00","path":"uploads/img","image":"11_img.jpg","name":"the EGG","id":15,"size":"l","active":false}
     ],
     "pageable":{
         "sort":{"unsorted":false,"sorted":true,"empty":false},
@@ -1038,7 +1169,7 @@ q    : string                  hledaný řetězec
 
 
 
-## Shop order (signed only)
+## Shop order
 
 ### 1. Vytvoření objednávky
 
@@ -1065,15 +1196,15 @@ Vytvoření objednávky v obchodě
         "userAddressDelivery":{
             "street":"mesto",
             "city":"psc",
-            "zip":"psc"
+            "zip":"12345"
         },
         "userAddressBilling":{   // optinal
             "street":"mesto",
             "city":"psc",
-            "zip":"psc"
+            "zip":"12345"
         },
     },
-    "userId": 1,      // id právě přihlášeného zákazníka
+    "userId": 1,      // id právě přihlášeného zákazníka, musí být uvedeno pokud je přihlášen (optional)
     "keyItemCount":{  // id květiny : počet ks
         "12":1,
         "14":2
@@ -1087,8 +1218,33 @@ none
 #### Response body
 id objednávky
 
-### 2. Stránkovací seznam
+### 2. Stránkovací seznam (signed only)
+Stránkovací seznam objednávek zákazníka
 
+`GET /api/shop/orders/cart`
+
+#### Request body
+`class Map<Integer,Integer>`
+
+```json5
+{
+    "13":10,    // id kytice : počet ks v košíku
+    "14":10
+}
+```
+
+#### Request params
+none
+
+#### Response body
+```json5
+{
+    "13":5,    // id kytice : max. počet ks které lze pro dané kytice složit
+    "14":4
+}
+```
+
+### 3. Stránkovací seznam (signed only)
 Stránkovací seznam objednávek zákazníka
 
 `GET /api/shop/orders[?page=0][&size=10]`
@@ -1097,6 +1253,8 @@ Stránkovací seznam objednávek zákazníka
 none
 
 #### Request params
+`class Map<Integer,Integer>`
+
 ```
 page : int  (optional def. 0)  stránka
 size : int  (optional def. 10) počet záznamů na stránku
@@ -1139,7 +1297,7 @@ size : int  (optional def. 10) počet záznamů na stránku
 }
 ```
 
-### 3. Detail objednávky zákazníka
+### 4. Detail objednávky zákazníka (signed only)
 
 `GET /api/shop/orders/{id}`
 
@@ -1158,7 +1316,7 @@ id   : int      id kategorie
 {
     "id":18,
     "payment":"cash",
-    "totalPrice":400.20,
+    "totalPrice":"400.20",
     "userFirstName":"First",
     "userLastName":"Last",
     "userPhone":"123456789",
@@ -1166,12 +1324,12 @@ id   : int      id kategorie
     "userAddressDelivery":{
         "street":"mesto",
         "city":"psc",
-        "zip":"psc"
+        "zip":"12345"
     },
     "userAddressBilling":{
         "street":"mesto",
         "city":"psc",
-        "zip":"psc"
+        "zip":"12345"
     },
     "contains":[
         {
@@ -1191,6 +1349,7 @@ id   : int      id kategorie
     "time":"10:11:12"
 }
 ```
+
 
 
 
@@ -1293,12 +1452,12 @@ id   : int        id objednávky
         "userAddressDelivery":{
             "street":"mesto",
             "city":"psc",
-            "zip":"psc"
+            "zip":"12345"
         },
         "userAddressBilling":{   // optinal
             "street":"mesto",
             "city":"psc",
-            "zip":"psc"
+            "zip":"12345"
         },
         "contains":[
             {
@@ -1343,7 +1502,7 @@ id   : int        id objednávky
 {
     "id":18,
     "payment":"cash",
-    "totalPrice":400.20,
+    "totalPrice":"400.20",
     "userFirstName":"First",
     "userLastName":"Last",
     "userPhone":"123456789",
@@ -1351,12 +1510,12 @@ id   : int        id objednávky
     "userAddressDelivery":{
         "street":"mesto",
         "city":"psc",
-        "zip":"psc"
+        "zip":"12345"
     },
     "userAddressBilling":{
         "street":"mesto",
         "city":"psc",
-        "zip":"psc"
+        "zip":"12345"
     },
     "contains":[
         {
@@ -1401,12 +1560,12 @@ Data objednávky jsou ve stejném formátu jako u GET
         "userAddressDelivery":{
             "street":"mesto",
             "city":"psc",
-            "zip":"psc"
+            "zip":"12345"
         },
         "userAddressBilling":{   // optinal
             "street":"mesto",
             "city":"psc",
-            "zip":"psc"
+            "zip":"12345"
         },
     },
     "userId": 1,      // id zákazníka
@@ -1448,12 +1607,12 @@ Data objednávky jsou ve stejném formátu jako u GET
         "userAddressDelivery":{
             "street":"mesto",
             "city":"psc",
-            "zip":"psc"
+            "zip":"12345"
         },
         "userAddressBilling":{
             "street":"mesto",
             "city":"psc",
-            "zip":"psc"
+            "zip":"12345"
         },
     },
     "userId": 1,
@@ -1489,12 +1648,12 @@ id   : int        id objednávky
         "userAddressDelivery":{
             "street":"mesto",
             "city":"psc",
-            "zip":"psc"
+            "zip":"12345"
         },
         "userAddressBilling":{
             "street":"mesto",
             "city":"psc",
-            "zip":"psc"
+            "zip":"12345"
         },
     },
     "userId": 1,
