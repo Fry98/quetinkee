@@ -88,15 +88,9 @@
         </label>
         <div class='warning' v-if='selectedFlowers.length === 0'>Vyberte alespoň jednu květinu.</div>
         <div class='flower' v-for='flower in selectedFlowers' :key="flower.id">
-          <span class='flower-name'>
-            {{ flower.name }}
-            <font-awesome-icon
-                class='icon'
-                :icon="['far', 'trash-alt']"
-                @click='removeFlower(flower.name)'
-            ></font-awesome-icon>
-          </span>
-          <input type='number' v-model='flower.count' min='1' @focus='$event.target.select()'>
+          <flowerLine :flower='flower'
+                      @count-change='handleFlowerCountChange'
+                      @remove='removeFlower'/>
         </div>
         <button class='btn' :class='{ "disabled": saveIsDisabled }' :disabled='saveIsDisabled' type='submit'>Uložit
         </button>
@@ -107,9 +101,11 @@
 
 <script>
   import axios from "axios";
+  import FlowerLine from "../components/FlowerLine";
 
   export default {
     name: "NewBouquet",
+    components: {FlowerLine},
     data() {
       return {
         bouquetName: '',
@@ -208,7 +204,6 @@
             return map;
           }, {})
         });
-        console.log(bouquetJSON);
         const formData = new FormData();
         formData.append('bouquet', new Blob([bouquetJSON], { type: 'application/json' }));
         if (this.image) {
@@ -261,8 +256,8 @@
         }
         this.selectedFlower = '';
       },
-      removeFlower(flowerName) {
-        this.selectedFlowers = this.selectedFlowers.filter((value => value.name !== flowerName));
+      removeFlower(flowerId) {
+        this.selectedFlowers = this.selectedFlowers.filter((value => value.id !== flowerId));
       },
       handleSizeClick(size) {
         this.selectedSize = size
@@ -294,6 +289,11 @@
         this.selectedFlower = '';
         this.selectedColors = [false, false, false, false, false, false, false, false, false, false];
         this.selectedSize = '';
+      },
+      handleFlowerCountChange(flower) {
+        const index = this.selectedFlowers.findIndex(f => f.id === flower.id);
+        this.$set(this.selectedFlowers, index, flower);
+        console.log(this.selectedFlowers);
       }
     }
   }
@@ -325,49 +325,6 @@
     font-size: 4em;
     color: #fff;
     cursor: pointer;
-  }
-
-  .flower {
-    border-radius: 15px;
-    display: flex;
-    background-color: $lightGrey;
-    margin-bottom: 8px;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.26);
-
-    .flower-name {
-      flex: 20;
-      background-color: #fff;
-      padding: 6px 10px 6px 10px;
-      font-weight: bold;
-      border-radius: 15px;
-
-      .icon {
-        margin-right: 4px;
-        font-size: 1.1em;
-        float: right;
-        cursor: pointer;
-      }
-    }
-
-    input {
-      outline: none;
-      border: 0;
-      min-width: 0;
-      font-size: 1em;
-      width: 1px;
-      font-weight: bold;
-      flex: 3;
-      background-color: transparent;
-      margin-right: 5px;
-      text-align: center;
-      -moz-appearance: textfield;
-    }
-
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
   }
 
   .warning {
