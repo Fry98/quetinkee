@@ -206,4 +206,16 @@
   .opt-spacer {
     height: 5px;
   }
+
+  @media print {
+    header {
+      visibility: hidden;
+    }
+    #logo {
+      visibility: visible;
+      img {
+        filter: invert(1);
+      }
+    }
+  }
 </style>

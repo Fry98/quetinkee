@@ -24,7 +24,8 @@ import {
   faTimes,
   faUsersCog,
   faCalendarAlt,
-  faTruck
+  faTruck,
+  faPrint
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faUser);
@@ -48,5 +49,6 @@ library.add(faTimes);
 library.add(faUsersCog);
 library.add(faCalendarAlt);
 library.add(faTruck);
+library.add(faPrint);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);

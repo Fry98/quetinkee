@@ -1,6 +1,7 @@
 <template>
   <div id='missing-flowers'>
     <div class='content-wrap'>
+      <font-awesome-icon title='Vytisknout' class='print-btn' icon='print' @click='print'></font-awesome-icon>
       <table>
         <thead>
         <tr>
@@ -39,6 +40,11 @@
       } catch(err) {
         this.$store.dispatch('openModal', err.response.data.message);
       }
+    },
+    methods: {
+      print() {
+        window.print();
+      }
     }
   }
 </script>
@@ -71,5 +77,19 @@
     vertical-align: center;
     border-top: solid black 1px;
     padding: 3px;
+  }
+
+  .print-btn {
+    align-self: flex-end;
+    cursor: pointer;
+  }
+
+  @media print {
+    #missing-flowers {
+      visibility: hidden;
+    }
+    table {
+      visibility: visible;
+    }
   }
 </style>
