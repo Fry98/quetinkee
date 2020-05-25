@@ -14,6 +14,7 @@ import ManageStorage from "./views/ManageStorage";
 import DeliveryLayout from './views/DeliveryLayout';
 import ManageCategories from "./views/ManageCategories";
 import ManageBouquets from "./views/ManageBouquets";
+import MissingFlowers from "./views/MissingFlowers";
 import Search from './views/Search';
 import store from './store';
 
@@ -80,6 +81,13 @@ const router = new Router({
         {
           path: 'manage-storage',
           component: ManageStorage,
+          meta: {
+            auth: AuthLevel.ADMIN
+          },
+        },
+        {
+          path: 'missing-flowers',
+          component: MissingFlowers,
           meta: {
             auth: AuthLevel.ADMIN
           },

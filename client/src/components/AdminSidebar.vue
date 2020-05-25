@@ -10,6 +10,7 @@
     <h2>Sklad</h2>
     <ul>
       <li @click='navigate("/admin/manage-storage")'>Spravovat sklad</li>
+      <li @click='navigate("/admin/missing-flowers")'>Chybějící květiny</li>
     </ul>
     <h2>Kategorie</h2>
     <ul>
@@ -86,6 +87,12 @@
         left: -13px;
         transform: translateY(-50%) rotate(-45deg);
       }
+    }
+  }
+
+  @media print {
+    #sidebar {
+      display: none;
     }
   }
 </style>
