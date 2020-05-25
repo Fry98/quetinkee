@@ -1,6 +1,6 @@
 <template>
   <div id='manage-storage'>
-    <form class='content-wrap'>
+    <form class='content-wrap' @submit='handleSubmit'>
       <h1>Správa skladu</h1>
       <button class='btn'>Uložit stav</button>
       <input type='text' class='search' v-model='query' placeholder='Vyhledávat v květinách' @keydown='cancelSubmit($event)'>
@@ -8,20 +8,34 @@
         <thead>
         <tr>
           <th>Název květiny</th>
+          <th>Minimální počet</th>
           <th>Počet na skladu</th>
+          <th>Rezervováno</th>
         </tr>
         </thead>
         <tbody>
-        <tr :class='{"changed": flower.oldCount !== flower.newCount}' v-for='flower in filteredFlowers' :key='flower.id'>
+        <tr :class='{"changed": isChanged(flower)}' v-for='flower in filteredFlowers' :key='flower.id'>
           <td>{{ flower.name }}</td>
           <td>
-            <span class='countChange' @click='changeCount(flower, -1)'><font-awesome-icon icon="minus"/></span>
+            <span class='countChange' @click='flower.minCount -= 1'><font-awesome-icon icon="minus"/></span>
             <input type='number'
-                   v-model='flower.newCount'
-                   @blur='handleFlowerCountBlur(flower)'
+                   v-model='flower.minCount'
+                   @blur='flower.minCount = Number(flower.minCount)'
                    @keydown='cancelSubmit($event)'
                    @focus='$event.target.select()'>
-            <span class='countChange' @click='changeCount(flower, 1)'><font-awesome-icon icon="plus"/></span>
+            <span class='countChange' @click='flower.minCount += 1'><font-awesome-icon icon="plus"/></span>
+          </td>
+          <td>
+            <span class='countChange' @click='flower.count -= 1'><font-awesome-icon icon="minus"/></span>
+            <input type='number'
+                   v-model='flower.count'
+                   @blur='flower.count = Number(flower.count)'
+                   @keydown='cancelSubmit($event)'
+                   @focus='$event.target.select()'>
+            <span class='countChange' @click='flower.count += 1'><font-awesome-icon icon="plus"/></span>
+          </td>
+          <td>
+            {{ flower.reserved }}
           </td>
         </tr>
         </tbody>
@@ -32,37 +46,75 @@
 </template>
 
 <script>
+  import axios from "axios";
+
   export default {
     name: "ManageStorage",
 
     data() {
       return {
         query: '',
-        flowers: [
-          {id: 0, name: 'Kvetina 1', oldCount: 10, newCount: 10},
-          {id: 1, name: 'Kvetina 2', oldCount: 10, newCount: 10},
-        ]
+        flowers: [],
+        originalCount: {},
+        originalMinCount: {}
       }
     },
-
+    created() {
+      this.loadData();
+    },
     computed: {
       filteredFlowers() {
         return this.flowers.filter(flower => flower.name.toLowerCase().includes(this.query.toLowerCase()));
       }
     },
-
     methods: {
-      handleFlowerCountBlur(flower) {
-        this.flowers.find(el => el.name === flower.name).newCount = Number(flower.newCount);
+      async loadData() {
+        try {
+          const res = await axios({
+            method: 'get',
+            url: '/api/inventory'
+          });
+          this.flowers = res.data.content;
+        } catch(err) {
+          this.$store.dispatch('openModal', err.response.data.message);
+        }
+        this.setOriginalCounts(this.flowers);
       },
-      changeCount(flower, by) {
-        this.flowers.find(el => el.name === flower.name).newCount += by;
+      setOriginalCounts(from) {
+        this.originalCount = from.reduce((map, flower) => {
+          map[flower.id] = Number(flower.count);
+          return map;
+        }, {});
+        this.originalMinCount = from.reduce((map, flower) => {
+          map[flower.id] = Number(flower.minCount);
+          return map;
+        }, {});
+      },
+      isChanged(flower) {
+        return flower.count !== this.originalCount[flower.id] || flower.minCount !== this.originalMinCount[flower.id];
       },
       cancelSubmit(e) { // so that form doesnt get submitted when user presses Enter in input field
         if (e.key === 'Enter') {
           e.preventDefault();
           e.stopPropagation();
         }
+      },
+      handleSubmit(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const data = this.flowers.reduce((map, flower) => {
+          if (this.isChanged(flower)) {
+            map[flower.id] = {free: flower.count - flower.reserved, minCount: flower.minCount};
+          }
+          return map;
+        }, {});
+        if(!data) return;
+        axios({
+          method: 'patch',
+          url: '/api/inventory',
+          data
+        }).then(res => this.setOriginalCounts(res.data));
       }
     }
   }
