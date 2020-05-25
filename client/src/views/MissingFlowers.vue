@@ -1,6 +1,7 @@
 <template>
   <div id='missing-flowers'>
     <div class='content-wrap'>
+      <h1>Chybějící květiny</h1>
       <font-awesome-icon title='Vytisknout' class='print-btn' icon='print' @click='print'></font-awesome-icon>
       <table>
         <thead>
@@ -52,6 +53,12 @@
 <style lang='scss' scoped>
   @import "../scss/_vars.scss";
 
+  h1 {
+    text-align: center;
+    padding: 0;
+    margin: 0 0 15px;
+  }
+
   .content-wrap {
     display: flex;
     flex-direction: column;
@@ -87,6 +94,9 @@
   @media print {
     #missing-flowers {
       visibility: hidden;
+    }
+    h1 {
+      visibility: visible;
     }
     table {
       visibility: visible;
