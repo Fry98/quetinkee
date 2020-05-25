@@ -91,7 +91,6 @@
             }
           });
           this.categories.push({id: res.data, name: this.newCategory});
-          console.log(this.categories);
         } catch(err) {
           this.$store.dispatch('openModal', err.response.data.message);
         }

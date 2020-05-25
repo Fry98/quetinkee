@@ -145,7 +145,6 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    /*border: solid 2px black;*/
     background-color: $mainBlue;
     border-radius: 50%;
     height: 20px;
@@ -176,7 +175,7 @@
   td {
     text-align: center;
     vertical-align: center;
-    border: solid black 1px;
+    border-top: solid black 1px;
     padding: 3px;
 
     input {

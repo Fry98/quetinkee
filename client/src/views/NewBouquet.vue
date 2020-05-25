@@ -310,7 +310,6 @@
       handleFlowerCountChange(flower) {
         const index = this.selectedFlowers.findIndex(f => f.id === flower.id);
         this.$set(this.selectedFlowers, index, flower);
-        console.log(this.selectedFlowers);
       },
       validatePrice() {
         if (this.price.endsWith('.') || this.price.endsWith(',')) {
