@@ -1,5 +1,11 @@
 <template>
-  <div class='del-table'>
+  <div
+    class='del-table'
+    v-infinite-scroll='fetchOrders'
+    infinite-scroll-disabled='scrollDisabled'
+    infinite-scroll-distance='10'
+    infinite-scroll-listen-for-event='checkScroll'
+  >
     <div class="del-title">{{ title }}</div>
     <table>
       <thead>
@@ -14,14 +20,15 @@
         <td class='id'>{{ item.id }}</td>
         <td class='name'>{{ item.fullName }}</td>
         <td class='street'>{{ item.address }}</td>
-        <td class='time'>{{ item.time }}</td>
+        <td class='time'>{{ item.dateStr }}</td>
         <td class='details'><button @click='$emit("details", i)'>Zobrazit detaily</button></td>
         <td class='state-col'>
-          <select class='state' @change='$emit("remove", i)'>
-            <option :selected='selected === 0'>Čekající</option>
-            <option :selected='selected === 1'>Probíhající</option>
-            <option :selected='selected === 2'>Dokončená</option>
+          <select class='state' @change='updateOrderStatus($event, i)' v-if='selected < 2'>
+            <option :selected='selected === 0' value='0' v-if='selected < 1'>Čekající</option>
+            <option :selected='selected === 1' value='1' v-if='selected < 2'>Probíhající</option>
+            <option :selected='selected === 2' value='2'>Dokončená</option>
           </select>
+          <span class='done' v-else>Dokončená</span>
         </td>
       </tr>
     </table>
@@ -29,6 +36,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   props: {
     title: {
@@ -42,6 +51,55 @@ export default {
     selected: {
       type: Number,
       default: 0
+    },
+    ongoing: {
+      type: Boolean,
+      default: false
+    },
+    stopLoad: {
+      type: Boolean,
+      default: true
+    }
+  },
+  methods: {
+    fetchOrders() {
+      this.$emit('fetch');
+    },
+    updateOrderStatus(e, i) {
+      let status = null;
+      switch (Number(e.target.value)) {
+        case 0:
+          status = 'NEW';
+          break;
+        case 1:
+          status = 'PENDING';
+          break;
+        case 2:
+          status = 'FINISH';
+          break;
+      }
+
+      axios({
+        url: `/api/orders/${this.orders[i].id}/${status}`,
+        method: 'PATCH'
+      }).then(() => {
+        this.$emit("remove", i);
+      }).catch(() => {
+        this.$store.dispatch('openModal', "Chyba při změně kategorie");
+      });
+    }
+  },
+  watch: {
+    orders() {
+      this.$emit('checkScroll');
+    },
+    selected() {
+      this.$emit('checkScroll');
+    }
+  },
+  computed: {
+    scrollDisabled() {
+      return this.stopLoad || this.ongoing;
     }
   }
 }
@@ -121,5 +179,10 @@ export default {
 
   .state-col {
     width: 15%;
+  }
+
+  .done {
+    font-size: .85em;
+    margin-left: 3px;
   }
 </style>

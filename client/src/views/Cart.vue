@@ -309,13 +309,14 @@
                   zip: this.billingZip
                 }
               },
-              userId: this.$store.getters.user.id,
+              userId: this.$store.getters.isLogged ? this.$store.getters.user.id : undefined,
               keyItemCount: items
             }
           });
           this.step = 3;
           this.$store.dispatch('clearCart');
         } catch (e) {
+          console.log(e);
           this.$store.dispatch('openModal', e.response.data.message);
         }
 

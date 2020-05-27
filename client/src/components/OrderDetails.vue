@@ -14,8 +14,8 @@
         <div class='value'>{{ orders[index].address }}</div>
       </div>
       <div class='item'>
-        <div class='name'>Čas doručení:</div>
-        <div class='value'>{{ orders[index].time }}</div>
+        <div class='name'>Datum doručení:</div>
+        <div class='value'>{{ orders[index].dateStr }}</div>
       </div>
       <div class='item'>
         <div class='name'>Položky:</div>
@@ -95,7 +95,7 @@ export default {
 
   .name {
     font-weight: bold;
-    width: 125px;
+    width: 155px;
     text-align: right;
     padding-right: 10px;
   }

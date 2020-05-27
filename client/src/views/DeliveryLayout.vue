@@ -5,18 +5,22 @@
       :orders='ordersComp'
       :index='index'
       @close='closeDetails'
+      v-if='orders.length > 0'
     ></order-details>
     <delivery-sidebar
-      @pending='loadPending'
-      @ongoing='loadOngoing'
-      @completed='loadCompleted'
+      @pending='initCategory(0, "Čekající objednávky")'
+      @ongoing='initCategory(1, "Probíhající objednávky")'
+      @completed='initCategory(2, "Dokončené objednávky")'
     ></delivery-sidebar>
     <delivery-table
-    :title='title'
-    :selected='selected'
-    :orders='ordersComp'
-    @remove='removeItem'
-    @details='openDetails'
+      :title='title'
+      :selected='selected'
+      :orders='ordersComp'
+      :stopLoad='stopLoad'
+      :ongoing='ongoing'
+      @remove='removeItem'
+      @details='openDetails'
+      @fetch='loadMore'
     ></delivery-table>
   </div>
 </template>
@@ -25,6 +29,7 @@
 import DeliverySidebar from '../components/DeliverySidebar';
 import DeliveryTable from './DeliveryTable';
 import OrderDetails from '../components/OrderDetails';
+import axios from 'axios';
 
 export default {
   components: {
@@ -38,91 +43,44 @@ export default {
       title: 'Čekající objednávky',
       selected: 0,
       open: false,
+      stopLoad: false,
       index: 0,
-      orders: [
-        {
-          id: 5,
-          firstName: 'Roman',
-          lastName: 'Toman',
-          street: 'Ulicova 234/7',
-          city: 'Praha 7',
-          zip: 13412,
-          time: '13:30',
-          contents: [
-            '2 x První kytice',
-            '1 x Jiná kytice'
-          ]
-        },
-        {
-          id: 7,
-          firstName: 'Alex',
-          lastName: 'Nguyen',
-          street: 'Ulicova 234/7',
-          city: 'Praha 7',
-          zip: 13412,
-          time: '13:30',
-          contents: [
-            '2 x První kytice',
-            '2 x Jiná kytice',
-            '4 x Item',
-            '2 x První kytice',
-            '2 x Jiná kytice',
-            '4 x Item',
-            '2 x První kytice',
-            '2 x Jiná kytice',
-            '4 x Item',
-          ]
-        },
-        {
-          id: 12,
-          firstName: 'Vítek',
-          lastName: 'Cheatek',
-          street: 'Ulicova 234/7',
-          city: 'Praha 7',
-          zip: 13412,
-          time: '13:30',
-          contents: [
-            '7 x První kytice',
-            '2 x Jiná kytice'
-          ]
-        },
-        {
-          id: 24,
-          firstName: 'Honza',
-          lastName: 'Rykl',
-          street: 'Ulicova 234/7',
-          city: 'Praha 7',
-          zip: 13412,
-          time: '13:30',
-          contents: [
-            '3 x První kytice',
-            '4 x Jiná kytice'
-          ]
-        },
-      ]
+      orders: [],
+      page: 0,
+      ongoing: false
     };
   },
   mounted() {
-    this.loadPending();
+    this.initCategory(0, "Čekající objednávky");
   },
   methods: {
-    loadPending() {
-      if (this.category === 0) return;
-      this.category = 0;
-      this.title = 'Čekající objednávky';
-      this.selected = 0;
+    loadMore() {
+      switch (this.category) {
+        case 0:
+          this.fetchOrders("NEW");
+          break;
+        case 1:
+          this.fetchOrders("PENDING");
+          break;
+        case 2:
+          this.fetchOrders("FINISH");
+          break;
+      }
     },
-    loadOngoing() {
-      if (this.category === 1) return;
-      this.category = 1;
-      this.title = 'Probíhající objednávky';
-      this.selected = 1;
+    initCategory(categoryId, title) {
+      if (this.category === categoryId) return;
+      this.category = categoryId;
+      this.title = title;
+      this.selected = categoryId;
+      this.orders = [];
+      this.stopLoad = false;
     },
-    loadCompleted() {
-      if (this.category === 2) return;
-      this.category = 2;
-      this.title = 'Dokončené objednávky';
-      this.selected = 2;
+    async fetchOrders(statusId) {
+      this.ongoing = true;
+      const res = await axios(`/api/orders?status=${statusId}&page=${this.page}&size=15`);
+      this.orders.push(...res.data.content);
+      this.stopLoad = res.data.last;
+      this.ongoing = false;
     },
     openDetails(i) {
       this.open = true;
@@ -138,14 +96,17 @@ export default {
   computed: {
     ordersComp() {
       return this.orders.map(x => {
-        const zipStr = x.zip.toString();
-        const zip = zipStr.substr(0, 3) + " " + zipStr.substr(3, 2);
-        const street = x.street;
-        const city = x.city;
+        // const zipStr = x.zip.toString();
+        // const zip = zipStr.substr(0, 3) + " " + zipStr.substr(3, 2);
+        // const street = x.street;
+        // const city = x.city;
+
+        const date = new Date(x.day);
+        const dateStr = `${date.getDate()}.${date.getMonth()}.${date.getFullYear()} ${x.time.substr(0, 5)}`;
 
         return {
-          address: `${street}, ${zip} ${city}`,
-          fullName: `${x.firstName} ${x.lastName}`,
+          fullName: `${x.userFirstName} ${x.userLastName}`,
+          dateStr,
           ...x
         };
       });
