@@ -8,9 +8,6 @@
           <login-input title='Heslo' type='password' v-model='pwd' required></login-input>
           <input type="submit" class='button' value="Přihlásit se">
         </form>
-        <div id='pwd-reset'>
-          <span>Zapomněli jste heslo?</span>
-        </div>
       </div>
       <div id='signup-box'>
         <h2>Ještě nemáte účet?</h2>

@@ -84,92 +84,92 @@ public class SystemInitializer {
     categoryService.create(catBirth);
     Category catDed = new Category("Pohřeb", 5, true);
     categoryService.create(catDed);
-    Category catHide = new Category("Překvapení", 1, false);
-    categoryService.create(catHide);
+    // Category catHide = new Category("Překvapení", 1, false);
+    // categoryService.create(catHide);
 
-    // flowers
-    Flower flower1 = new Flower("Růže", "", "10");
-    flowerService.create(flower1);
-    Flower flower2 = new Flower("Fialka", "Note", "20");
-    flowerService.create(flower2);
-    Flower flower3 = new Flower("Slunečnice", "žlutá", "30");
-    flowerService.create(flower3);
-    Flower flower4 = new Flower("Lilie", "", "8");
-    flowerService.create(flower4);
+//     // flowers
+//     Flower flower1 = new Flower("Růže", "", "10");
+//     flowerService.create(flower1);
+//     Flower flower2 = new Flower("Fialka", "Note", "20");
+//     flowerService.create(flower2);
+//     Flower flower3 = new Flower("Slunečnice", "žlutá", "30");
+//     flowerService.create(flower3);
+//     Flower flower4 = new Flower("Lilie", "", "8");
+//     flowerService.create(flower4);
 
-    // bouquets
-    Bouquet boqA = new Bouquet("Nejhezčí kytice", "<p>popis A s <strong>HTML</strong></p>", "", "100.10", Size.SMALL, true);
-    boqA.setPath("uploads/imgs");
-    boqA.setImage("1.jpg");
-    boqA.addColor(Color.YELLOW);
-    boqA.addCategory(catAction);
-    boqA.addCategory(catNew);
-    BouquetFlowerCount bqfc1 = new BouquetFlowerCount(flower1, 1);
-    boqA.addBouquetFlowerCount(bqfc1);
-    BouquetFlowerCount bqfx1 = new BouquetFlowerCount(flower2, 1);
-    boqA.addBouquetFlowerCount(bqfx1);
+//     // bouquets
+//     Bouquet boqA = new Bouquet("Nejhezčí kytice", "<p>popis A s <strong>HTML</strong></p>", "", "100.10", Size.SMALL, true);
+//     boqA.setPath("uploads/imgs");
+//     boqA.setImage("1.jpg");
+//     boqA.addColor(Color.YELLOW);
+//     boqA.addCategory(catAction);
+//     boqA.addCategory(catNew);
+//     BouquetFlowerCount bqfc1 = new BouquetFlowerCount(flower1, 1);
+//     boqA.addBouquetFlowerCount(bqfc1);
+//     BouquetFlowerCount bqfx1 = new BouquetFlowerCount(flower2, 1);
+//     boqA.addBouquetFlowerCount(bqfx1);
 
-    Review rev = new Review("Recenze nejleší květiny", 5);
-    rev.setUser(admin);
-    boqA.addReview(rev);
-    bouquetService.create(boqA);
-/*
-    boqA.removeReview(rev);
-    boqA.removeBouquetFlowerCount(bqfc1);
-    bouquetService.create(boqA);
-*/
+//     Review rev = new Review("Recenze nejleší květiny", 5);
+//     rev.setUser(admin);
+//     boqA.addReview(rev);
+//     bouquetService.create(boqA);
+// /*
+//     boqA.removeReview(rev);
+//     boqA.removeBouquetFlowerCount(bqfc1);
+//     bouquetService.create(boqA);
+// */
 
-    Bouquet boqB = new Bouquet("Kytice hezká", "<p>popis B s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "200", Size.MEDIUM, true);
-    boqB.setPath("uploads/imgs");
-    boqB.setImage("2.jpg");
-    boqB.addColor(Color.RED);
-    BouquetFlowerCount bqfc2 = new BouquetFlowerCount(flower2, 2);
-    boqB.addBouquetFlowerCount(bqfc2);
-    boqB.addCategory(catBirth);
-    boqB.addCategory(catNew);
-    boqB.addCategory(catHide);
-    bouquetService.create(boqB);
+//     Bouquet boqB = new Bouquet("Kytice hezká", "<p>popis B s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "200", Size.MEDIUM, true);
+//     boqB.setPath("uploads/imgs");
+//     boqB.setImage("2.jpg");
+//     boqB.addColor(Color.RED);
+//     BouquetFlowerCount bqfc2 = new BouquetFlowerCount(flower2, 2);
+//     boqB.addBouquetFlowerCount(bqfc2);
+//     boqB.addCategory(catBirth);
+//     boqB.addCategory(catNew);
+//     boqB.addCategory(catHide);
+//     bouquetService.create(boqB);
 
-    Bouquet boqC = new Bouquet("Kyticke hezčí", "<p>popis C s <strong>HTML</strong></p>", null, "9999999.9999", Size.LARGE, true);
-    boqC.setPath("uploads/imgs");
-    boqC.setImage("3.jpg");
-    boqC.addColor(Color.PINK);
-    boqC.addColor(Color.BLUE);
-    boqC.addCategory(catAction);
-    boqC.addCategory(catBirth);
-    boqC.addCategory(catNew);
-    boqC.addCategory(catHide);
-    BouquetFlowerCount bqfc3 = new BouquetFlowerCount(flower1, 3);
-    BouquetFlowerCount bqfc4 = new BouquetFlowerCount(flower2, 4);
-    boqC.addBouquetFlowerCount(bqfc3);
-    boqC.addBouquetFlowerCount(bqfc4);
-    bouquetService.create(boqC);
+//     Bouquet boqC = new Bouquet("Kyticke hezčí", "<p>popis C s <strong>HTML</strong></p>", null, "9999999.9999", Size.LARGE, true);
+//     boqC.setPath("uploads/imgs");
+//     boqC.setImage("3.jpg");
+//     boqC.addColor(Color.PINK);
+//     boqC.addColor(Color.BLUE);
+//     boqC.addCategory(catAction);
+//     boqC.addCategory(catBirth);
+//     boqC.addCategory(catNew);
+//     boqC.addCategory(catHide);
+//     BouquetFlowerCount bqfc3 = new BouquetFlowerCount(flower1, 3);
+//     BouquetFlowerCount bqfc4 = new BouquetFlowerCount(flower2, 4);
+//     boqC.addBouquetFlowerCount(bqfc3);
+//     boqC.addBouquetFlowerCount(bqfc4);
+//     bouquetService.create(boqC);
 
-    Bouquet boqD = new Bouquet("the EGG", "<p>popis C s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "9999999.9999", Size.LARGE, false);
-    boqD.setPath("uploads/imgs");
-    boqD.setImage("4.jpg");
-    boqD.addColor(Color.LIME);
-    boqD.addCategory(catAction);
-    boqD.addCategory(catBirth);
-    boqD.addCategory(catDed);
-    boqD.addCategory(catHide);
-    BouquetFlowerCount bqfc5 = new BouquetFlowerCount(flower3, 3);
-    BouquetFlowerCount bqfc6 = new BouquetFlowerCount(flower4, 1);
-    boqD.addBouquetFlowerCount(bqfc5);
-    boqD.addBouquetFlowerCount(bqfc6);
-    bouquetService.create(boqD);
+//     Bouquet boqD = new Bouquet("the EGG", "<p>popis C s <strong>HTML</strong></p>", "<h1>dlouhý text</h1>", "9999999.9999", Size.LARGE, false);
+//     boqD.setPath("uploads/imgs");
+//     boqD.setImage("4.jpg");
+//     boqD.addColor(Color.LIME);
+//     boqD.addCategory(catAction);
+//     boqD.addCategory(catBirth);
+//     boqD.addCategory(catDed);
+//     boqD.addCategory(catHide);
+//     BouquetFlowerCount bqfc5 = new BouquetFlowerCount(flower3, 3);
+//     BouquetFlowerCount bqfc6 = new BouquetFlowerCount(flower4, 1);
+//     boqD.addBouquetFlowerCount(bqfc5);
+//     boqD.addBouquetFlowerCount(bqfc6);
+//     bouquetService.create(boqD);
 
 
-    // storage
-    FlowersInStock fl1 = flower1.getFlowersInStock();
-    fl1.setCount(4);
-    inventoryService.save(fl1);
-    FlowersInStock fl2 = flower2.getFlowersInStock();
-    fl2.setCount(10);
-    inventoryService.save(fl2);
-    FlowersInStock fl3 = flower3.getFlowersInStock();
-    fl3.setCount(15);
-    inventoryService.save(fl3);
+//     // storage
+//     FlowersInStock fl1 = flower1.getFlowersInStock();
+//     fl1.setCount(4);
+//     inventoryService.save(fl1);
+//     FlowersInStock fl2 = flower2.getFlowersInStock();
+//     fl2.setCount(10);
+//     inventoryService.save(fl2);
+//     FlowersInStock fl3 = flower3.getFlowersInStock();
+//     fl3.setCount(15);
+//     inventoryService.save(fl3);
 
   }
 }

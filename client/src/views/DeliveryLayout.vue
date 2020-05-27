@@ -96,15 +96,15 @@ export default {
   computed: {
     ordersComp() {
       return this.orders.map(x => {
-        // const zipStr = x.zip.toString();
-        // const zip = zipStr.substr(0, 3) + " " + zipStr.substr(3, 2);
-        // const street = x.street;
-        // const city = x.city;
+        const zip = x.userAddressDelivery.zip.substr(0, 3) + " " + x.userAddressDelivery.zip.substr(3, 2);
+        const street = x.userAddressDelivery.street;
+        const city = x.userAddressDelivery.city;
 
         const date = new Date(x.day);
         const dateStr = `${date.getDate()}.${date.getMonth()}.${date.getFullYear()} ${x.time.substr(0, 5)}`;
 
         return {
+          address: `${street}, ${zip} ${city}`,
           fullName: `${x.userFirstName} ${x.userLastName}`,
           dateStr,
           ...x

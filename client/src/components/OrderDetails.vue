@@ -20,7 +20,8 @@
       <div class='item'>
         <div class='name'>Položky:</div>
         <div class='cont'>
-          <div v-for='(item, i) in orders[index].contents' :key='i'>{{ item }}</div>
+          <div v-for='(item, i) in contents' :key='i'>{{ item.quantity }}x {{ item.name }}</div>
+          <div v-if='contents.length === 0'>Loading...</div>
         </div>
       </div>
       <div class='btn-wrap'>
@@ -31,6 +32,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   props: {
     orders: {
@@ -44,6 +47,18 @@ export default {
     open: {
       type: Boolean,
       default: false
+    }
+  },
+  data() {
+    return {
+      contents: []
+    };
+  },
+  watch: {
+    async open() {
+      if (!open) return;
+      const res = await axios(`/api/shop/orders/${this.orders[this.index].id}`);
+      this.contents.push(...res.data.contains);
     }
   }
 }
