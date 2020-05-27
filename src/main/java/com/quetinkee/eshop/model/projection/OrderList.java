@@ -24,4 +24,8 @@ public interface OrderList extends InterfaceList{
     public Date getDay();
 
     public Time getTime();
+    
+    public OrderAddress getUserAddressBilling();
+
+    public OrderAddress getUserAddressDelivery();
 }
