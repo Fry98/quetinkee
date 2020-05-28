@@ -42,7 +42,7 @@
         return this.img === null ? {
           'background-color': '#C4C4C4'
         } : {
-          'background-image': `url(${this.img}`
+          'background-image': `url("${this.img}")`
         };
       },
       inCart() {
