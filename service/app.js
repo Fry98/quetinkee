@@ -54,7 +54,8 @@ const redis = require('redis');
     const data = JSON.parse(message.content.toString());
     channel.ack(message);
     if (data.id === undefined || data.data === undefined || data.ttl === undefined) return;
-    redisClient.set(`req(${data.id})`, JSON.stringify(data.data), 'EX', data.ttl);
+    console.log(redisClient.set(`req(${data.id})`, JSON.stringify(data.data), 'EX', data.ttl));
+    console.log(`req(${data.id})`);
   });
 
   /**

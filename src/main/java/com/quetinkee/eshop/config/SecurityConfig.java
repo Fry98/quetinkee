@@ -60,6 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .antMatchers("/admin/**").hasRole("ADMIN")
       .anyRequest().permitAll()
       .and()
+        .httpBasic()  // for testing
+      .and()
         .addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         .formLogin()
       .and()
