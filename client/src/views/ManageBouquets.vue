@@ -64,7 +64,6 @@
       },
       cancel() {
         this.popup = null;
-        alert("Zrušeno");
       },
       confirm() {
         this.popup = null;
@@ -79,7 +78,6 @@
           if (res.status === 200) {
             const removeIndex = this.bouquets.findIndex(bouquet => bouquet.id === this.toRemove);
             this.bouquets.splice(removeIndex, 1);
-            alert("Smazáno");
           }
         } catch(err) {
           this.$store.dispatch('openModal', err.response.data.message);

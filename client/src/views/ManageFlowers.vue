@@ -96,7 +96,6 @@
       },
       cancel() {
         this.popup = null;
-        alert("Zrušeno");
       },
       confirm() {
         this.popup = null;

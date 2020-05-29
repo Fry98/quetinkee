@@ -4,7 +4,7 @@
   "description": "E-Shop for selling flowers",
   "main": "App.java",
   "scripts": {
-    "build": "vue-cli-service build && mvn clean package",
+    "build": "vue-cli-service build && mvn clean package && docker build . -t server:1.0 && docker save server:1.0 -o server.tar",
     "server": "mvn spring-boot:run",
     "service": "cd service && npm start",
     "client": "vue-cli-service serve",
