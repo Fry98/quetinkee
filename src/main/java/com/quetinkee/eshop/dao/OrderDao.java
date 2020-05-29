@@ -14,4 +14,5 @@ public interface OrderDao extends GenericDao<Order, OrderList> {
 
     public Slice<OrderList> findAllByUserId(Integer id, Pageable paging);
 
+    public Order findByIdAndUserId(Integer id, Integer userId);
 }

@@ -47,9 +47,14 @@ public class OrderService extends GenericAdminService<OrderDao, Order, OrderList
     }
 
     @Transactional(readOnly = true)
-    public Slice<OrderList> getSlice(Integer id, Integer page, Integer size) {
+    public Slice<OrderList> getSlice(Integer userId, Integer page, Integer size) {
         Pageable paging = PageRequest.of(page, size, this.sort);
-        return this.dao.findAllByUserId(id, paging);
+        return this.dao.findAllByUserId(userId, paging);
+    }
+
+    @Transactional(readOnly = true)
+    public Order findByUser(Integer id, Integer userId) {
+        return this.dao.findByIdAndUserId(id, userId);
     }
 
     @Transactional

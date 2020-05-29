@@ -7,7 +7,6 @@ import com.quetinkee.eshop.service.OrderService;
 import com.quetinkee.eshop.service.security.UserDetail;
 import com.quetinkee.eshop.utils.helpers.OrderEdit;
 import java.util.Map;
-import java.util.Objects;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
@@ -55,8 +54,8 @@ public class ShopOrderController {
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Order getOrderDetail(@PathVariable("id") Integer id, Authentication authentication) {
     User user = ((UserDetail) authentication.getDetails()).getUser();
-    Order order = this.orderService.find(id);
-    if (order == null || !Objects.equals(order.getUser().getId(), user.getId())) {
+    Order order = this.orderService.findByUser(id, user.getId());
+    if (order == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Záznam nenalezen");
     }
     return order;

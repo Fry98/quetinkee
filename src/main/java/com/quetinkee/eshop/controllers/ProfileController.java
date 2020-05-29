@@ -65,16 +65,6 @@ public class ProfileController {
     return this.service.update(original, newUser);
   }
 
-  @PostMapping(value = "/forgot", produces = MediaType.APPLICATION_JSON_VALUE)
-  public void forgotPassword(@RequestBody User newUser) {
-    // TODO
-  }
-
-  @PostMapping(value = "/forgot/{token}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public void forgotPasswordActivate(@PathVariable("id") String token) {
-    // TODO
-  }
-
   /**
    * Return current user billing address
    *
