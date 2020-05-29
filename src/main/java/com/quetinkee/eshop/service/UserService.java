@@ -30,7 +30,7 @@ public class UserService extends GenericAdminService<UserDao, User, UserList> {
   }
 
   public boolean checkPassword(String password) {
-    return !password.isEmpty() && password.length() >= 5;
+    return password != null && !password.isEmpty() && password.length() >= 5;
   }
 
   public void encodePassword(User user) {
@@ -126,7 +126,7 @@ public class UserService extends GenericAdminService<UserDao, User, UserList> {
       }
     }
 
-    if (this.validate(original)) this.dao.save(original);
+    if (this.validate(original)) return this.dao.save(original);
     return null;
   }
 
