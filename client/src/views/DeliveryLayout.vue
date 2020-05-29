@@ -91,20 +91,23 @@ export default {
     },
     removeItem(i) {
       this.orders.splice(i, 1);
+    },
+    addressToString(obj) {
+      const zip = obj.zip.substr(0, 3) + " " + obj.zip.substr(3, 2);
+      const street = obj.street;
+      const city = obj.city;
+      return `${street}, ${zip} ${city}`;
     }
   },
   computed: {
     ordersComp() {
       return this.orders.map(x => {
-        const zip = x.userAddressDelivery.zip.substr(0, 3) + " " + x.userAddressDelivery.zip.substr(3, 2);
-        const street = x.userAddressDelivery.street;
-        const city = x.userAddressDelivery.city;
-
         const date = new Date(x.day);
         const dateStr = `${date.getDate()}.${date.getMonth()}.${date.getFullYear()} ${x.time.substr(0, 5)}`;
 
         return {
-          address: `${street}, ${zip} ${city}`,
+          address: this.addressToString(x.userAddressDelivery),
+          billing: x.userAddressBilling !== null ? this.addressToString(x.userAddressBilling) : null,
           fullName: `${x.userFirstName} ${x.userLastName}`,
           dateStr,
           ...x

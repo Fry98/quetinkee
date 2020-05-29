@@ -9,9 +9,19 @@
         <div class='name'>Jméno:</div>
         <div class='value'>{{ orders[index].fullName }}</div>
       </div>
-      <div class='item'>
+      <div class='item' v-if='orders[index].billing === null'>
         <div class='name'>Adresa:</div>
         <div class='value'>{{ orders[index].address }}</div>
+      </div>
+      <div v-else>
+        <div class='item'>
+          <div class='name'>Doručovací adresa:</div>
+          <div class='value'>{{ orders[index].address }}</div>
+        </div>
+        <div class='item'>
+          <div class='name'>Fakturační adresa:</div>
+          <div class='value'>{{ orders[index].billing }}</div>
+        </div>
       </div>
       <div class='item'>
         <div class='name'>Datum doručení:</div>
@@ -56,9 +66,10 @@ export default {
   },
   watch: {
     async open() {
-      if (!open) return;
+      if (!this.open) return;
+      this.contents = [];
       const res = await axios(`/api/shop/orders/${this.orders[this.index].id}`);
-      this.contents.push(...res.data.contains);
+      this.contents = res.data.contains;
     }
   }
 }
@@ -92,7 +103,7 @@ export default {
 
   .details {
     background: white;
-    width: 450px;
+    width: 420px;
     padding: 12px;
     border-radius: 7px;
     position: relative;
@@ -110,7 +121,7 @@ export default {
 
   .name {
     font-weight: bold;
-    width: 155px;
+    width: 180px;
     text-align: right;
     padding-right: 10px;
   }
@@ -118,6 +129,7 @@ export default {
   .btn-wrap {
     display: flex;
     justify-content: center;
+    margin-top: 10px;
   }
 
   .cont {

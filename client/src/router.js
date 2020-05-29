@@ -111,8 +111,10 @@ const router = new Router({
     },
     {
       path: '/delivery',
-      component: DeliveryLayout
-      // TODO: Add Auth
+      component: DeliveryLayout,
+      meta: {
+        auth: AuthLevel.ADMIN
+      }
     },
     {
       path: '/login',

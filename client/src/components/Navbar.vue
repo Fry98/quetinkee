@@ -20,7 +20,7 @@
               </div>
               <div class='opt-spacer'></div>
             </div>
-            <div v-if='$store.getters.isDelivery'>
+            <div v-if='$store.getters.isAdmin'>
               <div class='opt-item' @click='navigate("/delivery")'>
                 <font-awesome-icon icon='truck'></font-awesome-icon>
                 <span>Objednávky</span>

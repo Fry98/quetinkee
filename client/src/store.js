@@ -19,7 +19,6 @@ const store = new Vuex.Store({
     user: state => state.user,
     isLogged: state => state.user !== null,
     isAdmin: state => state.user !== null && state.user.role === 'ADMIN',
-    isDelivery: state => true,
     categories: state => state.categories,
     flowers: state => state.flowers,
     sidebar: state => state.sidebar,
