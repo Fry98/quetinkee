@@ -2,7 +2,6 @@ package com.quetinkee.eshop.model.projection;
 
 import org.springframework.data.annotation.PersistenceConstructor;
 
-
 /**
  * "Implementation of projection" because its needed for JSON parse
  */

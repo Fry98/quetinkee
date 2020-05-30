@@ -6,6 +6,9 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Data from shop filter panel
+ */
 public class FilterRequest {
 
   private Set<Integer> flowers;

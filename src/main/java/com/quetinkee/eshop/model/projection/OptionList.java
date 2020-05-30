@@ -2,6 +2,9 @@ package com.quetinkee.eshop.model.projection;
 
 import org.springframework.data.annotation.PersistenceConstructor;
 
+/**
+ * "Implementation of projection" because its needed for JSON parse
+ */
 public class OptionList {
   private Integer id;
   private String name;
@@ -23,11 +26,3 @@ public class OptionList {
     return this.name;
   }
 }
-/*
-public interface OptionList {
-
-  public String getId();
-
-  public String getName();
-}
-*/

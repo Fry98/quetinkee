@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Data for shop filter panel
+ */
 public class FilterInfo implements Serializable {
 
   private List<CategoryList> categories;

@@ -29,6 +29,11 @@ public class UserService extends GenericAdminService<UserDao, User, UserList> {
     this.passwordEncoder = passwordEncoder;
   }
 
+  /**
+   * Valid password if set
+   * @param password
+   * @return
+   */
   public boolean checkPassword(String password) {
     return password != null && !password.isEmpty() && password.length() >= 5;
   }
@@ -38,18 +43,15 @@ public class UserService extends GenericAdminService<UserDao, User, UserList> {
     user.encodePassword(this.passwordEncoder);
   }
 
+  /**
+   * Check if user is registered
+   * @param mail
+   * @return
+   */
   @Transactional(readOnly = true)
   public boolean isRegistred(String mail) {
     User user = this.dao.findByMail(mail);
     return user != null;
-  }
-
-  @Transactional
-  @Override
-  public void delete (User user) {
-    Objects.requireNonNull(user);
-    // TODO: check pending orders first
-    this.dao.delete(user);
   }
 
   /**
