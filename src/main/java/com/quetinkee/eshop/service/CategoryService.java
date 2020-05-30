@@ -27,7 +27,7 @@ public class CategoryService extends GenericAdminService<CategoryDao, Category, 
 
     if (newData.getName() != null) original.setName(newData.getName());
     if (newData.getPriority() != null) original.setPriority(newData.getPriority());
-    if (newData.isActive() != null) original.setActive(newData.isActive());
+    if (newData.getActive() != null) original.setActive(newData.getActive());
 
     if (this.validate(original)) return this.dao.save(original);
     return null;

@@ -1,27 +1,19 @@
 package com.quetinkee.eshop.config;
 
-/**
- * Just testing for login - will be removed / edited later
- *
- * notes: // .accessDeniedHandler(authentificationHandler)\ //
- * response.sendError(response.getStatus(), "todo"); not implemented yet
- */
 import com.quetinkee.eshop.service.security.ShopAuthenticationFilter;
 import com.quetinkee.eshop.service.security.ShopAuthenticationProvider;
 import com.quetinkee.eshop.service.security.AuthentificationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 
 @Configuration
 @EnableWebSecurity
@@ -55,14 +47,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
+      .addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
       .csrf().disable()
       .authorizeRequests()
       .anyRequest().permitAll()
       .and()
         .httpBasic()  // for testing
-      .and()
-        .addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-        .formLogin()
       .and()
         .logout()
         .invalidateHttpSession(true)

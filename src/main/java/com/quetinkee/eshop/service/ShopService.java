@@ -75,13 +75,19 @@ public class ShopService {
 
   @Transactional(readOnly = true)
   public FilterInfo getFilterInfo (Integer id, boolean showAll) {
-    return new FilterInfo(
+    // first try cache
+    FilterInfo current = this.cacheRabbit.find(FilterInfo.class, id);
+    if (current != null) return current;
+    // then try database
+    current = new FilterInfo(
         this.findCategories(showAll),
         this.findFlowers(id, showAll),
         this.findColors(id, showAll),
         this.findSizes(id, showAll),
         this.findPrices(id, showAll)
       );
+    this.cacheRabbit.save(FilterInfo.class, id, current);
+    return current;
   }
 
   @Transactional(readOnly = true)
@@ -95,11 +101,18 @@ public class ShopService {
 
   @Transactional(readOnly = true)
   public BouquetDetail findBouquetDetail(Integer id, boolean showAll) {
+    // first try cache
+    BouquetDetail current = this.cacheRabbit.find(BouquetDetail.class, id);
+    if (current != null) {
+      if (showAll || current.getBouquet().isActive()) return current;
+      return null;
+    }
     Bouquet bouquet = this.findBouquet(id, showAll);
     if (bouquet != null) {
-      return new BouquetDetail(bouquet, this.reviewDao.findAvgRating(bouquet), this.storage.countBouquetsInStock(bouquet.getBouquetFlowerCount()));
+      current = new BouquetDetail(bouquet, this.reviewDao.findAvgRating(bouquet), this.storage.countBouquetsInStock(bouquet.getBouquetFlowerCount()));
+      this.cacheRabbit.save(BouquetDetail.class, id, current);
     }
-    return null;
+    return current;
   }
 
   @Transactional(readOnly = true)

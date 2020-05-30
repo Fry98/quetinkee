@@ -17,13 +17,13 @@ const redis = require('redis');
   /**
    * Search in
    */
-  await channel.assertQueue('items');  
+  await channel.assertQueue('items');
   channel.consume('items', message => {
     try {
       channel.ack(message); // accept even if wrong format
       const data = JSON.parse(fold.foldMaintaining(message.content.toString()));
       if (data.id === undefined || (!data.remove && data.body === undefined)) return;
-
+      // delete
       if (data.remove) {
         client.delete({
           index: 'items',
@@ -32,7 +32,7 @@ const redis = require('redis');
         }).catch(_ => {});
         return;
       }
-
+      // add data
       client.index({
         index: 'items',
         type: 'item',
@@ -42,7 +42,7 @@ const redis = require('redis');
     }
     catch (err) {
       console.error(err);
-      res.status(400).send('Bad API request');
+      res.status(400).send('Bad search API request');
     }
   });
 
@@ -51,11 +51,23 @@ const redis = require('redis');
    */
   await channel.assertQueue('cache');
   channel.consume('cache', message => {
-    const data = JSON.parse(message.content.toString());
-    channel.ack(message);
-    if (data.id === undefined || data.data === undefined || data.ttl === undefined) return;
-    console.log(redisClient.set(`req(${data.id})`, JSON.stringify(data.data), 'EX', data.ttl));
-    console.log(`req(${data.id})`);
+    try {
+      channel.ack(message); // accept even if wrong format
+      const ttl = 10;
+      const data = JSON.parse(message.content.toString());
+      if (data.id === undefined || (!data.remove && data.body === undefined)) return;
+      // delete
+      if (data.remove !== undefined) {
+        redisClient.del(data.id);
+        return;
+      }
+      // add data
+      redisClient.set(`req(${data.id})`, JSON.stringify(data.body), 'EX', data.ttl === undefined ? ttl : data.ttl);
+    }
+    catch (err) {
+      console.error(err);
+      res.status(400).send('Bad cache API request');
+    }
   });
 
   /**
@@ -72,9 +84,8 @@ const redis = require('redis');
         res.status(404).send(`No results for ID ${req.query.id}`);
         return;
       }
-
       res.set('Content-Type', 'application/json');
-      res.send(cache);
+      res.send(JSON.parse(cache));
     });
   });
 
@@ -130,7 +141,7 @@ const redis = require('redis');
   });
 
   app.use((req, res) => {
-    res.status(404).send("API Endpoint doesn't exist");
+    res.status(405).send("API Endpoint doesn't exist");
   });
 
   app.listen(4200, () => {
