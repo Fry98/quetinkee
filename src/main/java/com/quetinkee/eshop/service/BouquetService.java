@@ -104,7 +104,7 @@ public class BouquetService extends GenericAdminService<BouquetDao, Bouquet, Bou
   @Override
   public void delete (Bouquet record) {
     this.searchRabbit.delete(record.getId());
-    this.cacheRabbit.delete(record.getId());
+    this.cacheRabbit.delete(Bouquet.class, record.getId());
     super.delete(record);
     if (record.getImage() != null) this.uploader.remove(record.getPath(), record.getImage());
   }

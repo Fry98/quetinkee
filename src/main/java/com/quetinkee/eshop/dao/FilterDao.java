@@ -31,16 +31,16 @@ public interface FilterDao extends JpaRepository<Bouquet, Integer>,FilterDynamic
   @Query(value = "SELECT clr FROM Bouquet b JOIN b.colors clr " + ACTIVE + " AND c.id = ?2 GROUP BY clr")
   Set<Integer> searchColorsByCategoriesId(Boolean showAll, Integer id);
 
-  @Query(value = "SELECT MIN(b.price) AS min, MAX(b.price) AS max FROM Bouquet b " + ACTIVE)
+  @Query(value = "SELECT new com.quetinkee.eshop.model.projection.MinMaxPrice(MIN(b.price) AS min, MAX(b.price) AS max) FROM Bouquet b " + ACTIVE)
   MinMaxPrice findFirstPrices(Boolean showAll);
 
-  @Query(value = "SELECT MIN(b.price) AS min, MAX(b.price) AS max FROM Bouquet b " + ACTIVE + " AND c.id = ?2")
+  @Query(value = "SELECT new com.quetinkee.eshop.model.projection.MinMaxPrice(MIN(b.price) AS min, MAX(b.price) AS max) FROM Bouquet b " + ACTIVE + " AND c.id = ?2")
   MinMaxPrice findFirstPricesByCategoriesId(Boolean showAll, Integer id);
 
-  @Query(value = "SELECT f FROM Flower f JOIN f.bouquetFlowerCount fc JOIN fc.bouquet b " + ACTIVE + " GROUP BY f")
+  @Query(value = "SELECT new com.quetinkee.eshop.model.projection.OptionList(f.id AS id, f.name AS name) FROM Flower f JOIN f.bouquetFlowerCount fc JOIN fc.bouquet b " + ACTIVE + " GROUP BY f")
   Set<OptionList> searchFlowers(Boolean showAll, Sort sort);
 
-  @Query(value = "SELECT f FROM Flower f JOIN f.bouquetFlowerCount fc JOIN fc.bouquet b " + ACTIVE + " AND c.id = ?2 GROUP BY f")
+  @Query(value = "SELECT new com.quetinkee.eshop.model.projection.OptionList(f.id AS id, f.name AS name) FROM Flower f JOIN f.bouquetFlowerCount fc JOIN fc.bouquet b " + ACTIVE + " AND c.id = ?2 GROUP BY f")
   Set<OptionList> searchFlowersByCategoriesId(Boolean showAll, Integer id, Sort sort);
 
   @Query(value = "SELECT DISTINCT b FROM Bouquet b JOIN b.categories c LEFT JOIN b.bouquetFlowerCount bof LEFT JOIN b.colors boc" +

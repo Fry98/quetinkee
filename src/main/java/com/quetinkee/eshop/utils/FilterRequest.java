@@ -2,7 +2,6 @@ package com.quetinkee.eshop.utils;
 
 import com.quetinkee.eshop.model.enums.Size;
 import com.quetinkee.eshop.model.projection.MinMaxPrice;
-import com.quetinkee.eshop.model.projection.MinMaxPriceImpl;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,12 +15,12 @@ public class FilterRequest {
   @javax.validation.constraints.Size(min=3, max=3, message = "Špatný počet velikostí")
   private Boolean[] sizes;
 
-  private MinMaxPriceImpl prices;
+  private MinMaxPrice prices;
 
   public FilterRequest() {
   }
 
-  public FilterRequest(Set<Integer> flowers, Set<Integer> colors, Boolean[] sizes, MinMaxPriceImpl prices) {
+  public FilterRequest(Set<Integer> flowers, Set<Integer> colors, Boolean[] sizes, MinMaxPrice prices) {
     this.flowers = flowers;
     this.colors = colors;
     this.sizes = sizes;
@@ -61,7 +60,7 @@ public class FilterRequest {
   }
 
   public boolean isSizes() {
-    return this.sizes != null && this.sizes[0] == false && this.sizes[1] == false && this.sizes[2] == false;
+    return this.sizes != null && (this.sizes[0] != false || this.sizes[1] != false || this.sizes[2] != false);
   }
 
   public void setSizes(Boolean[] sizes) {
@@ -84,7 +83,7 @@ public class FilterRequest {
     return this.prices != null && this.prices.isActive();
   }
 
-  public void setPrices(MinMaxPriceImpl prices) {
+  public void setPrices(MinMaxPrice prices) {
     this.prices = prices;
   }
 }

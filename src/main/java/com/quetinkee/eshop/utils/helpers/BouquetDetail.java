@@ -8,9 +8,12 @@ import java.io.Serializable;
  */
 public class BouquetDetail implements Serializable {
 
-  private final Bouquet bouquet;
-  private final Float rating;
-  private final Integer storage;
+  private Bouquet bouquet;
+  private Float rating;
+  private Integer storage;
+
+  public BouquetDetail() {
+  }
 
   public BouquetDetail(Bouquet bouquet, Float rating, Integer storage) {
     this.bouquet = bouquet;
