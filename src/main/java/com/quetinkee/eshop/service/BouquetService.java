@@ -25,6 +25,7 @@ import com.quetinkee.eshop.dao.BouquetDao;
 import com.quetinkee.eshop.rabbit.CacheRabbit;
 import com.quetinkee.eshop.rabbit.SearchRabbit;
 import com.quetinkee.eshop.utils.ValidationException;
+import com.quetinkee.eshop.utils.helpers.BouquetDetail;
 import javax.validation.Validator;
 
 @Service
@@ -104,7 +105,7 @@ public class BouquetService extends GenericAdminService<BouquetDao, Bouquet, Bou
   @Override
   public void delete (Bouquet record) {
     this.searchRabbit.delete(record.getId());
-    this.cacheRabbit.delete(record.getId());
+    this.cacheRabbit.delete(BouquetDetail.class, record.getId());
     super.delete(record);
     if (record.getImage() != null) this.uploader.remove(record.getPath(), record.getImage());
   }

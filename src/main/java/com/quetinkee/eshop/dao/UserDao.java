@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface UserDao extends GenericDao<User, UserList> {
 
   @Override
-  @Query(value = "SELECT u.id AS id, u.mail AS name FROM User u")
+  @Query(value = "SELECT new com.quetinkee.eshop.model.projection.OptionList(u.id AS id, u.mail AS name) FROM User u")
   List<OptionList> findAllBy(Sort sort);
 
   User findByMail(String mail);

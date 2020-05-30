@@ -54,7 +54,7 @@ public class Category extends AbstractEntity {
     this.priority = priority;
   }
 
-  public Boolean isActive() {
+  public Boolean getActive() {
     return this.active;
   }
 
