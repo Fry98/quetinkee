@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Invetory control - add/remove and reserve flowers from/to stock
+ * Inventory control - add/remove and reserve flowers from/to stock
  */
 @Component
 public class Storage {
@@ -204,10 +204,12 @@ public class Storage {
 
         Integer current;
         for (FlowersInStock stock : storage) {
-            current = (stock.getCount() - stock.getReserved()) / map.get(stock.getFlower().getId());
-            if (min > current) {
-                min = current;
-                if (min <= 0) return 0;
+            if (map.get(stock.getFlower().getId()) > 0) { // dont divide by zero
+                current = (stock.getCount() - stock.getReserved()) / map.get(stock.getFlower().getId());
+                if (min > current) {
+                    min = current;
+                    if (min <= 0) return 0;
+                }
             }
         }
         return min;
