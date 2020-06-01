@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Upload and crop image to path specified in application.properties
+ */
 @Component
 public class UploadImage {
 

@@ -30,11 +30,13 @@ public class Review implements Serializable {
   @Id
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn
+  @NotNull(message = "Zadejte kytici")
   private Bouquet bouquet;
 
   @Id
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn
+  @NotNull(message = "Zadejte uživatele")
   private User user;
 
   @NotBlank(message = "Napište vaši recenzi")

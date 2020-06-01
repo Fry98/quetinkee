@@ -9,6 +9,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
+/**
+ * Support class for inserting new bouquet review
+ */
 public class ReviewSubmit implements Serializable {
 
   @NotBlank(message = "Napište vaši recenzi")

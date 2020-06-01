@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -16,12 +18,16 @@ public class FlowersInStock implements Serializable {
     @OneToOne
     @MapsId
     @JoinColumn(unique = true)
+    @NotNull(message = "Zadejte květinu")
     private Flower flower;
 
+    @NotNull(message = "Zadejte počet")
     @Basic(optional = false)
     @Column(nullable = false)
     private Integer count;
 
+    @NotNull(message = "Zadejte min. počet")
+    @Min(value = 0, message = "Zadejte min. počet (min. 0)")
     @Basic(optional = false)
     @Column(nullable = false)
     private Integer minCount;

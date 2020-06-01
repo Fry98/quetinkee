@@ -7,7 +7,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -16,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class OrderEdit implements Serializable {
 
   @Valid
+  @NotNull(message = "Chybí objedávka")
   private Order order;
 
   @Valid
@@ -23,7 +26,7 @@ public class OrderEdit implements Serializable {
 
   @Valid
   @NotEmpty(message = "Objednavka je prázdná")
-  private Map<Integer,Integer> keyItemCount;
+  private Map<Integer,@NotNull(message="Zadejte počet") @Min(value = 1, message="Zadejte počet min. 1") Integer> keyItemCount;
 
   public OrderEdit() {
   }

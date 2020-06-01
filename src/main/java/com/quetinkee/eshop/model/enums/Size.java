@@ -3,6 +3,9 @@ package com.quetinkee.eshop.model.enums;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 
+/**
+ * Bouquet sizes
+ */
 public enum Size {
   SMALL("s"), MEDIUM("m"), LARGE("l");
 

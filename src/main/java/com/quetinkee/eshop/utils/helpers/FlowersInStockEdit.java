@@ -9,7 +9,7 @@ import javax.validation.constraints.Min;
 public class FlowersInStockEdit {
 
   @Valid
-  @Min(value = 0)
+  @Min(value = 0, message = "Minimální počet může být min. 0")
   private Integer minCount;
 
   @Valid
