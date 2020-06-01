@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @IdClass(BouquetFlowerCountId.class)
@@ -18,13 +20,17 @@ public class BouquetFlowerCount implements Serializable {
   @Id
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   @JoinColumn
+  @NotNull(message = "Zadejte kytici")
   private Bouquet bouquet;
 
   @Id
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   @JoinColumn
+  @NotNull(message = "Zadejte květinu")
   private Flower flower;
 
+  @NotNull(message = "Zadejte počet květin")
+  @Min(value = 1, message = "Zadejte počet květin (min. 1)")
   @Basic(optional = false)
   @Column(nullable = false)
   private Integer count;

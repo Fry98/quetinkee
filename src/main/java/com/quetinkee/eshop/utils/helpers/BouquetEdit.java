@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * Support class for bouquet editing
@@ -14,6 +16,7 @@ import javax.validation.Valid;
 public class BouquetEdit implements Serializable {
 
   @Valid
+  @NotNull(message = "Chybí kytice")
   private Bouquet bouquet;
 
   @Valid
@@ -23,7 +26,7 @@ public class BouquetEdit implements Serializable {
   private List<Integer> keyColors;
 
   @Valid
-  private Map<Integer,Integer> keyFlowerCount;
+  private Map<Integer,@NotNull(message="Zadejte počet") @Min(value = 1, message="Zadejte počet min. 1") Integer> keyFlowerCount;
 
   public BouquetEdit() {
   }

@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -18,6 +19,7 @@ public class Category extends AbstractEntity {
   @Column(nullable = false)
   private String name;
 
+  @NotNull(message = "Zadejte pořadí")
   @Basic(optional = false)
   @Column(nullable = false)
   private Integer priority;
