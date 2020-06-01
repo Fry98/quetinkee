@@ -3,6 +3,9 @@ package com.quetinkee.eshop.model.enums;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 
+/**
+ * Flower colors
+ */
 public enum Color {
     WHITE(0),
     YELLOW(1),
