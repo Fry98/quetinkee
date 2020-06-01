@@ -26,10 +26,10 @@ public class BouquetDetail implements Serializable {
   }
 
   public Float getRating() {
-    return rating;
+    return this.rating;
   }
 
   public Integer getStorage() {
-    return storage;
+    return this.storage;
   }
 }

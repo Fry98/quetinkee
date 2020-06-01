@@ -19,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Invetory control - add/remove and reserve flowers from/to stock
+ */
 @Component
 public class Storage {
 
@@ -35,6 +38,10 @@ public class Storage {
         this.flowerDao = flowerDao;
     }
 
+    /**
+     * Reserve ordered parts for bouquets
+     * @param items
+     */
     @Transactional
     public void reserveFlowers(Set<OrderItem> items) {
         Objects.requireNonNull(items);
@@ -63,6 +70,10 @@ public class Storage {
         }
     }
 
+    /**
+     * Cancel reservation of ordered parts of bouquets
+     * @param items
+     */
     @Transactional
     public void freeFlowers(Set<OrderItem> items) {
         Objects.requireNonNull(items);
@@ -76,6 +87,10 @@ public class Storage {
         }
     }
 
+    /**
+     * Consume parts of bouquets and free reservation
+     * @param items
+     */
     @Transactional
     public void consumeFlowers(Set<OrderItem> items) {
         Objects.requireNonNull(items);
@@ -89,6 +104,12 @@ public class Storage {
         }
     }
 
+    /**
+     * Count possible combination of maximal amount of bouquets
+     * which can be prepared from current parts
+     * @param items
+     * @return maximal amount of bouquets
+     */
     public Map<Integer,Integer> itemsInStock(Set<OrderItem> items) {
         Objects.requireNonNull(items);
         Map<Integer,Integer> bouquets = new HashMap<>();
@@ -98,7 +119,12 @@ public class Storage {
         return this.itemsInStock(bouquets);
     }
 
-
+    /**
+     * Count possible combination of maximal amount of bouquets
+     * which can be prepared from current parts
+     * @param bouquets
+     * @return maximal amount of bouquets
+     */
     @Transactional(readOnly = true)
     public Map<Integer,Integer> itemsInStock(Map<Integer,Integer> bouquets) {
         Objects.requireNonNull(bouquets);

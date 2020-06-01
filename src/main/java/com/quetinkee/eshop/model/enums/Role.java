@@ -1,5 +1,8 @@
 package com.quetinkee.eshop.model.enums;
 
+/**
+ * User roles
+ */
 public enum Role {
   ADMIN("ROLE_ADMIN"), USER("ROLE_USER"), GUEST("ROLE_COURIER");
 
