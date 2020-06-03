@@ -68,7 +68,7 @@ export default {
     async open() {
       if (!this.open) return;
       this.contents = [];
-      const res = await axios(`/api/shop/orders/${this.orders[this.index].id}`);
+      const res = await axios(`/api/orders/${this.orders[this.index].id}/info`);
       this.contents = res.data.contains;
     }
   }
