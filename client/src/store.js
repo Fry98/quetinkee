@@ -71,7 +71,12 @@ const store = new Vuex.Store({
     },
     loadUser(context) {
       const user = localStorage.getItem('user');
+
       if (user !== null) {
+        if (!doesHttpOnlyCookieExist('JSESSIONID')) {
+          localStorage.removeItem('user');
+          return;
+        }
         context.commit('setUser', JSON.parse(user));
       }
     },
@@ -102,6 +107,15 @@ const store = new Vuex.Store({
     }
   }
 });
+
+function doesHttpOnlyCookieExist(cookiename) {
+  var d = new Date();
+  d.setTime(d.getTime() + (1000));
+  var expires = "expires=" + d.toUTCString();
+
+  document.cookie = cookiename + "=new_value;path=/;" + expires;
+  return document.cookie.indexOf(cookiename + '=') == -1;
+}
 
 store.dispatch('loadUser');
 store.dispatch('loadCart');
