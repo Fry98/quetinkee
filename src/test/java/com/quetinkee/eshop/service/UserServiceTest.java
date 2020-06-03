@@ -46,31 +46,7 @@ public class UserServiceTest {
         boolean result = userService.checkPassword("password");
         Assert.assertTrue(result);
     }
-
-    @Test
-    public void testEncodePassword() throws Exception {
-        userService.encodePassword(new User(null, null, null, "password", null));
-    }
-
-    @Test
-    public void testDelete() throws Exception {
-        userService.delete(new User("firstName", "lastName", "mail", "password", "phone"));
-    }
-
-    @Test
-    public void testUpdateAddress() throws Exception {
-        userService.updateAddress(new Address("street", "city", "zip"), new Address("street", "city", "zip"));
-    }
-
-    @Test
-    public void testDelete2() throws Exception {
-        userService.delete(new Address("street", "city", "zip"));
-    }
-
-    @Test
-    public void testPersistAddress() throws Exception {
-        userService.persistAddress(new Address("street", "city", "zip"));
-    }
+    
 
     @Test
     public void testGetSlice() throws Exception {
