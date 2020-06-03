@@ -69,7 +69,7 @@ public class UserControllerIntegrationTest {
         assertNotNull(saved.get().getPassword());
         assertEquals("123456789" , saved.get().getPhone());
     }
-/*
+
     @Test
     public void updateUserTest(){
         //User newUser = new User("Zhigalo" , "Ebanoye" , "ebazhi@yoba.com" , "hersosi2002" , "123456789");
@@ -82,43 +82,59 @@ public class UserControllerIntegrationTest {
         //HttpEntity<User> request = new HttpEntity<>(newUser);
         //ResponseEntity<User> response = testRestTemplate.postForEntity("/user" , request , User.class);
 
-        ResponseEntity<User> response = usrCntrl.create(newUser);
+        ResponseEntity<Integer> result = testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").postForEntity("/api/users", newUser, Integer.class);
+        assertNotNull(result.getBody());
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
 
         User updateFrom = new User("Pidrilo" , "Ebanoye" , "ebapidr@yoba.com" , "sosipisyu2002" , "123456788");
 
-        User updatedUser = usrCntrl.updateId(response.getBody().getId() , updateFrom );
+        testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").delete("/api/users", newUser);
 
-        assertNotNull(updatedUser);
-        assertEquals("Pidrilo" , updatedUser.getFirstName());
-        assertEquals("Ebanoye" , updatedUser.getLastName());
-        assertEquals("ebapidr@yoba.com" , updatedUser.getMail());
-        assertEquals("sosipisyu2002" , updatedUser.getPassword());
-        assertEquals("123456788" , updatedUser.getPhone());
+        ResponseEntity<Integer> update = testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").postForEntity("/api/users", updateFrom, Integer.class);
+        assertNotNull(update.getBody());
+        //assertEquals(HttpStatus.CREATED, update.getStatusCode());
+
+        assertEquals(HttpStatus.OK, update.getStatusCode());
+
+        Optional<User> saved = dao.findById(update.getBody());
+        assertTrue(saved.isPresent());
+
+        assertEquals(updateFrom.getFirstName() , saved.get().getFirstName());
+        assertEquals(updateFrom.getLastName() , saved.get().getLastName());
+        assertEquals(updateFrom.getMail() , saved.get().getMail());
+        assertEquals(updateFrom.getPassword() , saved.get().getPassword());
+        assertEquals(updateFrom.getPhone() , saved.get().getPhone());
 
     }
 
     @Test
     public void deleteUserTest(){
         //User newUser = new User("Zhigalo" , "Ebanoye" , "ebazhi@yoba.com" , "hersosi2002" , "123456789");
-        User newUser = new User();
-        newUser.setFirstName("Zhigalo");
-        newUser.setLastName("Ebanoye");
-        newUser.setMail("ebazhi@yoba.com");
-        newUser.setPassword("hersosi2002");
-        newUser.setPhone("123456789");
+        User toDelete = new User();
+        toDelete.setFirstName("Zhigalo");
+        toDelete.setLastName("Ebanoye");
+        toDelete.setMail("ebazhi@yoba.com");
+        toDelete.setPassword("hersosi2002");
+        toDelete.setPhone("123456789");
         //HttpEntity<User> request = new HttpEntity<>(newUser);
         //ResponseEntity<User> response = testRestTemplate.postForEntity("/user" , request , User.class);
 
-        ResponseEntity<User> response = usrCntrl.create(newUser);
+        ResponseEntity<Integer> resultNew = testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").postForEntity("/api/users", toDelete, Integer.class);
+        assertNotNull(resultNew.getBody());
+        assertEquals(HttpStatus.CREATED, resultNew.getStatusCode());
 
-        usrCntrl.deleteId(response.getBody().getId());
+        Optional<User> saved = dao.findById(resultNew.getBody());
+        assertTrue(saved.isPresent());
 
-        assertNull(usrCntrl.getId(response.getBody().getId()));
+        testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").delete("/api/users", toDelete, Integer.class);
+        Optional<User> find = dao.findById(resultNew.getBody());
+        assertFalse(find.isPresent());
     }
 
     @Test
     public void createBillingAdressTest(){
         //User newUser = new User("Zhigalo" , "Ebanoye" , "ebazhi@yoba.com" , "hersosi2002" , "123456789");
+        UserController controller = new UserController();
         User newUser = new User();
         newUser.setFirstName("Zhigalo");
         newUser.setLastName("Ebanoye");
@@ -128,21 +144,29 @@ public class UserControllerIntegrationTest {
         //HttpEntity<User> request = new HttpEntity<>(newUser);
         //ResponseEntity<User> response = testRestTemplate.postForEntity("/user" , request , User.class);
 
-        ResponseEntity<User> response = usrCntrl.create(newUser);
+        Address address = new Address();
+        address.setCity("Praha");
+        address.setStreet("Na Lysine");
+        address.setZip("15200");
 
-        Address addr = new Address();
-        addr.setCity("Praha");
-        addr.setStreet("Na Lysine");
-        addr.setZip("15200");
+        controller.createAddressBillingId(newUser.getId(), address);
 
-        usrCntrl.createAddressBillingId(response.getBody().getId() , addr);
+        ResponseEntity<Integer> result = testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").postForEntity("/api/users", newUser, Integer.class);
+        assertNotNull(result.getBody());
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
 
-        assertNotNull(response.getBody().getAddressBilling());
+        Optional<User> saved = dao.findById(result.getBody());
+        assertTrue(saved.isPresent());
+
+        assertEquals(address.getCity(), saved.get().getAddressBilling().getCity());
+        assertEquals(address.getStreet(), saved.get().getAddressBilling().getStreet());
+        assertEquals(address.getZip(), saved.get().getAddressBilling().getZip());
     }
 
     @Test
     public void createDeliverAdressTest(){
         //User newUser = new User("Zhigalo" , "Ebanoye" , "ebazhi@yoba.com" , "hersosi2002" , "123456789");
+        UserController controller = new UserController();
         User newUser = new User();
         newUser.setFirstName("Zhigalo");
         newUser.setLastName("Ebanoye");
@@ -152,21 +176,29 @@ public class UserControllerIntegrationTest {
         //HttpEntity<User> request = new HttpEntity<>(newUser);
         //ResponseEntity<User> response = testRestTemplate.postForEntity("/user" , request , User.class);
 
-        ResponseEntity<User> response = usrCntrl.create(newUser);
+        Address address = new Address();
+        address.setCity("Praha");
+        address.setStreet("Na Pysine");
+        address.setZip("15300");
 
-        Address addr = new Address();
-        addr.setCity("Praha");
-        addr.setStreet("Na Lysine");
-        addr.setZip("15200");
+        controller.createAddressDeliveryId(newUser.getId(), address);
 
-        usrCntrl.createAddressDeliveryId(response.getBody().getId() , addr);
+        ResponseEntity<Integer> result = testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").postForEntity("/api/users", newUser, Integer.class);
+        assertNotNull(result.getBody());
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
 
-        assertNotNull(response.getBody().getAddressDelivery());
+        Optional<User> saved = dao.findById(result.getBody());
+        assertTrue(saved.isPresent());
+
+        assertEquals(address.getCity(), saved.get().getAddressDelivery().getCity());
+        assertEquals(address.getStreet(), saved.get().getAddressDelivery().getStreet());
+        assertEquals(address.getZip(), saved.get().getAddressDelivery().getZip());
     }
 
     @Test
     public void updateBillingAddressTest(){
         //User newUser = new User("Zhigalo" , "Ebanoye" , "ebazhi@yoba.com" , "hersosi2002" , "123456789");
+        UserController controller = new UserController();
         User newUser = new User();
         newUser.setFirstName("Zhigalo");
         newUser.setLastName("Ebanoye");
@@ -176,30 +208,43 @@ public class UserControllerIntegrationTest {
         //HttpEntity<User> request = new HttpEntity<>(newUser);
         //ResponseEntity<User> response = testRestTemplate.postForEntity("/user" , request , User.class);
 
-        ResponseEntity<User> response = usrCntrl.create(newUser);
+        Address address = new Address();
+        address.setCity("Praha");
+        address.setStreet("Na Lysine");
+        address.setZip("15200");
 
-        Address addr = new Address();
-        addr.setCity("Praha");
-        addr.setStreet("Na Lysine");
-        addr.setZip("15200");
+        controller.createAddressBillingId(newUser.getId(), address);
 
-        usrCntrl.createAddressBillingId(response.getBody().getId() , addr);
+        ResponseEntity<Integer> result = testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").postForEntity("/api/users", newUser, Integer.class);
+        assertNotNull(result.getBody());
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
 
-        Address addre = new Address();
-        addr.setCity("Brno");
-        addr.setStreet("Super popa");
-        addr.setZip("1447");
+        Optional<User> saved = dao.findById(result.getBody());
+        assertTrue(saved.isPresent());
 
-        usrCntrl.updateAddressBillingId(response.getBody().getId() , addre);
+        assertEquals(address.getCity(), saved.get().getAddressBilling().getCity());
+        assertEquals(address.getStreet(), saved.get().getAddressBilling().getStreet());
+        assertEquals(address.getZip(), saved.get().getAddressBilling().getZip());
 
-        assertEquals(response.getBody().getAddressBilling().getCity(), addre.getCity());
-        assertEquals(response.getBody().getAddressBilling().getStreet(), addre.getStreet());
-        assertEquals(response.getBody().getAddressBilling().getZip() , addre.getZip());
+        address.setCity("Ostrava");
+        address.setStreet("Na Oysine");
+        address.setZip("15400");
+
+        controller.updateAddressBillingId(newUser.getId(), address);
+
+        ResponseEntity<Integer> update = testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").postForEntity("/api/users", newUser, Integer.class);
+        assertNotNull(update.getBody());
+        assertEquals(HttpStatus.CREATED, update.getStatusCode());
+
+        assertEquals(address.getCity(), saved.get().getAddressBilling().getCity());
+        assertEquals(address.getStreet(), saved.get().getAddressBilling().getStreet());
+        assertEquals(address.getZip(), saved.get().getAddressBilling().getZip());
     }
 
     @Test
-    public void updateDeliveryAddressTest(){
+    public void updateDeliveryAddressTest() {
         //User newUser = new User("Zhigalo" , "Ebanoye" , "ebazhi@yoba.com" , "hersosi2002" , "123456789");
+        UserController controller = new UserController();
         User newUser = new User();
         newUser.setFirstName("Zhigalo");
         newUser.setLastName("Ebanoye");
@@ -209,25 +254,36 @@ public class UserControllerIntegrationTest {
         //HttpEntity<User> request = new HttpEntity<>(newUser);
         //ResponseEntity<User> response = testRestTemplate.postForEntity("/user" , request , User.class);
 
-        ResponseEntity<User> response = usrCntrl.create(newUser);
+        Address address = new Address();
+        address.setCity("Praha");
+        address.setStreet("Na Lysine");
+        address.setZip("15200");
 
-        Address addr = new Address();
-        addr.setCity("Praha");
-        addr.setStreet("Na Lysine");
-        addr.setZip("15200");
+        controller.createAddressDeliveryId(newUser.getId(), address);
 
-        usrCntrl.createAddressDeliveryId(response.getBody().getId() , addr);
+        ResponseEntity<Integer> result = testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").postForEntity("/api/users", newUser, Integer.class);
+        assertNotNull(result.getBody());
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
 
-        Address addre = new Address();
-        addr.setCity("Brno");
-        addr.setStreet("Super popa");
-        addr.setZip("1447");
+        Optional<User> saved = dao.findById(result.getBody());
+        assertTrue(saved.isPresent());
 
-        usrCntrl.updateAddressDeliveryId(response.getBody().getId() , addre);
+        assertEquals(address.getCity(), saved.get().getAddressDelivery().getCity());
+        assertEquals(address.getStreet(), saved.get().getAddressDelivery().getStreet());
+        assertEquals(address.getZip(), saved.get().getAddressDelivery().getZip());
 
-        assertEquals(response.getBody().getAddressDelivery().getCity(), addre.getCity());
-        assertEquals(response.getBody().getAddressDelivery().getStreet(), addre.getStreet());
-        assertEquals(response.getBody().getAddressDelivery().getZip() , addre.getZip());
+        address.setCity("Ostrava");
+        address.setStreet("Na Oysine");
+        address.setZip("15400");
+
+        controller.createAddressDeliveryId(newUser.getId(), address);
+
+        ResponseEntity<Integer> update = testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").postForEntity("/api/users", newUser, Integer.class);
+        assertNotNull(update.getBody());
+        assertEquals(HttpStatus.CREATED, update.getStatusCode());
+
+        assertEquals(address.getCity(), saved.get().getAddressDelivery().getCity());
+        assertEquals(address.getStreet(), saved.get().getAddressDelivery().getStreet());
+        assertEquals(address.getZip(), saved.get().getAddressDelivery().getZip());
     }
-*/
 }
