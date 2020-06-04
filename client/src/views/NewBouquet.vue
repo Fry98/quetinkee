@@ -194,10 +194,10 @@
         this.selectedCategories.map(String);
         bouquetJson.keyColors.forEach(color => this.selectedColors[color] = true);
         Object.getOwnPropertyNames(bouquetJson.keyFlowerCount).forEach(key => {
-          const selectedFlower = this.flowers.find(flower => flower.id === key);
+          const selectedFlower = this.flowers.find(flower => flower.id === Number(key));
           selectedFlower.count = bouquetJson.keyFlowerCount[key];
           this.selectedFlowers.push(selectedFlower);
-        })
+        });
       },
       handleSubmit(event) {
         event.stopPropagation();
