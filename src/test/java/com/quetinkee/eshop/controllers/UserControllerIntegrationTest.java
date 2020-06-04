@@ -181,7 +181,7 @@ public class UserControllerIntegrationTest {
         addressDelCr.setStreet("Amosova");
         addressDelCr.setZip("16171");
 
-        String url = "/api/users/" + userCreateDelivery.getId() + "/billing";
+        String url = "/api/users/" + userCreateDelivery.getId() + "/delivery";
 
         ResponseEntity<Integer> result = testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").postForEntity(url, addressDelCr, Integer.class);
         assertNotNull(result.getBody());
@@ -190,9 +190,9 @@ public class UserControllerIntegrationTest {
         Optional<User> saved = dao.findById(result.getBody());
         assertTrue(saved.isPresent());
 
-        assertEquals(addressDelCr.getCity(), saved.get().getAddressBilling().getCity());
-        assertEquals(addressDelCr.getStreet(), saved.get().getAddressBilling().getStreet());
-        assertEquals(addressDelCr.getZip(), saved.get().getAddressBilling().getZip());
+        assertEquals(addressDelCr.getCity(), saved.get().getAddressDelivery().getCity());
+        assertEquals(addressDelCr.getStreet(), saved.get().getAddressDelivery().getStreet());
+        assertEquals(addressDelCr.getZip(), saved.get().getAddressDelivery().getZip());
     }
 
     @Test
@@ -256,7 +256,7 @@ public class UserControllerIntegrationTest {
         addressUpdateDel.setStreet("Olegova");
         addressUpdateDel.setZip("84377");
 
-        String url = "/api/users/" + userUpdateDel.getId() + "/billing";
+        String url = "/api/users/" + userUpdateDel.getId() + "/delivery";
 
         ResponseEntity<Integer> result = testRestTemplate.withBasicAuth("admin@admin.cz", "heslo").postForEntity(url, addressUpdateDel, Integer.class);
         assertNotNull(result.getBody());
@@ -278,8 +278,8 @@ public class UserControllerIntegrationTest {
         Optional<User> updatedResult = dao.findById(update.getBody());
         assertTrue(updatedResult.isPresent());
 
-        assertEquals(addressUpdateDel.getCity(), updatedResult.get().getAddressBilling().getCity());
-        assertEquals(addressUpdateDel.getStreet(), updatedResult.get().getAddressBilling().getStreet());
-        assertEquals(addressUpdateDel.getZip(), updatedResult.get().getAddressBilling().getZip());
+        assertEquals(addressUpdateDel.getCity(), updatedResult.get().getAddressDelivery().getCity());
+        assertEquals(addressUpdateDel.getStreet(), updatedResult.get().getAddressDelivery().getStreet());
+        assertEquals(addressUpdateDel.getZip(), updatedResult.get().getAddressDelivery().getZip());
     }
 }
