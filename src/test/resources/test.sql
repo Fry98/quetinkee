@@ -1,0 +1,2 @@
+insert into user (firstname , lastName , mail , password , phone ) values ('Zhigalo' , 'Ebanoye' , 'ebazhi@yoba.com' , 'hersosi2002' , '123456789')
+insert into user (firstname , lastName , mail , password , phone ) values ('Pidrilo' , 'Ebanoye' , 'ebapidr@yoba.com' , 'sosipisyu2002' , '123456788')
