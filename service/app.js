@@ -1,3 +1,4 @@
+// IMPORTS
 const amqp = require('amqplib');
 const express = require('express');
 const elasticsearch = require('elasticsearch');
@@ -5,7 +6,10 @@ const sanitize = require('elasticsearch-sanitize');
 const fold = require('fold-to-ascii');
 const redis = require('redis');
 
+// Main IIFE
 (async () => {
+
+  // Initialization
   const app = express();
   const redisClient = redis.createClient();
   const connection = await amqp.connect("amqp://localhost:5672");
@@ -14,16 +18,14 @@ const redis = require('redis');
     host: 'localhost:9200'
   });
 
-  /**
-   * Search in
-   */
+  // Elastic Search queue
   await channel.assertQueue('items');
   channel.consume('items', message => {
     try {
-      channel.ack(message); // accept even if wrong format
+      channel.ack(message);
       const data = JSON.parse(fold.foldMaintaining(message.content.toString()));
       if (data.id === undefined || (!data.remove && data.body === undefined)) return;
-      // delete
+
       if (data.remove) {
         client.delete({
           index: 'items',
@@ -32,7 +34,7 @@ const redis = require('redis');
         }).catch(_ => {});
         return;
       }
-      // add data
+
       client.index({
         index: 'items',
         type: 'item',
@@ -46,23 +48,21 @@ const redis = require('redis');
     }
   });
 
-  /**
-   * Cache in
-   */
+  // Caching queue
   await channel.assertQueue('cache');
   channel.consume('cache', message => {
     try {
-      channel.ack(message); // accept even if wrong format
+      channel.ack(message);
       const ttl = 10;
       const data = JSON.parse(message.content.toString());
+
       if (data.id === undefined || (!data.remove && data.body === undefined)) return;
-      // delete
       if (data.remove !== undefined) {
         redisClient.del(data.id);
         return;
       }
-      // add data
-      redisClient.set(`req(${data.id})`, JSON.stringify(data.body), 'EX', data.ttl === undefined ? ttl : data.ttl);
+
+      redisClient.set(`req(${data.id})`, data.body, 'EX', data.ttl === undefined ? ttl : data.ttl);
     }
     catch (err) {
       console.error(err);
@@ -70,9 +70,7 @@ const redis = require('redis');
     }
   });
 
-  /**
-   * Cache out
-   */
+  // Document cache lookup
   app.get('/api/cache', (req, res) => {
     if (req.query.id === undefined) {
       res.status(400).send('Invalid API request');
@@ -85,13 +83,11 @@ const redis = require('redis');
         return;
       }
       res.set('Content-Type', 'application/json');
-      res.send(JSON.parse(cache));
+      res.send(cache);
     });
   });
 
-  /**
-   * Search out
-   */
+  // Elastic Search lookup
   app.get('/api/search', async (req, res) => {
     if (req.query.q === undefined || req.query.q.length === 0) {
       res.status(400).send('Invalid API request');
@@ -100,7 +96,6 @@ const redis = require('redis');
 
     try {
       const find = sanitize(fold.foldMaintaining(req.query.q));
-
       const result = await client.search({
         index: 'items',
         type: 'item',
@@ -108,24 +103,22 @@ const redis = require('redis');
           query: {
             bool: {
               should:[
-                {wildcard: {
-                  name: {
-                    value: `*${find}*`,
-                    boost: 1.2
+                {
+                  wildcard: {
+                    name: {
+                      value: `*${find}*`,
+                      boost: 1.0
+                    }
                   }
-                }},
-                {wildcard: {
-                  perex: {
-                    value: `*${find}*`,
-                    boost: 1.0
+                },
+                {
+                  wildcard: {
+                    perex: {
+                      value: `*${find}*`,
+                      boost: 0.7
+                    }
                   }
-                }},
-                {wildcard: {
-                  description: {
-                    value: `*${find}*`,
-                    boost: 0.8
-                  }
-                }}
+                }
               ]
             }
           }
@@ -133,17 +126,17 @@ const redis = require('redis');
       });
 
       res.json(result.hits.hits.map(x => Number(x._id)));
-    }
-    catch (err) {
-      console.log(err);
+    } catch (err) {
       res.status(503).send('Elasticsearch offline');
     }
   });
 
+  // API fallback
   app.use((req, res) => {
     res.status(405).send("API Endpoint doesn't exist");
   });
 
+  // API server startup
   app.listen(4200, () => {
     console.log("Service running on port 4200");
   });

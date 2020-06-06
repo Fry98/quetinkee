@@ -32,16 +32,15 @@ public class CacheRabbit {
 
     try {
       return (T) rest.getForObject("http://localhost:4200/api/cache?id={find}", returnType, params);
-    }
-    catch (RestClientResponseException ex) {
+    } catch (RestClientResponseException ex) {
       // ignore NOT_FOUND - currently not in cache
       if (ex.getRawStatusCode() != HttpStatus.NOT_FOUND.value()) {
         LoggerFactory.getLogger(SearchRabbit.class).warn(ex.getMessage());
       }
+    } catch (ResourceAccessException ex) {
+      LoggerFactory.getLogger(SearchRabbit.class).error(ex.getMessage());
     }
-    catch (ResourceAccessException ex) {
-        LoggerFactory.getLogger(SearchRabbit.class).error(ex.getMessage());
-    }
+
     return null;
   }
 
